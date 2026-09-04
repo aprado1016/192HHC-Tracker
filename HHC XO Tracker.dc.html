@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<link rel="stylesheet" href="_ds/industry-0fb1b72e-5618-4890-8662-1ed74144782f/styles.css">
+<script src="_ds/industry-0fb1b72e-5618-4890-8662-1ed74144782f/_ds_bundle.js"></script>
+<script src="roster-data.js"></script>
+<style>
+html,body{margin:0;height:100%;background:#dededf;overscroll-behavior:none;-webkit-text-size-adjust:100%}
+a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
+@keyframes sheetUp{from{transform:translateY(101%)}to{transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.hhc-scroll{-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.hhc-grid{background-image:linear-gradient(color-mix(in srgb,#1d1f20 5%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,#1d1f20 5%,transparent) 1px,transparent 1px);background-size:34px 34px}
+</style>
+</helmet>
+
+<div style="width:min(100%,560px);height:100dvh;margin:0 auto;position:relative;display:flex;flex-direction:column;background:var(--color-bg);border-left:1px solid var(--color-divider);border-right:1px solid var(--color-divider);overflow:hidden;font-family:var(--font-body);color:var(--color-text)">
+
+  <div style="flex:none;padding:14px 16px 10px;border-bottom:1px solid var(--color-divider)">
+    <div style="display:flex;align-items:baseline;gap:8px">
+      <div style="font-family:var(--font-heading);font-weight:600;font-size:19px;line-height:1;letter-spacing:-.01em">HHC / 192 EN BN</div>
+      <div style="margin-left:auto;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">XO Tracker</div>
+    </div>
+    <div style="display:flex;align-items:flex-end;gap:14px;margin-top:10px">
+      <div style="display:flex;align-items:baseline;gap:4px">
+        <span style="font-family:var(--font-heading);font-weight:600;font-size:34px;line-height:.9;color:var(--color-accent-700)">{{ sum.pres }}</span>
+        <span style="font-family:var(--font-heading);font-size:17px;color:color-mix(in srgb,#1d1f20 45%,transparent)">/ {{ sum.total }}</span>
+      </div>
+      <div style="flex:1;padding-bottom:2px">
+        <div style="display:flex;justify-content:space-between;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent);margin-bottom:4px">
+          <span>Accounted present</span><span>{{ sum.pct }}%</span>
+        </div>
+        <div style="height:6px;background:var(--color-neutral-200);border:1px solid var(--color-divider);position:relative">
+          <div style="{{ sum.meter }}"></div>
+        </div>
+      </div>
+    </div>
+    <div class="hhc-scroll" style="display:flex;gap:6px;margin-top:12px;overflow-x:auto;padding-bottom:2px">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2">
+        <button class="{{ t.cls }}" onClick="{{ t.onTap }}" style="flex:none;white-space:nowrap;font-size:12px;padding:5px 11px">{{ t.label }}</button>
+      </sc-for>
+      <button class="btn btn-ghost" onClick="{{ onNewRoster }}" style="flex:none;white-space:nowrap;font-size:12px;padding:5px 9px;border:1px dashed var(--color-divider)">+ ROSTER</button>
+    </div>
+  </div>
+
+  <sc-if value="{{ isTree }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="Task Org" style="flex:1;position:relative;overflow:hidden;min-height:0">
+    <div class="hhc-grid" ref="{{ vpRef }}" onPointerDown="{{ onPanStart }}" onPointerMove="{{ onPanMove }}" onPointerUp="{{ onPanEnd }}" onPointerCancel="{{ onPanEnd }}" onWheel="{{ onWheel }}" style="position:absolute;inset:0;touch-action:none;cursor:grab;overflow:hidden">
+      <div style="{{ canvasStyle }}">
+
+        <div style="display:flex;justify-content:center">
+          <sc-for list="{{ topNodes }}" as="node" hint-placeholder-count="1">
+            <div class="blueprint" style="width:290px;background:var(--color-accent-900);color:#f2f2f3;padding:11px 12px 12px">
+              <i class="corner tl" style="color:color-mix(in srgb,#f2f2f3 55%,transparent)"></i><i class="corner tr" style="color:color-mix(in srgb,#f2f2f3 55%,transparent)"></i><i class="corner bl" style="color:color-mix(in srgb,#f2f2f3 55%,transparent)"></i><i class="corner br" style="color:color-mix(in srgb,#f2f2f3 55%,transparent)"></i>
+              <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onClick="{{ node.onToggle }}">
+                <div style="flex:1;min-width:0">
+                  <div style="font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.02em;text-transform:uppercase">{{ node.name }}</div>
+                  <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.65">{{ node.sub }}</div>
+                </div>
+                <div style="font-family:var(--font-heading);font-size:15px;opacity:.9">{{ node.tally }}</div>
+                <div style="font-size:11px;opacity:.7;width:10px;text-align:center">{{ node.chev }}</div>
+              </div>
+              <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:1px;margin-top:10px;border-top:1px solid color-mix(in srgb,#f2f2f3 22%,transparent);padding-top:8px">
+                  <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
+                    <div style="display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:8px;min-height:44px">
+                      <div style="font-family:var(--font-heading);font-size:13px;opacity:.7;letter-spacing:.04em">{{ m.rank }}</div>
+                      <div onClick="{{ m.onOpen }}" style="min-width:0;cursor:pointer;padding:6px 0">
+                        <div style="font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
+                        <div style="font-size:10px;opacity:.55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.note }}</div>
+                      </div>
+                      <button onClick="{{ m.onCycle }}" style="{{ m.pillDark }}">{{ m.abbr }}</button>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="position:relative;height:34px">
+          <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
+        </div>
+
+        <div style="display:flex;justify-content:center">
+          <sc-for list="{{ hqNodes }}" as="node" hint-placeholder-count="1">
+            <div class="blueprint" style="width:290px;background:var(--color-bg);padding:11px 12px 12px">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onClick="{{ node.onToggle }}">
+                <div style="flex:1;min-width:0">
+                  <div style="font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.02em;text-transform:uppercase">{{ node.name }}</div>
+                  <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ node.sub }}</div>
+                </div>
+                <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent-700)">{{ node.tally }}</div>
+                <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 45%,transparent);width:10px;text-align:center">{{ node.chev }}</div>
+              </div>
+              <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;margin-top:10px;border-top:1px solid var(--color-divider);padding-top:4px">
+                  <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
+                    <div style="display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:8px;min-height:44px;border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent)">
+                      <div style="font-family:var(--font-heading);font-size:13px;letter-spacing:.04em;color:color-mix(in srgb,#1d1f20 60%,transparent)">{{ m.rank }}</div>
+                      <div onClick="{{ m.onOpen }}" style="min-width:0;cursor:pointer;padding:6px 0">
+                        <div style="font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
+                        <div style="font-size:10px;color:color-mix(in srgb,#1d1f20 50%,transparent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.note }}</div>
+                      </div>
+                      <button class="{{ m.pillCls }}" onClick="{{ m.onCycle }}" style="border:1px solid var(--color-divider);cursor:pointer;font-family:var(--font-heading);letter-spacing:.06em;min-width:52px;justify-content:center;min-height:30px">{{ m.abbr }}</button>
+                    </div>
+                  </sc-for>
+                  <button class="btn btn-ghost" onClick="{{ node.onAdd }}" style="align-self:flex-start;font-size:11px;margin-top:8px">+ ADD SOLDIER</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="position:relative;height:34px">
+          <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
+        </div>
+
+        <div style="position:relative;padding-top:34px">
+          <div style="position:absolute;left:145px;right:145px;top:0;height:1px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
+          <div style="display:flex;gap:26px;align-items:flex-start">
+            <sc-for list="{{ secNodes }}" as="node" hint-placeholder-count="4">
+              <div style="position:relative;flex:none;width:290px">
+                <div style="position:absolute;left:50%;top:-34px;height:34px;width:1px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
+                <div class="blueprint" style="background:var(--color-bg);padding:11px 12px 12px">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onClick="{{ node.onToggle }}">
+                    <div style="flex:1;min-width:0">
+                      <div style="font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.02em;text-transform:uppercase">{{ node.name }}</div>
+                      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ node.sub }}</div>
+                    </div>
+                    <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent-700)">{{ node.tally }}</div>
+                    <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 45%,transparent);width:10px;text-align:center">{{ node.chev }}</div>
+                  </div>
+                  <div style="height:4px;margin-top:9px;background:var(--color-neutral-200);border:1px solid var(--color-divider)">
+                    <div style="{{ node.meter }}"></div>
+                  </div>
+                  <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;margin-top:8px;border-top:1px solid var(--color-divider);padding-top:4px">
+                      <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
+                        <div style="display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:8px;min-height:44px;border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent)">
+                          <div style="font-family:var(--font-heading);font-size:13px;letter-spacing:.04em;color:color-mix(in srgb,#1d1f20 60%,transparent)">{{ m.rank }}</div>
+                          <div onClick="{{ m.onOpen }}" style="min-width:0;cursor:pointer;padding:6px 0">
+                            <div style="font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
+                            <div style="font-size:10px;color:color-mix(in srgb,#1d1f20 50%,transparent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.note }}</div>
+                          </div>
+                          <button class="{{ m.pillCls }}" onClick="{{ m.onCycle }}" style="border:1px solid var(--color-divider);cursor:pointer;font-family:var(--font-heading);letter-spacing:.06em;min-width:52px;justify-content:center;min-height:30px">{{ m.abbr }}</button>
+                        </div>
+                      </sc-for>
+                      <button class="btn btn-ghost" onClick="{{ node.onAdd }}" style="align-self:flex-start;font-size:11px;margin-top:8px">+ ADD SOLDIER</button>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:absolute;right:12px;bottom:14px;display:flex;flex-direction:column;gap:6px">
+      <button class="btn btn-secondary" onClick="{{ onZoomIn }}" style="width:38px;height:38px;padding:0;background:var(--color-bg);box-shadow:var(--shadow-sm)">+</button>
+      <button class="btn btn-secondary" onClick="{{ onZoomOut }}" style="width:38px;height:38px;padding:0;background:var(--color-bg);box-shadow:var(--shadow-sm)">–</button>
+      <button class="btn btn-secondary" onClick="{{ onFit }}" style="width:38px;height:38px;padding:0;font-size:9px;letter-spacing:.06em;background:var(--color-bg);box-shadow:var(--shadow-sm)">FIT</button>
+    </div>
+    <div style="position:absolute;left:12px;bottom:14px;display:flex;gap:6px;align-items:center">
+      <button class="btn btn-secondary" onClick="{{ onCollapseAll }}" style="font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">{{ collapseLabel }}</button>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isDue }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Due Outs" class="hhc-scroll" style="flex:1;overflow-y:auto;min-height:0;padding:14px 16px 20px">
+    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:12px">
+      <sc-for list="{{ dueFilters }}" as="f" hint-placeholder-count="4">
+        <button class="{{ f.cls }}" onClick="{{ f.onTap }}" style="flex:none;white-space:nowrap;font-size:11px;letter-spacing:.06em;padding:5px 11px">{{ f.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{ dueList }}" as="d" hint-placeholder-count="5">
+        <div class="blueprint" style="padding:11px 12px 12px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <div style="flex:1;min-width:0">
+              <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-700)">{{ d.section }}</div>
+              <div style="font-family:var(--font-heading);font-weight:600;font-size:17px;line-height:1.15;margin-top:2px">{{ d.task }}</div>
+            </div>
+            <button class="{{ d.statusCls }}" onClick="{{ d.onCycle }}" style="border:1px solid var(--color-divider);cursor:pointer;font-family:var(--font-heading);letter-spacing:.06em;min-height:30px;padding:3px 10px">{{ d.status }}</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
+            <div style="flex:1;height:6px;background:var(--color-neutral-200);border:1px solid var(--color-divider)">
+              <div style="{{ d.meter }}"></div>
+            </div>
+            <div style="font-family:var(--font-heading);font-size:14px;width:42px;text-align:right">{{ d.pctLabel }}</div>
+            <button class="btn btn-secondary" onClick="{{ d.onDec }}" style="width:30px;height:30px;padding:0">–</button>
+            <button class="btn btn-secondary" onClick="{{ d.onInc }}" style="width:30px;height:30px;padding:0">+</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <span class="tag tag-neutral">{{ d.priority }}</span>
+            <span style="font-size:11px;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ d.sub }}</span>
+            <button class="btn btn-secondary" onClick="{{ d.onToggleOwner }}" style="margin-left:auto;font-size:11px;letter-spacing:.05em;max-width:190px;overflow:hidden;white-space:nowrap">{{ d.ownerLabel }}</button>
+          </div>
+          <sc-if value="{{ d.ownerOpen }}" hint-placeholder-val="{{ false }}">
+            <select class="input" value="{{ d.owner }}" onChange="{{ d.onOwner }}" style="margin-top:8px;font-size:12px;min-height:36px">
+              <option value="">Unassigned</option>
+              <sc-for list="{{ ownerOptions }}" as="o" hint-placeholder-count="0">
+                <option value="{{ o.id }}">{{ o.label }}</option>
+              </sc-for>
+            </select>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+    <button class="btn btn-secondary btn-block" onClick="{{ onNewDue }}" style="margin-top:14px">+ NEW DUE OUT</button>
+  </div>
+  </sc-if>
+
+  <div style="flex:none;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--color-divider);background:var(--color-bg)">
+    <button class="{{ navTreeCls }}" onClick="{{ onViewTree }}" style="border:0;border-right:1px solid var(--color-divider);min-height:52px;font-size:12px;letter-spacing:.1em">TASK ORG</button>
+    <button class="{{ navDueCls }}" onClick="{{ onViewDue }}" style="border:0;min-height:52px;font-size:12px;letter-spacing:.1em">DUE OUTS</button>
+  </div>
+
+  <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ onCloseSheet }}" style="position:absolute;inset:0;background:color-mix(in srgb,#2b2b2d 45%,transparent);animation:fadeIn .16s ease-out"></div>
+    <div class="hhc-scroll" style="position:absolute;left:0;right:0;bottom:0;max-height:88%;overflow-y:auto;background:var(--color-bg);border-top:1px solid var(--color-divider);box-shadow:var(--shadow-lg);animation:sheetUp .22s cubic-bezier(.22,.8,.28,1)">
+      <div style="position:sticky;top:0;background:var(--color-bg);padding:12px 16px 10px;border-bottom:1px solid var(--color-divider)">
+        <div style="width:38px;height:3px;background:var(--color-neutral-400);margin:0 auto 10px"></div>
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-700)">{{ sel.sectionLabel }}</div>
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:24px;line-height:1.05;margin-top:2px">{{ sel.title }}</div>
+            <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 55%,transparent)">{{ sel.meta }}</div>
+          </div>
+          <button class="btn btn-secondary" onClick="{{ onCloseSheet }}" style="width:34px;height:34px;padding:0">✕</button>
+        </div>
+      </div>
+      <div style="padding:14px 16px 24px">
+        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent);margin-bottom:8px">Status — this roster</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <sc-for list="{{ sel.statusOptions }}" as="s" hint-placeholder-count="8">
+            <button class="{{ s.cls }}" onClick="{{ s.onTap }}" style="font-size:11px;letter-spacing:.05em;padding:7px 11px;min-height:36px">{{ s.label }}</button>
+          </sc-for>
+        </div>
+        <div style="margin-top:14px">
+          <div class="field"><label>Remarks / location</label>
+            <input class="input" value="{{ sel.remark }}" onChange="{{ sel.onRemark }}" placeholder="e.g. SUTA FRI / ALT AT">
+          </div>
+        </div>
+        <div style="height:1px;background:var(--color-divider);margin:18px 0 14px"></div>
+        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent);margin-bottom:10px">Soldier record</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <sc-for list="{{ sel.fields }}" as="f" hint-placeholder-count="8">
+            <div class="field" style="{{ f.span }}"><label>{{ f.label }}</label>
+              <input class="input" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.ph }}">
+            </div>
+          </sc-for>
+        </div>
+        <div class="field" style="margin-top:10px"><label>Notes</label>
+          <textarea class="input" value="{{ sel.notes }}" onChange="{{ sel.onNotes }}" placeholder="Anything the CDR should know"></textarea>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:16px">
+          <button class="btn btn-secondary" onClick="{{ sel.onRemoveFromRoster }}" style="flex:1;font-size:11px">{{ sel.removeLabel }}</button>
+          <button class="btn btn-secondary" onClick="{{ sel.onDelete }}" style="flex:1;font-size:11px;color:var(--color-accent-900)">DELETE RECORD</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showAdd }}" hint-placeholder-val="{{ false }}">
+    <div class="dialog-backdrop" style="position:absolute;animation:fadeIn .14s ease-out">
+      <div class="dialog blueprint" style="background:var(--color-bg)">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div class="dialog-title">Add soldier</div>
+        <div style="display:grid;grid-template-columns:80px 1fr;gap:10px">
+          <div class="field"><label>Rank</label><input class="input" value="{{ draft.rank }}" onChange="{{ onDraftRank }}" placeholder="SPC"></div>
+          <div class="field"><label>Name</label><input class="input" value="{{ draft.name }}" onChange="{{ onDraftName }}" placeholder="Last First"></div>
+        </div>
+        <div class="field"><label>Section</label>
+          <select class="input" value="{{ draft.section }}" onChange="{{ onDraftSection }}">
+            <sc-for list="{{ sectionOptions }}" as="s" hint-placeholder-count="0">
+              <option value="{{ s.id }}">{{ s.label }}</option>
+            </sc-for>
+          </select>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-secondary" onClick="{{ onCancelModal }}">Cancel</button>
+          <button class="btn btn-primary" onClick="{{ onConfirmAdd }}">Add</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showRoster }}" hint-placeholder-val="{{ false }}">
+    <div class="dialog-backdrop" style="position:absolute;animation:fadeIn .14s ease-out">
+      <div class="dialog blueprint" style="background:var(--color-bg);max-height:86%">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div class="dialog-title">New mission roster</div>
+        <div class="field"><label>Name</label><input class="input" value="{{ draft.rosterName }}" onChange="{{ onDraftRosterName }}" placeholder="Annual Training 26"></div>
+        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent)">Who is participating</div>
+        <div class="hhc-scroll" style="overflow-y:auto;border:1px solid var(--color-divider);max-height:38vh">
+          <sc-for list="{{ pickList }}" as="p" hint-placeholder-count="6">
+            <div onClick="{{ p.onToggle }}" style="display:grid;grid-template-columns:20px 40px 1fr;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent);cursor:pointer;min-height:44px">
+              <div style="{{ p.box }}"></div>
+              <div style="font-family:var(--font-heading);font-size:12px;color:color-mix(in srgb,#1d1f20 60%,transparent)">{{ p.rank }}</div>
+              <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.name }}<span style="font-size:10px;color:color-mix(in srgb,#1d1f20 45%,transparent)"> · {{ p.section }}</span></div>
+            </div>
+          </sc-for>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-secondary" onClick="{{ onCancelModal }}">Cancel</button>
+          <button class="btn btn-primary" onClick="{{ onConfirmRoster }}">{{ createLabel }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:430,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  STATUSES = ['PRES','SUTA','OFF SITE TRAINING','AWOL','PROFILE','APPOINTMENT','SICK CALL','OTHER'];
+  ABBR = {'PRES':'PRES','SUTA':'SUTA','OFF SITE TRAINING':'OST','AWOL':'AWOL','PROFILE':'PROF','APPOINTMENT':'APPT','SICK CALL':'SICK','OTHER':'OTHR'};
+  DUE_STATUS = ['Open','Late','Closed'];
+  KEY = 'hhc-xo-v1';
+
+  state = { ready:false, people:[], sections:[], dueouts:[], rosters:[], active:'company',
+            collapsed:{}, sel:null, view:'tree', scale:0.62, tx:0, ty:0, modal:null, expOwner:null,
+            draft:{rank:'',name:'',section:'HQ',rosterName:'',picked:{}}, dueFilter:'All' };
+
+  componentDidMount(){ this.boot(); }
+
+  boot(){
+    const d = window.HHC_DATA;
+    if(!d){ setTimeout(()=>this.boot(), 60); return; }
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(this.KEY) || 'null'); } catch(e) {}
+    if(saved && saved.people && saved.people.length){
+      this.setState({ ready:true, sections:d.sections, people:saved.people, dueouts:saved.dueouts || d.dueouts,
+                      rosters:saved.rosters, active:saved.active || 'company' }, ()=>this.initCam());
+      return;
+    }
+    const statuses = {};
+    d.people.forEach(p => { statuses[p.id] = p.status; });
+    this.setState({ ready:true, sections:d.sections, people:d.people, dueouts:d.dueouts,
+                    rosters:[{ id:'company', name:'COMPANY', all:true, statuses }] }, ()=>this.initCam());
+  }
+
+  save(next){
+    const s = { ...this.state, ...next };
+    try { localStorage.setItem(this.KEY, JSON.stringify({ people:s.people, dueouts:s.dueouts, rosters:s.rosters, active:s.active })); } catch(e) {}
+  }
+  set(next){ this.setState(next, ()=>this.save({})); }
+
+  roster(){ return this.state.rosters.find(r => r.id === this.state.active) || this.state.rosters[0]; }
+  members(){
+    const r = this.roster(); if(!r) return [];
+    if(r.all) return this.state.people;
+    return this.state.people.filter(p => r.ids.indexOf(p.id) >= 0);
+  }
+  statusOf(id){ const r = this.roster(); return (r && r.statuses[id]) || 'PRES'; }
+
+  setStatus(id, st){
+    const rosters = this.state.rosters.map(r => r.id === this.state.active ? { ...r, statuses:{ ...r.statuses, [id]:st } } : r);
+    this.set({ rosters });
+  }
+  cycle(id){
+    const i = this.STATUSES.indexOf(this.statusOf(id));
+    this.setStatus(id, this.STATUSES[(i + 1) % this.STATUSES.length]);
+  }
+  updatePerson(id, field, val){
+    this.set({ people:this.state.people.map(p => p.id === id ? { ...p, [field]:val } : p) });
+  }
+
+  contentW(){
+    const secs = this.state.sections.filter(s => s.id !== 'CMD' && s.id !== 'HQ').length || 1;
+    return secs * 290 + (secs - 1) * 26;
+  }
+  initCam(){
+    if(!this.vp) return;
+    const w = this.vp.clientWidth, scale = 0.92;
+    this.setState({ scale, tx:w / 2 - (this.contentW() / 2) * scale, ty:12 });
+  }
+  fit(){
+    if(!this.vp) return;
+    const w = this.vp.clientWidth;
+    const scale = Math.max(0.45, Math.min(1, (w - 24) / this.contentW()));
+    this.setState({ scale, tx:(w - this.contentW() * scale) / 2, ty:12 });
+  }
+
+  pillCls(st){
+    if(st === 'PRES') return 'tag tag-accent';
+    if(st === 'AWOL' || st === 'SICK CALL') return 'tag tag-outline';
+    return 'tag tag-neutral';
+  }
+  pillDark(st){
+    const base = 'display:inline-flex;align-items:center;justify-content:center;min-width:52px;min-height:30px;padding:3px 8px;font-family:var(--font-heading);font-size:11px;letter-spacing:.06em;cursor:pointer;border-radius:0;';
+    if(st === 'PRES') return base + 'background:#f2f2f3;color:var(--color-accent-900);border:1px solid #f2f2f3';
+    return base + 'background:transparent;color:#f2f2f3;border:1px solid color-mix(in srgb,#f2f2f3 45%,transparent)';
+  }
+  meter(pct, dark){
+    return 'height:100%;width:' + pct + '%;background:' + (dark ? '#f2f2f3' : 'var(--color-accent)') + ';transition:width .2s ease-out';
+  }
+
+  buildNode(sec){
+    const mem = this.members().filter(p => p.section === sec.id);
+    const open = !this.state.collapsed[sec.id];
+    const pres = mem.filter(p => this.statusOf(p.id) === 'PRES').length;
+    const dark = sec.id === 'CMD';
+    return {
+      id:sec.id, name:sec.name, sub:sec.sub, open, chev: open ? '▾' : '▸',
+      tally: pres + '/' + mem.length,
+      meter: this.meter(mem.length ? Math.round(pres / mem.length * 100) : 0, dark),
+      onToggle: () => this.setState({ collapsed:{ ...this.state.collapsed, [sec.id]: open } }),
+      onAdd: () => this.setState({ modal:'add', draft:{ ...this.state.draft, rank:'', name:'', section:sec.id } }),
+      members: mem.map(p => {
+        const st = this.statusOf(p.id);
+        return { id:p.id, rank:p.rank, name:p.name,
+          note: p.position || p.remark || p.loc || (p.agr ? 'AGR' : p.category),
+          abbr:this.ABBR[st], pillCls:this.pillCls(st), pillDark:this.pillDark(st),
+          onOpen: () => this.setState({ sel:p.id }),
+          onCycle: (e) => { e.stopPropagation(); this.cycle(p.id); } };
+      })
+    };
+  }
+
+  selVals(){
+    const p = this.state.people.find(x => x.id === this.state.sel);
+    if(!p) return { title:'', meta:'', sectionLabel:'', statusOptions:[], fields:[], notes:'', remark:'', removeLabel:'' };
+    const sec = this.state.sections.find(s => s.id === p.section);
+    const st = this.statusOf(p.id);
+    const F = (label, key, ph, span) => ({ label, key, ph, span: span || '', value:p[key] || '',
+      onChange:(e) => this.updatePerson(p.id, key, e.target.value) });
+    const r = this.roster();
+    return {
+      title: p.rank + ' ' + p.name,
+      meta: [p.category, p.agr ? 'AGR' : 'M-Day', p.clearanceNote].filter(Boolean).join('  ·  '),
+      sectionLabel: (sec ? sec.name : p.section) + ' — ' + (p.position || 'Assigned'),
+      notes: p.notes || '', remark: p.remark || '',
+      onNotes: (e) => this.updatePerson(p.id, 'notes', e.target.value),
+      onRemark: (e) => this.updatePerson(p.id, 'remark', e.target.value),
+      statusOptions: this.STATUSES.map(s => ({ label:s,
+        cls: s === st ? 'btn btn-primary' : 'btn btn-secondary',
+        onTap: () => this.setStatus(p.id, s) })),
+      fields: [ F('DODID','dodid','10-digit'), F('MOS','mos','12N / 42A'), F('Phone','phone','(203) 555-0100'),
+                F('Email','email','first.last.mil@army.mil','grid-column:span 2'),
+                F('Home of record','hor','City, ST','grid-column:span 2'),
+                F('Medical / profile','profile','None'), F('Clearance','clearance','Secret'),
+                F('Weapon / serial','weapon','M4 / 1234567'), F('Next of kin','nok','Name, relation, phone','grid-column:span 2') ],
+      removeLabel: r && r.all ? 'REMOVE FROM COMPANY' : 'REMOVE FROM THIS ROSTER',
+      onRemoveFromRoster: () => {
+        if(r.all){ this.set({ people:this.state.people.filter(x => x.id !== p.id), sel:null }); return; }
+        const rosters = this.state.rosters.map(x => x.id === r.id ? { ...x, ids:x.ids.filter(i => i !== p.id) } : x);
+        this.set({ rosters, sel:null });
+      },
+      onDelete: () => {
+        const rosters = this.state.rosters.map(x => x.all ? x : { ...x, ids:x.ids.filter(i => i !== p.id) });
+        this.set({ people:this.state.people.filter(x => x.id !== p.id), rosters, sel:null });
+      }
+    };
+  }
+
+  dueVals(){
+    const f = this.state.dueFilter;
+    const list = this.state.dueouts.filter(d => f === 'All' || d.status === f);
+    return list.map(d => ({
+      ...d, pctLabel: d.pct + '%', meter:this.meter(d.pct, false),
+      ownerOpen: this.state.expOwner === d.id,
+      ownerLabel: d.owner ? (this.state.people.find(p => p.id === d.owner) || {}).rank + ' ' + (this.state.people.find(p => p.id === d.owner) || {}).name : 'ASSIGN',
+      onToggleOwner: () => this.setState({ expOwner: this.state.expOwner === d.id ? null : d.id }),
+      statusCls: d.status === 'Closed' ? 'tag tag-accent' : (d.status === 'Late' ? 'tag tag-outline' : 'tag tag-neutral'),
+      onCycle: () => this.updDue(d.id, { status:this.DUE_STATUS[(this.DUE_STATUS.indexOf(d.status) + 1) % 3] }),
+      onInc: () => this.updDue(d.id, { pct:Math.min(100, d.pct + 10) }),
+      onDec: () => this.updDue(d.id, { pct:Math.max(0, d.pct - 10) }),
+      onOwner: (e) => this.updDue(d.id, { owner:e.target.value })
+    }));
+  }
+  updDue(id, patch){ this.set({ dueouts:this.state.dueouts.map(d => d.id === id ? { ...d, ...patch } : d) }); }
+
+  onPanStart = (e) => { this.pan = { x:e.clientX, y:e.clientY, tx:this.state.tx, ty:this.state.ty };
+    if(e.currentTarget.setPointerCapture) e.currentTarget.setPointerCapture(e.pointerId); };
+  onPanMove = (e) => { if(!this.pan) return;
+    this.setState({ tx:this.pan.tx + (e.clientX - this.pan.x), ty:this.pan.ty + (e.clientY - this.pan.y) }); };
+  onPanEnd = () => { this.pan = null; };
+  onWheel = (e) => { e.preventDefault();
+    const s = Math.max(0.16, Math.min(1.6, this.state.scale * (e.deltaY > 0 ? 0.92 : 1.08)));
+    this.setState({ scale:s }); };
+  zoom(f){ this.setState({ scale:Math.max(0.16, Math.min(1.6, this.state.scale * f)) }); }
+
+  renderVals(){
+    const mem = this.members();
+    const pres = mem.filter(p => this.statusOf(p.id) === 'PRES').length;
+    const pct = mem.length ? Math.round(pres / mem.length * 100) : 0;
+    const secs = this.state.sections;
+    const allCollapsed = secs.length > 0 && secs.every(s => this.state.collapsed[s.id]);
+    const d = this.state.draft;
+    return {
+      sum: { pres, total:mem.length, pct, meter:this.meter(pct, false) },
+      isTree: this.state.view === 'tree', isDue: this.state.view === 'due',
+      navTreeCls: this.state.view === 'tree' ? 'btn btn-primary' : 'btn btn-secondary',
+      navDueCls: this.state.view === 'due' ? 'btn btn-primary' : 'btn btn-secondary',
+      onViewTree: () => this.setState({ view:'tree' }),
+      onViewDue: () => this.setState({ view:'due' }),
+      tabs: this.state.rosters.map(r => ({ label:r.name, cls: r.id === this.state.active ? 'btn btn-primary' : 'btn btn-secondary',
+        onTap: () => this.setState({ active:r.id }, ()=>{ this.save({}); }) })),
+      onNewRoster: () => this.setState({ modal:'roster', draft:{ ...d, rosterName:'', picked:{} } }),
+      topNodes: secs.filter(s => s.id === 'CMD').map(s => this.buildNode(s)),
+      hqNodes: secs.filter(s => s.id === 'HQ').map(s => this.buildNode(s)),
+      secNodes: secs.filter(s => s.id !== 'CMD' && s.id !== 'HQ').map(s => this.buildNode(s)),
+      canvasStyle: { transformOrigin:'0 0', width:'max-content', padding:'8px 8px 40px',
+        transform:'translate(' + this.state.tx + 'px,' + this.state.ty + 'px) scale(' + this.state.scale + ')' },
+      vpRef: (el) => { if(el && !this.vp){ this.vp = el; setTimeout(()=>this.initCam(), 0); } },
+      onPanStart:this.onPanStart, onPanMove:this.onPanMove, onPanEnd:this.onPanEnd, onWheel:this.onWheel,
+      onZoomIn: () => this.zoom(1.18), onZoomOut: () => this.zoom(0.85), onFit: () => this.fit(),
+      collapseLabel: allCollapsed ? 'EXPAND ALL' : 'COLLAPSE ALL',
+      onCollapseAll: () => { const c = {}; if(!allCollapsed) secs.forEach(s => { c[s.id] = true; }); this.setState({ collapsed:c }); },
+      hasSel: !!this.state.sel, sel:this.selVals(),
+      onCloseSheet: () => this.setState({ sel:null }),
+      dueFilters: ['All','Late','Open','Closed'].map(f => ({ label:f.toUpperCase(),
+        cls: this.state.dueFilter === f ? 'btn btn-primary' : 'btn btn-secondary',
+        onTap: () => this.setState({ dueFilter:f }) })),
+      dueList: this.dueVals(),
+      ownerOptions: mem.map(p => ({ id:p.id, label:p.rank + ' ' + p.name })),
+      onNewDue: () => { const id = 'd' + Date.now();
+        this.set({ dueouts:[{ id, task:'New due out', section:'HQ', owner:'', pct:0, sub:'Added manually', priority:'Priority', status:'Open' }, ...this.state.dueouts] }); },
+      showAdd: this.state.modal === 'add', showRoster: this.state.modal === 'roster',
+      draft: { rank:d.rank, name:d.name, section:d.section, rosterName:d.rosterName },
+      sectionOptions: secs.map(s => ({ id:s.id, label:s.name })),
+      onDraftRank: (e) => this.setState({ draft:{ ...d, rank:e.target.value.toUpperCase() } }),
+      onDraftName: (e) => this.setState({ draft:{ ...d, name:e.target.value } }),
+      onDraftSection: (e) => this.setState({ draft:{ ...d, section:e.target.value } }),
+      onDraftRosterName: (e) => this.setState({ draft:{ ...d, rosterName:e.target.value } }),
+      onCancelModal: () => this.setState({ modal:null }),
+      onConfirmAdd: () => {
+        if(!d.name.trim()) { this.setState({ modal:null }); return; }
+        const id = 'n' + Date.now();
+        const person = { id, section:d.section, rank:d.rank || 'PVT', name:d.name.trim(), category:'Enlisted',
+          agr:false, status:'PRES', remark:'', loc:'', dodid:'', mos:'', phone:'', email:'', hor:'', profile:'', nok:'', weapon:'', notes:'', clearance:'', clearanceNote:'' };
+        const rosters = this.state.rosters.map(r => r.id === this.state.active && !r.all
+          ? { ...r, ids:[...r.ids, id], statuses:{ ...r.statuses, [id]:'PRES' } }
+          : { ...r, statuses:{ ...r.statuses, [id]:'PRES' } });
+        this.set({ people:[...this.state.people, person], rosters, modal:null, sel:id });
+      },
+      pickList: this.state.people.map(p => ({ rank:p.rank, name:p.name, section:p.section,
+        box: 'width:16px;height:16px;border:1px solid ' + (d.picked[p.id] ? 'var(--color-accent)' : 'var(--color-divider)') + ';background:' + (d.picked[p.id] ? 'var(--color-accent)' : 'transparent'),
+        onToggle: () => this.setState({ draft:{ ...d, picked:{ ...d.picked, [p.id]: !d.picked[p.id] } } }) })),
+      createLabel: 'Create (' + Object.keys(d.picked).filter(k => d.picked[k]).length + ')',
+      onConfirmRoster: () => {
+        const ids = Object.keys(d.picked).filter(k => d.picked[k]);
+        if(!ids.length) { this.setState({ modal:null }); return; }
+        const statuses = {}; ids.forEach(i => { statuses[i] = 'PRES'; });
+        const id = 'r' + Date.now();
+        const name = (d.rosterName || 'MISSION').toUpperCase();
+        this.set({ rosters:[...this.state.rosters, { id, name, ids, statuses }], active:id, modal:null });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
