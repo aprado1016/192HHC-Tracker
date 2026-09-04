@@ -16,20 +16,22 @@
 html,body{margin:0;height:100%;background:#dededf;overscroll-behavior:none;-webkit-text-size-adjust:100%}
 a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
 @keyframes sheetUp{from{transform:translateY(101%)}to{transform:translateY(0)}}
+@keyframes drawerIn{from{transform:translateX(101%)}to{transform:translateX(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .hhc-scroll{-webkit-overflow-scrolling:touch;scrollbar-width:thin}
 .hhc-grid{background-image:linear-gradient(color-mix(in srgb,#1d1f20 5%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,#1d1f20 5%,transparent) 1px,transparent 1px);background-size:34px 34px}
 </style>
 </helmet>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#1d2d3d"></rect><g fill="none" stroke="#f2f2f3" stroke-width="2"><rect x="38" y="30" width="24" height="12"></rect><rect x="22" y="58" width="24" height="12"></rect><rect x="54" y="58" width="24" height="12"></rect><path d="M50 42v8M34 50h32M34 50v8M66 50v8"></path></g></svg></template>
 
-<div style="width:min(100%,560px);height:100dvh;margin:0 auto;position:relative;display:flex;flex-direction:column;background:var(--color-bg);border-left:1px solid var(--color-divider);border-right:1px solid var(--color-divider);overflow:hidden;font-family:var(--font-body);color:var(--color-text)">
+<div style="{{ shellStyle }}">
 
-  <div style="flex:none;padding:14px 16px 10px;border-bottom:1px solid var(--color-divider)">
-    <div style="display:flex;align-items:baseline;gap:8px">
+  <div style="{{ headStyle }}">
+    <div style="display:flex;align-items:baseline;gap:8px;flex:none">
       <div style="font-family:var(--font-heading);font-weight:600;font-size:19px;line-height:1;letter-spacing:-.01em">HHC / 192 EN BN</div>
       <div style="margin-left:auto;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">XO Tracker</div>
     </div>
-    <div style="display:flex;align-items:flex-end;gap:14px;margin-top:10px">
+    <div style="{{ statStyle }}">
       <div style="display:flex;align-items:baseline;gap:4px">
         <span style="font-family:var(--font-heading);font-weight:600;font-size:34px;line-height:.9;color:var(--color-accent-700)">{{ sum.pres }}</span>
         <span style="font-family:var(--font-heading);font-size:17px;color:color-mix(in srgb,#1d1f20 45%,transparent)">/ {{ sum.total }}</span>
@@ -43,22 +45,39 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
         </div>
       </div>
     </div>
-    <div class="hhc-scroll" style="display:flex;gap:6px;margin-top:12px;overflow-x:auto;padding-bottom:2px">
+    <sc-if value="{{ showToggle }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:6px;flex:none">
+        <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="2">
+          <button class="{{ n.cls }}" onClick="{{ n.onTap }}" style="white-space:nowrap;font-size:11px;padding:5px 10px;letter-spacing:.07em">{{ n.label }}</button>
+        </sc-for>
+      </div>
+    </sc-if>
+    <div class="hhc-scroll" style="{{ tabsStyle }}">
       <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2">
-        <button class="{{ t.cls }}" onClick="{{ t.onTap }}" style="flex:none;white-space:nowrap;font-size:12px;padding:5px 11px">{{ t.label }}</button>
+        <div style="display:flex;flex:none;align-items:stretch">
+          <button class="{{ t.cls }}" onClick="{{ t.onTap }}" style="white-space:nowrap;font-size:12px;padding:5px 11px">{{ t.label }}</button>
+          <sc-if value="{{ t.removable }}" hint-placeholder-val="{{ false }}">
+            <button class="{{ t.cls }}" onClick="{{ t.onRemove }}" title="Delete this tab" style="border-left:0;padding:5px 8px;font-size:12px">✕</button>
+          </sc-if>
+        </div>
       </sc-for>
       <button class="btn btn-ghost" onClick="{{ onNewRoster }}" style="flex:none;white-space:nowrap;font-size:12px;padding:5px 9px;border:1px dashed var(--color-divider)">+ ROSTER</button>
+      <button class="btn btn-ghost" onClick="{{ onNewConvoy }}" style="flex:none;white-space:nowrap;font-size:12px;padding:5px 9px;border:1px dashed var(--color-accent)">+ CONVOY</button>
     </div>
   </div>
 
-  <sc-if value="{{ isTree }}" hint-placeholder-val="{{ true }}">
+  <div style="{{ bodyStyle }}">
+
+  <sc-if value="{{ showTree }}" hint-placeholder-val="{{ true }}">
   <div data-screen-label="Task Org" style="flex:1;position:relative;overflow:hidden;min-height:0">
     <div class="hhc-grid" ref="{{ vpRef }}" onPointerDown="{{ onPanStart }}" onPointerMove="{{ onPanMove }}" onPointerUp="{{ onPanEnd }}" onPointerCancel="{{ onPanEnd }}" onWheel="{{ onWheel }}" style="position:absolute;inset:0;touch-action:none;cursor:grab;overflow:hidden">
       <div style="{{ canvasStyle }}">
 
-        <div style="display:flex;justify-content:center">
+        <sc-if value="{{ isBranch }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;align-items:flex-start">
+
           <sc-for list="{{ topNodes }}" as="node" hint-placeholder-count="1">
-            <div class="blueprint" style="width:290px;background:var(--color-accent-900);color:#f2f2f3;padding:11px 12px 12px">
+            <div class="blueprint" style="width:290px;flex:none;background:var(--color-accent-900);color:#f2f2f3;padding:11px 12px 12px;box-shadow:var(--shadow-md)">
               <i class="corner tl" style="color:color-mix(in srgb,#f2f2f3 55%,transparent)"></i><i class="corner tr" style="color:color-mix(in srgb,#f2f2f3 55%,transparent)"></i><i class="corner bl" style="color:color-mix(in srgb,#f2f2f3 55%,transparent)"></i><i class="corner br" style="color:color-mix(in srgb,#f2f2f3 55%,transparent)"></i>
               <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onClick="{{ node.onToggle }}">
                 <div style="flex:1;min-width:0">
@@ -69,13 +88,13 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                 <div style="font-size:11px;opacity:.7;width:10px;text-align:center">{{ node.chev }}</div>
               </div>
               <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
-                <div style="display:flex;flex-direction:column;gap:1px;margin-top:10px;border-top:1px solid color-mix(in srgb,#f2f2f3 22%,transparent);padding-top:8px">
+                <div style="display:flex;flex-direction:column;margin-top:10px;border-top:1px solid color-mix(in srgb,#f2f2f3 22%,transparent);padding-top:4px">
                   <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
-                    <div style="display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:8px;min-height:44px">
-                      <div style="font-family:var(--font-heading);font-size:13px;opacity:.7;letter-spacing:.04em">{{ m.rank }}</div>
+                    <div style="{{ m.rowStyleDark }}">
+                      <div style="font-family:var(--font-heading);font-size:13px;opacity:.75;letter-spacing:.04em">{{ m.rank }}</div>
                       <div onClick="{{ m.onOpen }}" style="min-width:0;cursor:pointer;padding:6px 0">
                         <div style="font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
-                        <div style="font-size:10px;opacity:.55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.note }}</div>
+                        <div style="font-size:10px;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.note }}</div>
                       </div>
                       <button onClick="{{ m.onCycle }}" style="{{ m.pillDark }}">{{ m.abbr }}</button>
                     </div>
@@ -84,15 +103,11 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
               </sc-if>
             </div>
           </sc-for>
-        </div>
 
-        <div style="position:relative;height:34px">
-          <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
-        </div>
+          <div style="flex:none;width:34px;height:1px;margin-top:22px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
 
-        <div style="display:flex;justify-content:center">
           <sc-for list="{{ hqNodes }}" as="node" hint-placeholder-count="1">
-            <div class="blueprint" style="width:290px;background:var(--color-bg);padding:11px 12px 12px">
+            <div class="blueprint" style="width:290px;flex:none;background:var(--color-bg);padding:11px 12px 12px;box-shadow:var(--shadow-sm)">
               <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
               <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onClick="{{ node.onToggle }}">
                 <div style="flex:1;min-width:0">
@@ -102,14 +117,102 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                 <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent-700)">{{ node.tally }}</div>
                 <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 45%,transparent);width:10px;text-align:center">{{ node.chev }}</div>
               </div>
+              <div style="height:4px;margin-top:9px;background:var(--color-neutral-200);border:1px solid var(--color-divider)">
+                <div style="{{ node.meter }}"></div>
+              </div>
               <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
-                <div style="display:flex;flex-direction:column;margin-top:10px;border-top:1px solid var(--color-divider);padding-top:4px">
+                <div style="display:flex;flex-direction:column;margin-top:8px;border-top:1px solid var(--color-divider);padding-top:4px">
                   <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
-                    <div style="display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:8px;min-height:44px;border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent)">
-                      <div style="font-family:var(--font-heading);font-size:13px;letter-spacing:.04em;color:color-mix(in srgb,#1d1f20 60%,transparent)">{{ m.rank }}</div>
+                    <div style="{{ m.rowStyle }}">
+                      <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
                       <div onClick="{{ m.onOpen }}" style="min-width:0;cursor:pointer;padding:6px 0">
                         <div style="font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
-                        <div style="font-size:10px;color:color-mix(in srgb,#1d1f20 50%,transparent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.note }}</div>
+                        <div style="{{ m.noteStyle }}">{{ m.note }}</div>
+                      </div>
+                      <button class="{{ m.pillCls }}" onClick="{{ m.onCycle }}" style="border:1px solid var(--color-divider);cursor:pointer;font-family:var(--font-heading);letter-spacing:.06em;min-width:52px;justify-content:center;min-height:30px">{{ m.abbr }}</button>
+                    </div>
+                  </sc-for>
+                  <button class="btn btn-ghost" onClick="{{ node.onAdd }}" style="align-self:flex-start;font-size:11px;margin-top:8px">+ ADD SOLDIER</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+
+          <div style="flex:none;width:34px;height:1px;margin-top:22px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
+
+          <div style="flex:none;position:relative">
+            <div style="{{ busStyle }}"></div>
+            <div style="display:flex;gap:22px;align-items:flex-start;margin-top:22px">
+              <sc-for list="{{ secCols }}" as="col" hint-placeholder-count="4">
+                <div style="width:290px;flex:none;display:flex;flex-direction:column">
+                  <div style="width:1px;height:20px;margin-left:144px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
+                  <sc-for list="{{ col.cards }}" as="node" hint-placeholder-count="2">
+                    <div>
+                      <sc-if value="{{ node.linkUp }}" hint-placeholder-val="{{ false }}">
+                        <div style="width:1px;height:20px;margin-left:144px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
+                      </sc-if>
+                      <div class="blueprint" style="width:290px;background:var(--color-bg);padding:11px 12px 12px;box-shadow:var(--shadow-sm)">
+                        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                        <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onClick="{{ node.onToggle }}">
+                          <div style="flex:1;min-width:0">
+                            <div style="font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.02em;text-transform:uppercase">{{ node.name }}</div>
+                            <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ node.sub }}</div>
+                          </div>
+                          <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent-700)">{{ node.tally }}</div>
+                          <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 45%,transparent);width:10px;text-align:center">{{ node.chev }}</div>
+                        </div>
+                        <div style="height:4px;margin-top:9px;background:var(--color-neutral-200);border:1px solid var(--color-divider)">
+                          <div style="{{ node.meter }}"></div>
+                        </div>
+                        <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
+                          <div style="display:flex;flex-direction:column;margin-top:8px;border-top:1px solid var(--color-divider);padding-top:4px">
+                            <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
+                              <div style="{{ m.rowStyle }}">
+                                <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
+                                <div onClick="{{ m.onOpen }}" style="min-width:0;cursor:pointer;padding:6px 0">
+                                  <div style="font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
+                                  <div style="{{ m.noteStyle }}">{{ m.note }}</div>
+                                </div>
+                                <button class="{{ m.pillCls }}" onClick="{{ m.onCycle }}" style="border:1px solid var(--color-divider);cursor:pointer;font-family:var(--font-heading);letter-spacing:.06em;min-width:52px;justify-content:center;min-height:30px">{{ m.abbr }}</button>
+                              </div>
+                            </sc-for>
+                            <button class="btn btn-ghost" onClick="{{ node.onAdd }}" style="align-self:flex-start;font-size:11px;margin-top:8px">+ ADD SOLDIER</button>
+                          </div>
+                        </sc-if>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{ isCompact }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;width:920px">
+          <sc-for list="{{ allNodes }}" as="node" hint-placeholder-count="3">
+            <div class="blueprint" style="width:290px;background:var(--color-bg);padding:11px 12px 12px;box-shadow:var(--shadow-sm)">
+              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+              <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onClick="{{ node.onToggle }}">
+                <div style="flex:1;min-width:0">
+                  <div style="font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.02em;text-transform:uppercase">{{ node.name }}</div>
+                  <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ node.sub }}</div>
+                </div>
+                <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent-700)">{{ node.tally }}</div>
+                <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 45%,transparent);width:10px;text-align:center">{{ node.chev }}</div>
+              </div>
+              <div style="height:4px;margin-top:9px;background:var(--color-neutral-200);border:1px solid var(--color-divider)">
+                <div style="{{ node.meter }}"></div>
+              </div>
+              <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;margin-top:8px;border-top:1px solid var(--color-divider);padding-top:4px">
+                  <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
+                    <div style="{{ m.rowStyle }}">
+                      <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
+                      <div onClick="{{ m.onOpen }}" style="min-width:0;cursor:pointer;padding:6px 0">
+                        <div style="font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
+                        <div style="{{ m.noteStyle }}">{{ m.note }}</div>
                       </div>
                       <button class="{{ m.pillCls }}" onClick="{{ m.onCycle }}" style="border:1px solid var(--color-divider);cursor:pointer;font-family:var(--font-heading);letter-spacing:.06em;min-width:52px;justify-content:center;min-height:30px">{{ m.abbr }}</button>
                     </div>
@@ -120,50 +223,29 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
             </div>
           </sc-for>
         </div>
+        </sc-if>
+      </div>
+    </div>
 
-        <div style="position:relative;height:34px">
-          <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
+    <div ref="{{ spRef }}" style="position:absolute;left:12px;top:12px;width:236px;max-width:calc(100% - 24px)">
+      <div class="blueprint" style="background:var(--color-bg);box-shadow:var(--shadow-md);padding:9px 11px 10px">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div onClick="{{ onToggleStrength }}" style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <div style="flex:1;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 60%,transparent)">Strength summary</div>
+          <div style="font-family:var(--font-heading);font-size:13px;color:var(--color-accent-700)">{{ sum.pct }}%</div>
+          <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 45%,transparent);width:10px;text-align:center">{{ strengthChev }}</div>
         </div>
-
-        <div style="position:relative;padding-top:34px">
-          <div style="position:absolute;left:145px;right:145px;top:0;height:1px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
-          <div style="display:flex;gap:26px;align-items:flex-start">
-            <sc-for list="{{ secNodes }}" as="node" hint-placeholder-count="4">
-              <div style="position:relative;flex:none;width:290px">
-                <div style="position:absolute;left:50%;top:-34px;height:34px;width:1px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
-                <div class="blueprint" style="background:var(--color-bg);padding:11px 12px 12px">
-                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-                  <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onClick="{{ node.onToggle }}">
-                    <div style="flex:1;min-width:0">
-                      <div style="font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.02em;text-transform:uppercase">{{ node.name }}</div>
-                      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ node.sub }}</div>
-                    </div>
-                    <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent-700)">{{ node.tally }}</div>
-                    <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 45%,transparent);width:10px;text-align:center">{{ node.chev }}</div>
-                  </div>
-                  <div style="height:4px;margin-top:9px;background:var(--color-neutral-200);border:1px solid var(--color-divider)">
-                    <div style="{{ node.meter }}"></div>
-                  </div>
-                  <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
-                    <div style="display:flex;flex-direction:column;margin-top:8px;border-top:1px solid var(--color-divider);padding-top:4px">
-                      <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
-                        <div style="display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:8px;min-height:44px;border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent)">
-                          <div style="font-family:var(--font-heading);font-size:13px;letter-spacing:.04em;color:color-mix(in srgb,#1d1f20 60%,transparent)">{{ m.rank }}</div>
-                          <div onClick="{{ m.onOpen }}" style="min-width:0;cursor:pointer;padding:6px 0">
-                            <div style="font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
-                            <div style="font-size:10px;color:color-mix(in srgb,#1d1f20 50%,transparent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.note }}</div>
-                          </div>
-                          <button class="{{ m.pillCls }}" onClick="{{ m.onCycle }}" style="border:1px solid var(--color-divider);cursor:pointer;font-family:var(--font-heading);letter-spacing:.06em;min-width:52px;justify-content:center;min-height:30px">{{ m.abbr }}</button>
-                        </div>
-                      </sc-for>
-                      <button class="btn btn-ghost" onClick="{{ node.onAdd }}" style="align-self:flex-start;font-size:11px;margin-top:8px">+ ADD SOLDIER</button>
-                    </div>
-                  </sc-if>
-                </div>
+        <sc-if value="{{ strengthOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:8px;border-top:1px solid var(--color-divider)">
+            <sc-for list="{{ strength }}" as="s" hint-placeholder-count="5">
+              <div style="{{ s.rowStyle }}">
+                <div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 65%,transparent)">{{ s.label }}</div>
+                <div style="font-family:var(--font-heading);font-size:13px;text-align:right">{{ s.pres }}<span style="color:color-mix(in srgb,#1d1f20 40%,transparent)">/{{ s.total }}</span></div>
+                <div style="font-family:var(--font-heading);font-size:12px;text-align:right;color:var(--color-accent-700);width:34px">{{ s.pct }}</div>
               </div>
             </sc-for>
           </div>
-        </div>
+        </sc-if>
       </div>
     </div>
 
@@ -178,8 +260,171 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
   </div>
   </sc-if>
 
-  <sc-if value="{{ isDue }}" hint-placeholder-val="{{ false }}">
-  <div data-screen-label="Due Outs" class="hhc-scroll" style="flex:1;overflow-y:auto;min-height:0;padding:14px 16px 20px">
+  <sc-if value="{{ showConvoy }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Convoy" class="hhc-scroll" style="{{ paneStyle }}">
+    <div class="blueprint" style="background:var(--color-bg);padding:10px 12px 12px;margin-bottom:14px">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-700)">Convoy summary — {{ cv.parentName }}</div>
+          <div style="font-family:var(--font-heading);font-weight:600;font-size:20px;line-height:1.1">{{ cv.name }}</div>
+        </div>
+      </div>
+      <div style="margin-top:9px;border-top:1px solid var(--color-divider)">
+        <sc-for list="{{ cv.summary }}" as="s" hint-placeholder-count="6">
+          <div style="{{ s.rowStyle }}">
+            <div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 65%,transparent)">{{ s.label }}</div>
+            <div style="font-family:var(--font-heading);font-size:15px;text-align:right">{{ s.value }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:10px;border-top:1px solid var(--color-divider)">
+        <div class="field"><label>Convoy OIC</label>
+          <select class="input" value="{{ cv.oic }}" onChange="{{ cv.onOic }}">
+            <option value="">— unassigned —</option>
+            <sc-for list="{{ cv.oicOpts }}" as="o" hint-placeholder-count="0">
+              <option value="{{ o.id }}">{{ o.label }}</option>
+            </sc-for>
+          </select>
+        </div>
+        <div class="field"><label>Convoy NCOIC</label>
+          <select class="input" value="{{ cv.ncoic }}" onChange="{{ cv.onNcoic }}">
+            <option value="">— unassigned —</option>
+            <sc-for list="{{ cv.ncoicOpts }}" as="o" hint-placeholder-count="0">
+              <option value="{{ o.id }}">{{ o.label }}</option>
+            </sc-for>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-secondary" onClick="{{ cv.onAddChalk }}" style="flex:1;font-size:11px;letter-spacing:.06em">+ ADD CHALK</button>
+        <button class="btn btn-primary" onClick="{{ cv.onManifest }}" style="flex:1;font-size:11px;letter-spacing:.06em">MANIFEST</button>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <sc-for list="{{ cv.chalks }}" as="ch" hint-placeholder-count="2">
+      <div>
+      <div style="display:flex;align-items:center;gap:10px;padding:6px 10px;margin-bottom:10px;background:var(--color-accent-900);color:#f2f2f3">
+        <input value="{{ ch.name }}" onChange="{{ ch.onRename }}" style="flex:1;min-width:0;background:transparent;border:0;color:#f2f2f3;font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:0">
+        <div style="font-family:var(--font-heading);font-size:13px;opacity:.8;white-space:nowrap">{{ ch.count }} VEH · {{ ch.pax }} PAX</div>
+        <button class="btn btn-secondary" onClick="{{ ch.onAddVehicle }}" style="font-size:10px;letter-spacing:.06em;padding:3px 8px;background:transparent;color:#f2f2f3;border-color:color-mix(in srgb,#f2f2f3 45%,transparent)">+ VEH</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{ ch.vehicles }}" as="v" hint-placeholder-count="2">
+        <div class="blueprint" style="background:var(--color-bg);padding:11px 12px 12px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:17px;line-height:1;flex:1">VEH {{ v.n }} · {{ v.bumper }}</div>
+            <span class="tag tag-neutral">{{ v.chalk }}</span>
+            <span class="{{ v.tagCls }}">{{ v.kind }}</span>
+            <button class="btn btn-secondary" onClick="{{ v.onDelete }}" style="width:30px;height:30px;padding:0;font-size:12px">✕</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+            <div class="field"><label>Chalk</label>
+              <input class="input" value="{{ v.chalk }}" onChange="{{ v.onChalk }}" placeholder="CHALK 1">
+            </div>
+            <div class="field"><label>Vehicle type</label>
+              <select class="input" value="{{ v.type }}" onChange="{{ v.onType }}">
+                <sc-for list="{{ vehTypes }}" as="t" hint-placeholder-count="0">
+                  <option value="{{ t.id }}">{{ t.label }}</option>
+                </sc-for>
+              </select>
+            </div>
+            <div class="field"><label>Bumper number</label>
+              <input class="input" value="{{ v.bumper }}" onChange="{{ v.onBumper }}" placeholder="HHC-12">
+            </div>
+            <div class="field"><label>Driver</label>
+              <select class="input" value="{{ v.driver }}" onChange="{{ v.onDriver }}">
+                <option value="">— none —</option>
+                <sc-for list="{{ v.driverOpts }}" as="o" hint-placeholder-count="0">
+                  <option value="{{ o.id }}">{{ o.label }}</option>
+                </sc-for>
+              </select>
+            </div>
+            <div class="field"><label>A-Driver</label>
+              <select class="input" value="{{ v.adriver }}" onChange="{{ v.onADriver }}">
+                <option value="">— none —</option>
+                <sc-for list="{{ v.adriverOpts }}" as="o" hint-placeholder-count="0">
+                  <option value="{{ o.id }}">{{ o.label }}</option>
+                </sc-for>
+              </select>
+            </div>
+          </div>
+          <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent);margin-top:12px">Passengers · {{ v.paxCount }}</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+            <sc-for list="{{ v.pax }}" as="p" hint-placeholder-count="2">
+              <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center">
+                <select class="input" value="{{ p.id }}" onChange="{{ p.onChange }}" style="font-size:12px">
+                  <option value="">— select soldier —</option>
+                  <sc-for list="{{ p.opts }}" as="o" hint-placeholder-count="0">
+                    <option value="{{ o.id }}">{{ o.label }}</option>
+                  </sc-for>
+                </select>
+                <button class="btn btn-secondary" onClick="{{ p.onRemove }}" style="width:34px;height:34px;padding:0;font-size:12px">✕</button>
+                <div style="grid-column:span 2;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--color-accent-700)">{{ p.gear }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <button class="btn btn-ghost" onClick="{{ v.onAddPax }}" style="font-size:11px;margin-top:8px;border:1px dashed var(--color-divider)">+ ADD PASSENGER</button>
+          <div style="display:flex;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid var(--color-divider);font-size:11px;color:color-mix(in srgb,#1d1f20 55%,transparent)">
+            <span>On board</span><span style="font-family:var(--font-heading);font-size:13px;color:var(--color-text)">{{ v.total }}</span>
+          </div>
+        </div>
+      </sc-for>
+      </div>
+      </div>
+      </sc-for>
+    </div>
+    <sc-if value="{{ cv.empty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:26px 0;text-align:center;font-size:12px;color:color-mix(in srgb,#1d1f20 45%,transparent)">No vehicles yet. Add a chalk above to start building the convoy.</div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showLoc }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Location" class="hhc-scroll" style="{{ paneStyle }}">
+    <div class="blueprint" style="background:var(--color-bg);padding:10px 12px 12px;margin-bottom:14px">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-700)">Personnel by location — {{ locRoster }}</div>
+      <div style="margin-top:8px;border-top:1px solid var(--color-divider)">
+        <sc-for list="{{ locSummary }}" as="s" hint-placeholder-count="4">
+          <div style="{{ s.rowStyle }}">
+            <div style="font-size:12px;letter-spacing:.03em">{{ s.label }}</div>
+            <div style="font-family:var(--font-heading);font-size:15px;text-align:right">{{ s.count }}</div>
+            <div style="font-family:var(--font-heading);font-size:12px;text-align:right;color:var(--color-accent-700);width:38px">{{ s.pct }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{ locGroups }}" as="g" hint-placeholder-count="3">
+        <div class="blueprint" style="background:var(--color-bg);padding:11px 12px 12px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <div style="flex:1;font-family:var(--font-heading);font-weight:600;font-size:17px;text-transform:uppercase;letter-spacing:.02em">{{ g.name }}</div>
+            <div style="font-family:var(--font-heading);font-size:16px;color:var(--color-accent-700)">{{ g.count }}</div>
+          </div>
+          <div style="margin-top:8px;border-top:1px solid var(--color-divider)">
+            <sc-for list="{{ g.members }}" as="m" hint-placeholder-count="4">
+              <div onClick="{{ m.onOpen }}" style="display:grid;grid-template-columns:44px 1fr auto;gap:8px;align-items:center;min-height:40px;cursor:pointer;border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent)">
+                <div style="font-family:var(--font-heading);font-size:13px;color:color-mix(in srgb,#1d1f20 60%,transparent)">{{ m.rank }}</div>
+                <div style="min-width:0">
+                  <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
+                  <div style="font-size:10px;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ m.section }}</div>
+                </div>
+                <span class="{{ m.pillCls }}">{{ m.abbr }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showDue }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Due Outs" class="hhc-scroll" style="{{ dueStyle }}">
     <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:12px">
       <sc-for list="{{ dueFilters }}" as="f" hint-placeholder-count="4">
         <button class="{{ f.cls }}" onClick="{{ f.onTap }}" style="flex:none;white-space:nowrap;font-size:11px;letter-spacing:.06em;padding:5px 11px">{{ f.label }}</button>
@@ -201,9 +446,64 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
               <div style="{{ d.meter }}"></div>
             </div>
             <div style="font-family:var(--font-heading);font-size:14px;width:42px;text-align:right">{{ d.pctLabel }}</div>
-            <button class="btn btn-secondary" onClick="{{ d.onDec }}" style="width:30px;height:30px;padding:0">–</button>
-            <button class="btn btn-secondary" onClick="{{ d.onInc }}" style="width:30px;height:30px;padding:0">+</button>
+            <sc-if value="{{ d.showStep }}" hint-placeholder-val="{{ true }}">
+              <button class="btn btn-secondary" onClick="{{ d.onDec }}" style="width:30px;height:30px;padding:0">–</button>
+            </sc-if>
+            <sc-if value="{{ d.showStep }}" hint-placeholder-val="{{ true }}">
+              <button class="btn btn-secondary" onClick="{{ d.onInc }}" style="width:30px;height:30px;padding:0">+</button>
+            </sc-if>
           </div>
+          <sc-if value="{{ d.isEval }}" hint-placeholder-val="{{ false }}">
+            <button class="btn btn-secondary btn-block" onClick="{{ d.onToggleEval }}" style="margin-top:10px;font-size:11px;letter-spacing:.08em;justify-content:space-between">{{ d.evalLabel }}<span>{{ d.evalChev }}</span></button>
+          </sc-if>
+          <sc-if value="{{ d.evalOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+              <sc-for list="{{ d.items }}" as="it" hint-placeholder-count="3">
+                <div style="{{ it.boxStyle }}">
+                  <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center">
+                    <select class="input" value="{{ it.ratee }}" onChange="{{ it.onRatee }}" style="font-size:12px;min-height:34px">
+                      <option value="">— select ratee —</option>
+                      <sc-for list="{{ ownerOptions }}" as="o" hint-placeholder-count="0">
+                        <option value="{{ o.id }}">{{ o.label }}</option>
+                      </sc-for>
+                    </select>
+                    <button class="btn btn-secondary" onClick="{{ it.onRemove }}" style="width:32px;height:32px;padding:0;font-size:11px">✕</button>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+                    <div class="field"><label>Rater</label>
+                      <select class="input" value="{{ it.rater }}" onChange="{{ it.onRater }}" style="font-size:12px;min-height:32px">
+                        <option value="">— none —</option>
+                        <sc-for list="{{ ownerOptions }}" as="o" hint-placeholder-count="0">
+                          <option value="{{ o.id }}">{{ o.label }}</option>
+                        </sc-for>
+                      </select>
+                    </div>
+                    <div class="field"><label>Senior rater</label>
+                      <select class="input" value="{{ it.sr }}" onChange="{{ it.onSr }}" style="font-size:12px;min-height:32px">
+                        <option value="">— none —</option>
+                        <sc-for list="{{ ownerOptions }}" as="o" hint-placeholder-count="0">
+                          <option value="{{ o.id }}">{{ o.label }}</option>
+                        </sc-for>
+                      </select>
+                    </div>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+                    <div class="field"><label>Thru date</label>
+                      <input class="input" value="{{ it.due }}" onChange="{{ it.onDue }}" placeholder="15 OCT 26" style="font-size:12px;min-height:32px">
+                    </div>
+                    <div class="field"><label>Status</label>
+                      <select class="input" value="{{ it.status }}" onChange="{{ it.onStatus }}" style="font-size:12px;min-height:32px">
+                        <sc-for list="{{ evalStatusOptions }}" as="s" hint-placeholder-count="0">
+                          <option value="{{ s.id }}">{{ s.label }}</option>
+                        </sc-for>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+              <button class="btn btn-ghost" onClick="{{ d.onAddItem }}" style="font-size:11px;border:1px dashed var(--color-divider)">+ ADD EVALUATION</button>
+            </div>
+          </sc-if>
           <div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">
             <span class="tag tag-neutral">{{ d.priority }}</span>
             <span style="font-size:11px;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ d.sub }}</span>
@@ -217,21 +517,45 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
               </sc-for>
             </select>
           </sc-if>
+          <div style="display:flex;gap:8px;margin-top:10px;padding-top:9px;border-top:1px solid var(--color-divider)">
+            <button class="btn btn-ghost" onClick="{{ d.onToggleEdit }}" style="font-size:10px;letter-spacing:.08em;padding:4px 9px">{{ d.editLabel }}</button>
+            <button class="btn btn-ghost" onClick="{{ d.onDelete }}" style="font-size:10px;letter-spacing:.08em;padding:4px 9px;margin-left:auto;color:var(--color-accent-900)">DELETE</button>
+          </div>
+          <sc-if value="{{ d.editOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px">
+              <div class="field" style="grid-column:span 2"><label>Due out</label>
+                <input class="input" value="{{ d.task }}" onChange="{{ d.onTask }}" placeholder="PMCS Vehicles" style="font-size:12px">
+              </div>
+              <div class="field"><label>Section</label>
+                <input class="input" value="{{ d.section }}" onChange="{{ d.onSection }}" placeholder="MAINT" style="font-size:12px">
+              </div>
+              <div class="field"><label>Priority</label>
+                <input class="input" value="{{ d.priority }}" onChange="{{ d.onPriority }}" placeholder="Priority" style="font-size:12px">
+              </div>
+              <div class="field" style="grid-column:span 2"><label>Detail line</label>
+                <input class="input" value="{{ d.sub }}" onChange="{{ d.onSub }}" placeholder="NLT drill weekend" style="font-size:12px">
+              </div>
+            </div>
+          </sc-if>
         </div>
       </sc-for>
     </div>
     <button class="btn btn-secondary btn-block" onClick="{{ onNewDue }}" style="margin-top:14px">+ NEW DUE OUT</button>
   </div>
   </sc-if>
-
-  <div style="flex:none;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--color-divider);background:var(--color-bg)">
-    <button class="{{ navTreeCls }}" onClick="{{ onViewTree }}" style="border:0;border-right:1px solid var(--color-divider);min-height:52px;font-size:12px;letter-spacing:.1em">TASK ORG</button>
-    <button class="{{ navDueCls }}" onClick="{{ onViewDue }}" style="border:0;min-height:52px;font-size:12px;letter-spacing:.1em">DUE OUTS</button>
   </div>
+
+  <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
+  <div style="{{ navStyle }}">
+    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="3">
+      <button class="{{ n.cls }}" onClick="{{ n.onTap }}" style="border:0;border-right:1px solid var(--color-divider);min-height:52px;font-size:11px;letter-spacing:.08em">{{ n.label }}</button>
+    </sc-for>
+  </div>
+  </sc-if>
 
   <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ onCloseSheet }}" style="position:absolute;inset:0;background:color-mix(in srgb,#2b2b2d 45%,transparent);animation:fadeIn .16s ease-out"></div>
-    <div class="hhc-scroll" style="position:absolute;left:0;right:0;bottom:0;max-height:88%;overflow-y:auto;background:var(--color-bg);border-top:1px solid var(--color-divider);box-shadow:var(--shadow-lg);animation:sheetUp .22s cubic-bezier(.22,.8,.28,1)">
+    <div class="hhc-scroll" style="{{ sheetStyle }}">
       <div style="position:sticky;top:0;background:var(--color-bg);padding:12px 16px 10px;border-bottom:1px solid var(--color-divider)">
         <div style="width:38px;height:3px;background:var(--color-neutral-400);margin:0 auto 10px"></div>
         <div style="display:flex;align-items:flex-start;gap:10px">
@@ -250,8 +574,11 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
             <button class="{{ s.cls }}" onClick="{{ s.onTap }}" style="font-size:11px;letter-spacing:.05em;padding:7px 11px;min-height:36px">{{ s.label }}</button>
           </sc-for>
         </div>
-        <div style="margin-top:14px">
-          <div class="field"><label>Remarks / location</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+          <div class="field"><label>Location — this roster</label>
+            <input class="input" value="{{ sel.loc }}" onChange="{{ sel.onLoc }}" placeholder="e.g. CAMP RELL">
+          </div>
+          <div class="field"><label>Remarks</label>
             <input class="input" value="{{ sel.remark }}" onChange="{{ sel.onRemark }}" placeholder="e.g. SUTA FRI / ALT AT">
           </div>
         </div>
@@ -301,23 +628,67 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
 
   <sc-if value="{{ showRoster }}" hint-placeholder-val="{{ false }}">
     <div class="dialog-backdrop" style="position:absolute;animation:fadeIn .14s ease-out">
-      <div class="dialog blueprint" style="background:var(--color-bg);max-height:86%">
+      <div class="dialog blueprint" style="background:var(--color-bg);max-height:88%">
         <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
         <div class="dialog-title">New mission roster</div>
         <div class="field"><label>Name</label><input class="input" value="{{ draft.rosterName }}" onChange="{{ onDraftRosterName }}" placeholder="Annual Training 26"></div>
-        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent)">Who is participating</div>
-        <div class="hhc-scroll" style="overflow-y:auto;border:1px solid var(--color-divider);max-height:38vh">
+        <div class="field"><label>Locations (comma separated)</label><input class="input" value="{{ draft.locList }}" onChange="{{ onDraftLocList }}" placeholder="Camp Rell, Home Station, Rear D"></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="flex:1;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent)">Who is participating · set location per person</div>
+          <button class="btn btn-ghost" onClick="{{ onPickAll }}" style="font-size:10px;letter-spacing:.06em;padding:3px 8px">{{ pickAllLabel }}</button>
+        </div>
+        <div class="hhc-scroll" style="overflow-y:auto;border:1px solid var(--color-divider);max-height:40vh">
           <sc-for list="{{ pickList }}" as="p" hint-placeholder-count="6">
-            <div onClick="{{ p.onToggle }}" style="display:grid;grid-template-columns:20px 40px 1fr;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent);cursor:pointer;min-height:44px">
-              <div style="{{ p.box }}"></div>
-              <div style="font-family:var(--font-heading);font-size:12px;color:color-mix(in srgb,#1d1f20 60%,transparent)">{{ p.rank }}</div>
-              <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.name }}<span style="font-size:10px;color:color-mix(in srgb,#1d1f20 45%,transparent)"> · {{ p.section }}</span></div>
+            <div style="display:grid;grid-template-columns:20px 38px 1fr;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent);min-height:44px">
+              <div onClick="{{ p.onToggle }}" style="{{ p.box }}"></div>
+              <div onClick="{{ p.onToggle }}" style="font-family:var(--font-heading);font-size:12px;color:color-mix(in srgb,#1d1f20 60%,transparent);cursor:pointer">{{ p.rank }}</div>
+              <div onClick="{{ p.onToggle }}" style="font-size:13px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.name }}<span style="font-size:10px;color:color-mix(in srgb,#1d1f20 45%,transparent)"> · {{ p.section }}</span></div>
+              <sc-if value="{{ p.picked }}" hint-placeholder-val="{{ false }}">
+                <select class="input" value="{{ p.loc }}" onChange="{{ p.onLoc }}" style="grid-column:2 / span 2;font-size:11px;min-height:32px;padding:3px 6px">
+                  <sc-for list="{{ locOptions }}" as="l" hint-placeholder-count="0">
+                    <option value="{{ l.id }}">{{ l.label }}</option>
+                  </sc-for>
+                </select>
+              </sc-if>
             </div>
           </sc-for>
         </div>
         <div class="dialog-actions">
           <button class="btn btn-secondary" onClick="{{ onCancelModal }}">Cancel</button>
           <button class="btn btn-primary" onClick="{{ onConfirmRoster }}">{{ createLabel }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showManifest }}" hint-placeholder-val="{{ false }}">
+    <div class="dialog-backdrop" style="position:absolute;animation:fadeIn .14s ease-out">
+      <div class="dialog blueprint" style="background:var(--color-bg);max-height:90%;max-width:760px;width:94%">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div class="dialog-title">{{ man.title }}</div>
+        <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 55%,transparent);margin-top:-6px">{{ man.sub }}</div>
+        <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-800)">
+          <span>OIC · {{ cv.oicName }}</span><span>NCOIC · {{ cv.ncoicName }}</span>
+        </div>
+        <div class="hhc-scroll" style="overflow:auto;border:1px solid var(--color-divider);max-height:52vh;margin-top:4px">
+          <table class="table" style="font-size:11px;min-width:720px">
+            <thead>
+              <tr><th>CHALK</th><th>VEH</th><th>BUMPER</th><th>TYPE</th><th>ROLE</th><th>RANK</th><th>NAME</th><th>WEAPON</th><th>SENSITIVE ITEMS</th></tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ man.rows }}" as="r" hint-placeholder-count="6">
+                <tr>
+                  <td>{{ r.chalk }}</td><td>{{ r.veh }}</td><td>{{ r.bumper }}</td><td>{{ r.type }}</td><td>{{ r.role }}</td>
+                  <td>{{ r.rank }}</td><td>{{ r.name }}</td><td>{{ r.weapon }}</td><td>{{ r.sens }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-secondary" onClick="{{ onCancelModal }}">Close</button>
+          <button class="btn btn-secondary" onClick="{{ man.onCopy }}">{{ man.copyLabel }}</button>
+          <button class="btn btn-primary" onClick="{{ man.onDownload }}">DOWNLOAD CSV</button>
         </div>
       </div>
     </div>
@@ -330,28 +701,66 @@ class Component extends DCLogic {
   STATUSES = ['PRES','SUTA','OFF SITE TRAINING','AWOL','PROFILE','APPOINTMENT','SICK CALL','OTHER'];
   ABBR = {'PRES':'PRES','SUTA':'SUTA','OFF SITE TRAINING':'OST','AWOL':'AWOL','PROFILE':'PROF','APPOINTMENT':'APPT','SICK CALL':'SICK','OTHER':'OTHR'};
   DUE_STATUS = ['Open','Late','Closed'];
+  EVAL_STATUS = ['Draft','With rater','With senior rater','Submitted'];
+  RANKS = ['GEN','LTG','MG','BG','COL','LTC','MAJ','CPT','1LT','2LT',
+           'CW5','CW4','CW3','CW2','WO1','CDT',
+           'CSM','SGM','1SG','MSG','SFC','SSG','SGT','CPL','SPC','PFC','PV2','PV1','PVT'];
+  VEH_TYPES = ['HMMWV','LMTV','FMTV','HEMTT','FLA','M1088','BUS','GSA VAN','GSA SUV','GSA PICKUP','POV'];
   KEY = 'hhc-xo-v1';
 
   state = { ready:false, people:[], sections:[], dueouts:[], rosters:[], active:'company',
             collapsed:{}, sel:null, view:'tree', scale:0.62, tx:0, ty:0, modal:null, expOwner:null,
-            draft:{rank:'',name:'',section:'HQ',rosterName:'',picked:{}}, dueFilter:'All' };
+            vw:1024, vh:768, strengthOpen:true, copied:false, expEval:null, expEdit:null,
+            draft:{rank:'',name:'',section:'HQ',rosterName:'',picked:{},locs:{},locList:'Camp Rell, Home Station'},
+            dueFilter:'All' };
 
-  componentDidMount(){ this.boot(); }
+  componentDidMount(){
+    this.boot();
+    this.onResize = () => this.setState({ vw:window.innerWidth, vh:window.innerHeight });
+    window.addEventListener('resize', this.onResize);
+    window.addEventListener('orientationchange', this.onResize);
+    this.onResize();
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if(this.camUntouched()) this.queueCam(); });
+  }
+  componentWillUnmount(){
+    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('orientationchange', this.onResize);
+    if(this._ro) this._ro.disconnect();
+  }
+  isWide(){ return this.state.vw >= 900; }
 
+  withEvals(list){
+    const isEval = (t) => /^ncoers?$/i.test((t || '').trim()) || /^oers?$/i.test((t || '').trim())
+      || /outstanding evaluations/i.test(t || '');
+    const src = (list || []).map(d => isEval(d.task)
+      ? { ...d, kind:'eval', evalType: /ncoer/i.test(d.task) ? 'NCOER' : 'OER', items:d.items || [] }
+      : d);
+    const extra = [];
+    ['NCOER','OER'].forEach(t => {
+      if(src.some(d => d.kind === 'eval' && d.evalType === t && d.id !== 'eval-' + t.toLowerCase())) return;
+      if(src.some(d => d.id === 'eval-' + t.toLowerCase())) return;
+      extra.push({ id:'eval-' + t.toLowerCase(), kind:'eval', evalType:t,
+        task:t, section:'HHC', owner:'', pct:0,
+        sub:'Standing requirement', priority:'Recurring', status:'Open', items:[] });
+    });
+    const pruned = src.filter(d => !(/^eval-(ncoer|oer)$/.test(d.id) && !(d.items || []).length
+      && src.some(x => x.kind === 'eval' && x.evalType === d.evalType && x.id !== d.id)));
+    return extra.concat(pruned);
+  }
   boot(){
     const d = window.HHC_DATA;
     if(!d){ setTimeout(()=>this.boot(), 60); return; }
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem(this.KEY) || 'null'); } catch(e) {}
     if(saved && saved.people && saved.people.length){
-      this.setState({ ready:true, sections:d.sections, people:saved.people, dueouts:saved.dueouts || d.dueouts,
+      this.setState({ ready:true, sections:d.sections, people:saved.people, dueouts:this.withEvals(saved.dueouts || d.dueouts),
                       rosters:saved.rosters, active:saved.active || 'company' }, ()=>this.initCam());
       return;
     }
     const statuses = {};
     d.people.forEach(p => { statuses[p.id] = p.status; });
-    this.setState({ ready:true, sections:d.sections, people:d.people, dueouts:d.dueouts,
-                    rosters:[{ id:'company', name:'COMPANY', all:true, statuses }] }, ()=>this.initCam());
+    this.setState({ ready:true, sections:d.sections, people:d.people, dueouts:this.withEvals(d.dueouts),
+                    rosters:[{ id:'company', name:'COMPANY', all:true, statuses, locs:{} }] }, ()=>this.initCam());
   }
 
   save(next){
@@ -360,16 +769,60 @@ class Component extends DCLogic {
   }
   set(next){ this.setState(next, ()=>this.save({})); }
 
-  roster(){ return this.state.rosters.find(r => r.id === this.state.active) || this.state.rosters[0]; }
+  tab(){ return this.state.rosters.find(r => r.id === this.state.active) || this.state.rosters[0]; }
+  isConvoy(){ const t = this.tab(); return !!t && t.kind === 'convoy'; }
+  roster(){
+    const t = this.tab();
+    if(t && t.kind === 'convoy') return this.state.rosters.find(x => x.id === t.parent) || this.state.rosters[0];
+    return t;
+  }
   members(){
     const r = this.roster(); if(!r) return [];
     if(r.all) return this.state.people;
-    return this.state.people.filter(p => r.ids.indexOf(p.id) >= 0);
+    return this.state.people.filter(p => (r.ids || []).indexOf(p.id) >= 0);
   }
-  statusOf(id){ const r = this.roster(); return (r && r.statuses[id]) || 'PRES'; }
+  person(id){ return this.state.people.find(p => p.id === id); }
+  rankIdx(r){ const i = this.RANKS.indexOf((r || '').toUpperCase()); return i < 0 ? 99 : i; }
+  byRank(list){ return list.slice().sort((a, b) => this.rankIdx(a.rank) - this.rankIdx(b.rank) || a.name.localeCompare(b.name)); }
+  isCompact(){ const r = this.roster(); return !!r && !r.all; }
+
+  statusOf(id){ const r = this.roster(); return (r && r.statuses && r.statuses[id]) || 'PRES'; }
+  locOf(id){
+    const r = this.roster();
+    const p = this.person(id) || {};
+    return (r && r.locs && r.locs[id]) || p.loc || 'UNASSIGNED';
+  }
+  setLoc(id, val){
+    const r = this.roster(); if(!r) return;
+    const rosters = this.state.rosters.map(x => x.id === r.id ? { ...x, locs:{ ...(x.locs || {}), [id]:val } } : x);
+    this.set({ rosters });
+  }
+
+  strengthRows(){
+    const mem = this.members();
+    const pres = (l) => l.filter(p => this.statusOf(p.id) === 'PRES').length;
+    const cat = (re) => mem.filter(p => re.test(p.category || ''));
+    const defs = [
+      ['Officers', cat(/officer/i).filter(p => !/warrant/i.test(p.category))],
+      ['Warrants', cat(/warrant/i)],
+      ['Enlisted', cat(/enlisted/i)],
+      ['Enlisted non-AGR', cat(/enlisted/i).filter(p => !p.agr)],
+      ['AGR', mem.filter(p => p.agr)],
+      ['Total', mem]
+    ];
+    return defs.filter(d => d[1].length > 0).map((d, i, arr) => {
+      const t = d[1].length, p = pres(d[1]);
+      const last = i === arr.length - 1;
+      return { label:d[0], total:t, pres:p, pct: t ? Math.round(p / t * 100) + '%' : '—',
+        rowStyle: 'display:grid;grid-template-columns:1fr auto 34px;align-items:center;gap:8px;padding:5px 0;'
+          + (last ? 'border-top:1px solid var(--color-divider);margin-top:2px'
+                  : 'border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent)') };
+    });
+  }
 
   setStatus(id, st){
-    const rosters = this.state.rosters.map(r => r.id === this.state.active ? { ...r, statuses:{ ...r.statuses, [id]:st } } : r);
+    const r = this.roster(); if(!r) return;
+    const rosters = this.state.rosters.map(x => x.id === r.id ? { ...x, statuses:{ ...x.statuses, [id]:st } } : x);
     this.set({ rosters });
   }
   cycle(id){
@@ -380,20 +833,58 @@ class Component extends DCLogic {
     this.set({ people:this.state.people.map(p => p.id === id ? { ...p, [field]:val } : p) });
   }
 
+  secCount(){ return this.state.sections.filter(s => s.id !== 'CMD' && s.id !== 'HQ').length; }
   contentW(){
-    const secs = this.state.sections.filter(s => s.id !== 'CMD' && s.id !== 'HQ').length || 1;
-    return secs * 290 + (secs - 1) * 26;
+    if(this.isCompact()) return 936;
+    const cols = Math.max(1, Math.ceil(this.secCount() / 2));
+    return 290 + 34 + 290 + 34 + cols * 312;
+  }
+  vpRef = (el) => {
+    if(el && this.vp !== el){ this.vp = el; this._camTries = 0; this.queueCam(); }
+  };
+  spRef = (el) => {
+    if(!el || this.sp === el) return;
+    this.sp = el;
+    if(this._ro) this._ro.disconnect();
+    if(typeof ResizeObserver === 'function'){
+      this._ro = new ResizeObserver(() => { if(this.camUntouched()) this.queueCam(); });
+      this._ro.observe(el);
+    }
+  };
+  camUntouched(){
+    const a = this._auto; if(!a) return true;
+    return a.scale === this.state.scale && a.tx === this.state.tx && a.ty === this.state.ty;
+  }
+  queueCam(){
+    if(this._camQ) cancelAnimationFrame(this._camQ);
+    this._camTries = (this._camTries || 0) + 1;
+    if(this._camTries > 90){ this._camTries = 0; return; }
+    this._camQ = requestAnimationFrame(() => {
+      this._camQ = requestAnimationFrame(() => { this._camQ = null; this.initCam(); });
+    });
   }
   initCam(){
-    if(!this.vp) return;
-    const w = this.vp.clientWidth, scale = 0.92;
-    this.setState({ scale, tx:w / 2 - (this.contentW() / 2) * scale, ty:12 });
+    const w = this.vp ? (this.vp.clientWidth || 0) : 0;
+    if(w < 60){ this.queueCam(); return; }
+    this._camTries = 0;
+    const panelH = this.sp ? this.sp.offsetHeight : 236;
+    const roomy = w >= 574;
+    const offY = roomy ? 12 : panelH + 24;
+    if(this.isCompact()){
+      const scale = Math.max(0.6, Math.min(1, (w - 24) / this.contentW()));
+      this._auto = { scale, tx:12, ty:offY };
+      this.setState({ scale, tx:12, ty:offY });
+      return;
+    }
+    const scale = w >= 1200 ? 0.86 : 0.72, tx = roomy ? 260 : 12;
+    this._auto = { scale, tx, ty:offY };
+    this.setState({ scale, tx, ty:offY });
   }
   fit(){
     if(!this.vp) return;
     const w = this.vp.clientWidth;
-    const scale = Math.max(0.45, Math.min(1, (w - 24) / this.contentW()));
-    this.setState({ scale, tx:(w - this.contentW() * scale) / 2, ty:12 });
+    const scale = Math.max(0.16, Math.min(1.2, (w - 24) / this.contentW()));
+    this.setState({ scale, tx:Math.max(12, (w - this.contentW() * scale) / 2), ty:12 });
   }
 
   pillCls(st){
@@ -410,21 +901,37 @@ class Component extends DCLogic {
     return 'height:100%;width:' + pct + '%;background:' + (dark ? '#f2f2f3' : 'var(--color-accent)') + ';transition:width .2s ease-out';
   }
 
-  buildNode(sec){
-    const mem = this.members().filter(p => p.section === sec.id);
+  buildNode(sec, idx, count){
+    const mem = this.byRank(this.members().filter(p => p.section === sec.id));
     const open = !this.state.collapsed[sec.id];
     const pres = mem.filter(p => this.statusOf(p.id) === 'PRES').length;
     const dark = sec.id === 'CMD';
     return {
-      id:sec.id, name:sec.name, sub:sec.sub, open, chev: open ? '▾' : '▸',
+      id:sec.id, name:sec.name, sub:sec.sub, open, chev: open ? '▾' : '▸', linkUp: idx > 0,
       tally: pres + '/' + mem.length,
       meter: this.meter(mem.length ? Math.round(pres / mem.length * 100) : 0, dark),
       onToggle: () => this.setState({ collapsed:{ ...this.state.collapsed, [sec.id]: open } }),
       onAdd: () => this.setState({ modal:'add', draft:{ ...this.state.draft, rank:'', name:'', section:sec.id } }),
-      members: mem.map(p => {
+      members: mem.map((p, i) => {
         const st = this.statusOf(p.id);
+        const lead = i === 0 && mem.length > 1;
+        const base = 'display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:8px;min-height:44px;';
+        const tk = (this._tasked || {})[p.id];
+        const note = p.position || p.remark || this.locOf(p.id) || (p.agr ? 'AGR' : p.category);
         return { id:p.id, rank:p.rank, name:p.name,
-          note: p.position || p.remark || p.loc || (p.agr ? 'AGR' : p.category),
+          note: tk ? ('⛟ ' + tk.bumper + ' · ' + tk.role)
+                   : (lead ? ('Section lead' + (p.position ? ' · ' + p.position : '')) : note),
+          rowStyle: base + 'border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent);'
+            + (lead ? 'background:var(--color-accent-100);margin:0 -12px;padding:0 12px' : '')
+            + (tk ? 'background:color-mix(in srgb,var(--color-accent) 14%,transparent);margin:0 -12px;padding:0 9px;border-left:3px solid var(--color-accent)' : ''),
+          rowStyleDark: base + 'border-bottom:1px solid color-mix(in srgb,#f2f2f3 12%,transparent);'
+            + (lead ? 'background:color-mix(in srgb,#f2f2f3 13%,transparent);margin:0 -12px;padding:0 12px' : '')
+            + (tk ? 'background:color-mix(in srgb,#f2f2f3 22%,transparent);margin:0 -12px;padding:0 9px;border-left:3px solid #f2f2f3' : ''),
+          rankStyle: 'font-family:var(--font-heading);font-size:13px;letter-spacing:.04em;'
+            + (lead ? 'color:var(--color-accent-800);font-weight:600' : 'color:color-mix(in srgb,#1d1f20 60%,transparent)'),
+          noteStyle: 'font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'
+            + (tk || lead ? 'color:var(--color-accent-800);letter-spacing:.06em;text-transform:uppercase'
+                    : 'color:color-mix(in srgb,#1d1f20 50%,transparent)'),
           abbr:this.ABBR[st], pillCls:this.pillCls(st), pillDark:this.pillDark(st),
           onOpen: () => this.setState({ sel:p.id }),
           onCycle: (e) => { e.stopPropagation(); this.cycle(p.id); } };
@@ -433,8 +940,8 @@ class Component extends DCLogic {
   }
 
   selVals(){
-    const p = this.state.people.find(x => x.id === this.state.sel);
-    if(!p) return { title:'', meta:'', sectionLabel:'', statusOptions:[], fields:[], notes:'', remark:'', removeLabel:'' };
+    const p = this.person(this.state.sel);
+    if(!p) return { title:'', meta:'', sectionLabel:'', statusOptions:[], fields:[], notes:'', remark:'', loc:'', removeLabel:'' };
     const sec = this.state.sections.find(s => s.id === p.section);
     const st = this.statusOf(p.id);
     const F = (label, key, ph, span) => ({ label, key, ph, span: span || '', value:p[key] || '',
@@ -444,9 +951,10 @@ class Component extends DCLogic {
       title: p.rank + ' ' + p.name,
       meta: [p.category, p.agr ? 'AGR' : 'M-Day', p.clearanceNote].filter(Boolean).join('  ·  '),
       sectionLabel: (sec ? sec.name : p.section) + ' — ' + (p.position || 'Assigned'),
-      notes: p.notes || '', remark: p.remark || '',
+      notes: p.notes || '', remark: p.remark || '', loc: this.locOf(p.id) === 'UNASSIGNED' ? '' : this.locOf(p.id),
       onNotes: (e) => this.updatePerson(p.id, 'notes', e.target.value),
       onRemark: (e) => this.updatePerson(p.id, 'remark', e.target.value),
+      onLoc: (e) => this.setLoc(p.id, e.target.value),
       statusOptions: this.STATUSES.map(s => ({ label:s,
         cls: s === st ? 'btn btn-primary' : 'btn btn-secondary',
         onTap: () => this.setStatus(p.id, s) })),
@@ -454,46 +962,237 @@ class Component extends DCLogic {
                 F('Email','email','first.last.mil@army.mil','grid-column:span 2'),
                 F('Home of record','hor','City, ST','grid-column:span 2'),
                 F('Medical / profile','profile','None'), F('Clearance','clearance','Secret'),
-                F('Weapon / serial','weapon','M4 / 1234567'), F('Next of kin','nok','Name, relation, phone','grid-column:span 2') ],
+                F('Weapon / serial','weapon','M4 / 1234567'),
+                F('Sensitive items','sensitive','PVS-14, DAGR, CVRJ','grid-column:span 2'),
+                F('Next of kin','nok','Name, relation, phone','grid-column:span 2') ],
       removeLabel: r && r.all ? 'REMOVE FROM COMPANY' : 'REMOVE FROM THIS ROSTER',
       onRemoveFromRoster: () => {
         if(r.all){ this.set({ people:this.state.people.filter(x => x.id !== p.id), sel:null }); return; }
-        const rosters = this.state.rosters.map(x => x.id === r.id ? { ...x, ids:x.ids.filter(i => i !== p.id) } : x);
+        const rosters = this.state.rosters.map(x => x.id === r.id ? { ...x, ids:(x.ids || []).filter(i => i !== p.id) } : x);
         this.set({ rosters, sel:null });
       },
       onDelete: () => {
-        const rosters = this.state.rosters.map(x => x.all ? x : { ...x, ids:x.ids.filter(i => i !== p.id) });
+        const rosters = this.state.rosters.map(x => x.all || x.kind === 'convoy' ? x : { ...x, ids:(x.ids || []).filter(i => i !== p.id) });
         this.set({ people:this.state.people.filter(x => x.id !== p.id), rosters, sel:null });
       }
     };
   }
 
-  dueVals(){
-    const f = this.state.dueFilter;
-    const list = this.state.dueouts.filter(d => f === 'All' || d.status === f);
-    return list.map(d => ({
-      ...d, pctLabel: d.pct + '%', meter:this.meter(d.pct, false),
-      ownerOpen: this.state.expOwner === d.id,
-      ownerLabel: d.owner ? (this.state.people.find(p => p.id === d.owner) || {}).rank + ' ' + (this.state.people.find(p => p.id === d.owner) || {}).name : 'ASSIGN',
-      onToggleOwner: () => this.setState({ expOwner: this.state.expOwner === d.id ? null : d.id }),
-      statusCls: d.status === 'Closed' ? 'tag tag-accent' : (d.status === 'Late' ? 'tag tag-outline' : 'tag tag-neutral'),
-      onCycle: () => this.updDue(d.id, { status:this.DUE_STATUS[(this.DUE_STATUS.indexOf(d.status) + 1) % 3] }),
-      onInc: () => this.updDue(d.id, { pct:Math.min(100, d.pct + 10) }),
-      onDec: () => this.updDue(d.id, { pct:Math.max(0, d.pct - 10) }),
-      onOwner: (e) => this.updDue(d.id, { owner:e.target.value })
-    }));
+  locVals(){
+    const mem = this.members();
+    const map = {};
+    mem.forEach(p => { const k = this.locOf(p.id); (map[k] = map[k] || []).push(p); });
+    const names = Object.keys(map).sort((a, b) => map[b].length - map[a].length || a.localeCompare(b));
+    const total = mem.length || 1;
+    const rows = names.map((n, i) => ({ label:n, count:map[n].length,
+      pct: Math.round(map[n].length / total * 100) + '%',
+      rowStyle:'display:grid;grid-template-columns:1fr auto 38px;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent)' }));
+    rows.push({ label:'TOTAL', count:mem.length, pct:'100%',
+      rowStyle:'display:grid;grid-template-columns:1fr auto 38px;align-items:center;gap:8px;padding:6px 0 2px;border-top:1px solid var(--color-divider);margin-top:2px' });
+    const groups = names.map(n => ({ name:n, count:map[n].length,
+      members: this.byRank(map[n]).map(p => {
+        const st = this.statusOf(p.id);
+        const sec = this.state.sections.find(s => s.id === p.section);
+        return { rank:p.rank, name:p.name, section: sec ? sec.name : p.section,
+          abbr:this.ABBR[st], pillCls:this.pillCls(st), onOpen: () => this.setState({ sel:p.id }) };
+      }) }));
+    return { rows, groups };
   }
-  updDue(id, patch){ this.set({ dueouts:this.state.dueouts.map(d => d.id === id ? { ...d, ...patch } : d) }); }
 
-  onPanStart = (e) => { this.pan = { x:e.clientX, y:e.clientY, tx:this.state.tx, ty:this.state.ty };
-    if(e.currentTarget.setPointerCapture) e.currentTarget.setPointerCapture(e.pointerId); };
-  onPanMove = (e) => { if(!this.pan) return;
-    this.setState({ tx:this.pan.tx + (e.clientX - this.pan.x), ty:this.pan.ty + (e.clientY - this.pan.y) }); };
-  onPanEnd = () => { this.pan = null; };
-  onWheel = (e) => { e.preventDefault();
-    const s = Math.max(0.16, Math.min(1.6, this.state.scale * (e.deltaY > 0 ? 0.92 : 1.08)));
-    this.setState({ scale:s }); };
-  zoom(f){ this.setState({ scale:Math.max(0.16, Math.min(1.6, this.state.scale * f)) }); }
+  isGreen(type){ return !/^GSA/.test(type || '') && (type || '') !== 'POV'; }
+  taskedMap(){
+    const r = this.roster(); if(!r) return {};
+    const out = {};
+    this.state.rosters.filter(x => x.kind === 'convoy' && x.parent === r.id).forEach(cv => {
+      (cv.vehicles || []).forEach((v, i) => {
+        const seat = (id, role) => { if(id) out[id] = { convoy:cv.name, veh:i + 1, bumper:v.bumper || ('VEH ' + (i + 1)), role }; };
+        seat(v.driver, 'DRIVER'); seat(v.adriver, 'A-DRIVER');
+        (v.pax || []).forEach(pid => seat(pid, 'PAX'));
+      });
+    });
+    return out;
+  }
+  convoyAssigned(cv){
+    const out = {};
+    (cv.vehicles || []).forEach(v => {
+      [v.driver, v.adriver].concat(v.pax || []).forEach(id => { if(id) out[id] = true; });
+    });
+    return out;
+  }
+  updVeh(vid, patch){
+    const t = this.tab(); if(!t) return;
+    const rosters = this.state.rosters.map(x => x.id === t.id
+      ? { ...x, vehicles:(x.vehicles || []).map(v => v.id === vid ? { ...v, ...patch } : v) } : x);
+    this.set({ rosters });
+  }
+  updConvoy(id, patch){
+    this.set({ rosters:this.state.rosters.map(x => x.id === id ? { ...x, ...patch } : x) });
+  }
+  addVehicle(t, chalk){
+    const vehicles = t.vehicles || [];
+    const v = { id:'v' + Date.now(), chalk, type:'HMMWV', bumper:'HHC-' + (vehicles.length + 1), driver:'', adriver:'', pax:[] };
+    this.set({ rosters:this.state.rosters.map(x => x.id === t.id ? { ...x, vehicles:[...vehicles, v] } : x) });
+  }
+  convoyVals(){
+    const t = this.tab();
+    if(!t || t.kind !== 'convoy') return { name:'', parentName:'', vehicles:[], chalks:[], summary:[], empty:true, oicOpts:[], ncoicOpts:[], onAddVehicle:()=>{}, onAddChalk:()=>{}, onManifest:()=>{} };
+    const parent = this.state.rosters.find(x => x.id === t.parent);
+    const vehicles = t.vehicles || [];
+    const taken = this.convoyAssigned(t);
+    const all = this.byRank(this.members()).map(p => ({ id:p.id, label:p.rank + ' ' + p.name }));
+    const optsFor = (cur) => all.filter(o => !taken[o.id] || o.id === cur);
+    const paxOf = (v) => [v.driver, v.adriver].concat(v.pax || []).filter(Boolean);
+    const green = vehicles.filter(v => this.isGreen(v.type));
+    const gsa = vehicles.filter(v => !this.isGreen(v.type));
+    const cnt = (list) => list.reduce((n, v) => n + paxOf(v).length, 0);
+    const byType = {};
+    vehicles.forEach(v => { byType[v.type || '—'] = (byType[v.type || '—'] || 0) + 1; });
+    const chalkOf = (v) => v.chalk || 'CHALK 1';
+    const chalkNames = [];
+    vehicles.forEach(v => { const c = chalkOf(v); if(chalkNames.indexOf(c) < 0) chalkNames.push(c); });
+    const row = (label, value, kind) => ({ label, value,
+      rowStyle:'display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;padding:5px 0;'
+        + (kind === 'head' ? 'border-bottom:1px solid var(--color-divider);margin-top:4px'
+          : kind === 'total' ? 'border-top:1px solid var(--color-divider);margin-top:2px'
+          : 'border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent)') });
+    const summary = [
+      row('Chalks', chalkNames.length),
+      row('Vehicles total', vehicles.length),
+      row('Green (military)', green.length),
+      row('GSA / POV', gsa.length),
+      row('By type', '', 'head')
+    ].concat(Object.keys(byType).sort().map(k => row(k, byType[k])))
+     .concat([ row('Personnel — green', cnt(green), 'head'),
+               row('Personnel — GSA / POV', cnt(gsa)),
+               row('Personnel total', cnt(vehicles), 'total') ]);
+    const vviews = vehicles.map((v, i) => ({
+        n:i + 1, chalk:chalkOf(v), type:v.type || '', bumper:v.bumper || '—', driver:v.driver || '', adriver:v.adriver || '',
+        onChalk: (e) => this.updVeh(v.id, { chalk:e.target.value }),
+        kind: this.isGreen(v.type) ? 'GREEN' : 'GSA / POV',
+        tagCls: this.isGreen(v.type) ? 'tag tag-accent' : 'tag tag-outline',
+        paxCount:(v.pax || []).length, total:paxOf(v).length,
+        driverOpts: optsFor(v.driver), adriverOpts: optsFor(v.adriver),
+        onType: (e) => this.updVeh(v.id, { type:e.target.value }),
+        onBumper: (e) => this.updVeh(v.id, { bumper:e.target.value.toUpperCase() }),
+        onDriver: (e) => this.updVeh(v.id, { driver:e.target.value }),
+        onADriver: (e) => this.updVeh(v.id, { adriver:e.target.value }),
+        onAddPax: () => this.updVeh(v.id, { pax:[...(v.pax || []), ''] }),
+        onDelete: () => this.set({ rosters:this.state.rosters.map(x => x.id === t.id
+          ? { ...x, vehicles:vehicles.filter(z => z.id !== v.id) } : x) }),
+        pax: (v.pax || []).map((pid, k) => {
+          const p = this.person(pid);
+          return { id:pid || '', opts: optsFor(pid),
+            gear: p ? [p.weapon || 'NO WEAPON LISTED', p.sensitive].filter(Boolean).join('  ·  ') : 'Unassigned seat',
+            onChange: (e) => { const nx = (v.pax || []).slice(); nx[k] = e.target.value; this.updVeh(v.id, { pax:nx }); },
+            onRemove: () => { const nx = (v.pax || []).slice(); nx.splice(k, 1); this.updVeh(v.id, { pax:nx }); } };
+        })
+      }));
+    const chalks = chalkNames.map(c => {
+      const vs = vviews.filter(x => x.chalk === c);
+      return { name:c, count:vs.length, pax:vs.reduce((n, x) => n + x.total, 0), vehicles:vs,
+        onAddVehicle: () => this.addVehicle(t, c),
+        onRename: (e) => {
+          const nm = (e.target.value || c).toUpperCase();
+          this.set({ rosters:this.state.rosters.map(x => x.id === t.id
+            ? { ...x, vehicles:(x.vehicles || []).map(v => chalkOf(v) === c ? { ...v, chalk:nm } : v) } : x) });
+        } };
+    });
+    const nameOf = (id) => { const p = this.person(id); return p ? p.rank + ' ' + p.name : ''; };
+    return {
+      name:t.name, parentName: parent ? parent.name : '', empty: vehicles.length === 0, summary,
+      chalks, vehicles:vviews, chalkOpts: chalkNames.map(c => ({ id:c, label:c })),
+      oic:t.oic || '', ncoic:t.ncoic || '',
+      oicName: nameOf(t.oic) || 'UNASSIGNED', ncoicName: nameOf(t.ncoic) || 'UNASSIGNED',
+      oicOpts: all, ncoicOpts: all,
+      onOic: (e) => this.updConvoy(t.id, { oic:e.target.value }),
+      onNcoic: (e) => this.updConvoy(t.id, { ncoic:e.target.value }),
+      onAddVehicle: () => this.addVehicle(t, chalkNames[chalkNames.length - 1] || 'CHALK 1'),
+      onAddChalk: () => this.addVehicle(t, 'CHALK ' + (chalkNames.length + 1)),
+      onManifest: () => this.setState({ modal:'manifest', copied:false })
+    };
+  }
+
+  manifestRows(){
+    const t = this.tab();
+    if(!t || t.kind !== 'convoy') return [];
+    const out = [];
+    const vs = (t.vehicles || []).map((v, i) => ({ v, i }));
+    vs.sort((a, b) => String(a.v.chalk || 'CHALK 1').localeCompare(String(b.v.chalk || 'CHALK 1')) || a.i - b.i);
+    vs.forEach((rec) => {
+      const v = rec.v, i = rec.i;
+      const seats = [['DRIVER', v.driver], ['A-DRIVER', v.adriver]]
+        .concat((v.pax || []).map((pid, k) => ['PAX ' + (k + 1), pid]));
+      seats.forEach(s => {
+        const p = this.person(s[1]);
+        out.push({ chalk:v.chalk || 'CHALK 1', veh:String(i + 1), bumper:v.bumper || '—', type:v.type || '—', role:s[0],
+          rank: p ? p.rank : '—', name: p ? p.name : 'UNFILLED',
+          weapon: p ? (p.weapon || '—') : '—', sens: p ? (p.sensitive || '—') : '—' });
+      });
+    });
+    return out;
+  }
+  manifestCsv(rows, cv){
+    const head = ['CHALK','VEH','BUMPER','TYPE','ROLE','RANK','NAME','WEAPON','SENSITIVE ITEMS'];
+    const esc = (s) => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
+    const pre = cv ? [['CONVOY', cv.name].map(esc).join(','), ['OIC', cv.oicName].map(esc).join(','),
+                      ['NCOIC', cv.ncoicName].map(esc).join(','), ''] : [];
+    return pre.concat([head.join(',')])
+      .concat(rows.map(r => [r.chalk, r.veh, r.bumper, r.type, r.role, r.rank, r.name, r.weapon, r.sens].map(esc).join(','))).join('\n');
+  }
+
+  ptrs = new Map();
+  onPanStart = (e) => {
+    this.ptrs.set(e.pointerId, { x:e.clientX, y:e.clientY });
+    if(e.currentTarget.setPointerCapture) e.currentTarget.setPointerCapture(e.pointerId);
+    if(this.ptrs.size === 2){ this.pan = null; this.pinch = this.pinchBase(); }
+    else { this.pinch = null; this.pan = { x:e.clientX, y:e.clientY, tx:this.state.tx, ty:this.state.ty }; }
+  };
+  pinchBase(){
+    const p = [...this.ptrs.values()];
+    const rect = this.vp ? this.vp.getBoundingClientRect() : { left:0, top:0 };
+    return { dist:Math.max(1, Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y)),
+             scale:this.state.scale, tx:this.state.tx, ty:this.state.ty,
+             mx:(p[0].x + p[1].x) / 2 - rect.left, my:(p[0].y + p[1].y) / 2 - rect.top };
+  }
+  onPanMove = (e) => {
+    if(!this.ptrs.has(e.pointerId)) return;
+    this.ptrs.set(e.pointerId, { x:e.clientX, y:e.clientY });
+    if(this.ptrs.size >= 2 && this.pinch){
+      const p = [...this.ptrs.values()];
+      const dist = Math.max(1, Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y));
+      const b = this.pinch;
+      const scale = Math.max(0.16, Math.min(2.2, b.scale * (dist / b.dist)));
+      const k = scale / b.scale;
+      this.setState({ scale, tx:b.mx - (b.mx - b.tx) * k, ty:b.my - (b.my - b.ty) * k });
+      return;
+    }
+    if(!this.pan) return;
+    this.setState({ tx:this.pan.tx + (e.clientX - this.pan.x), ty:this.pan.ty + (e.clientY - this.pan.y) });
+  };
+  onPanEnd = (e) => {
+    if(e && e.pointerId !== undefined) this.ptrs.delete(e.pointerId); else this.ptrs.clear();
+    this.pinch = null;
+    if(this.ptrs.size === 1){
+      const p = [...this.ptrs.values()][0];
+      this.pan = { x:p.x, y:p.y, tx:this.state.tx, ty:this.state.ty };
+    } else { this.pan = null; }
+  };
+  onWheel = (e) => {
+    e.preventDefault();
+    const rect = this.vp ? this.vp.getBoundingClientRect() : { left:0, top:0 };
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+    const s0 = this.state.scale;
+    const s = Math.max(0.16, Math.min(2.2, s0 * (e.deltaY > 0 ? 0.9 : 1.1)));
+    const k = s / s0;
+    this.setState({ scale:s, tx:mx - (mx - this.state.tx) * k, ty:my - (my - this.state.ty) * k });
+  };
+  zoom(f){
+    const s0 = this.state.scale;
+    const s = Math.max(0.16, Math.min(2.2, s0 * f));
+    const k = s / s0;
+    const w = this.vp ? this.vp.clientWidth : 0, h = this.vp ? this.vp.clientHeight : 0;
+    this.setState({ scale:s, tx:w / 2 - (w / 2 - this.state.tx) * k, ty:h / 2 - (h / 2 - this.state.ty) * k });
+  }
 
   renderVals(){
     const mem = this.members();
@@ -502,67 +1201,246 @@ class Component extends DCLogic {
     const secs = this.state.sections;
     const allCollapsed = secs.length > 0 && secs.every(s => this.state.collapsed[s.id]);
     const d = this.state.draft;
+    const wide = this.isWide();
+    const convoyTab = this.isConvoy();
+    const view = this.state.view;
+    this._tasked = this.taskedMap();
+
+    const secNodes = secs.filter(s => s.id !== 'CMD' && s.id !== 'HQ').map((s, i, a) => this.buildNode(s, i % 2, a.length));
+    const secCols = [];
+    for(let i = 0; i < secNodes.length; i += 2) secCols.push({ cards:secNodes.slice(i, i + 2) });
+    const busW = secCols.length > 1 ? (secCols.length - 1) * 312 + 145 : 145;
+
+    const loc = this.locVals();
+    const cv = this.convoyVals();
+    const manRows = this.state.modal === 'manifest' ? this.manifestRows() : [];
+    const locs = (d.locList || '').split(',').map(s => s.trim()).filter(Boolean);
+    const pickedIds = Object.keys(d.picked).filter(k => d.picked[k]);
+
+    const navDefs = wide
+      ? [['TASK ORG','tree'], ['LOCATION','loc']]
+      : [[convoyTab ? 'CONVOY' : 'TASK ORG','tree'], ['LOCATION','loc'], ['DUE OUTS','due']];
+
     return {
       sum: { pres, total:mem.length, pct, meter:this.meter(pct, false) },
-      isTree: this.state.view === 'tree', isDue: this.state.view === 'due',
-      navTreeCls: this.state.view === 'tree' ? 'btn btn-primary' : 'btn btn-secondary',
-      navDueCls: this.state.view === 'due' ? 'btn btn-primary' : 'btn btn-secondary',
-      onViewTree: () => this.setState({ view:'tree' }),
-      onViewDue: () => this.setState({ view:'due' }),
-      tabs: this.state.rosters.map(r => ({ label:r.name, cls: r.id === this.state.active ? 'btn btn-primary' : 'btn btn-secondary',
-        onTap: () => this.setState({ active:r.id }, ()=>{ this.save({}); }) })),
-      onNewRoster: () => this.setState({ modal:'roster', draft:{ ...d, rosterName:'', picked:{} } }),
-      topNodes: secs.filter(s => s.id === 'CMD').map(s => this.buildNode(s)),
-      hqNodes: secs.filter(s => s.id === 'HQ').map(s => this.buildNode(s)),
-      secNodes: secs.filter(s => s.id !== 'CMD' && s.id !== 'HQ').map(s => this.buildNode(s)),
+      shellStyle: { width:'100%', height:'100dvh', position:'relative', display:'flex',
+        flexDirection:'column', background:'var(--color-bg)', overflow:'hidden',
+        fontFamily:'var(--font-body)', color:'var(--color-text)' },
+      headStyle: { flex:'none', display:wide ? 'flex' : 'block', alignItems:wide ? 'center' : null,
+        gap:wide ? '20px' : null, padding:wide ? '10px 24px' : '14px 16px 10px',
+        paddingTop:wide ? '10px' : 'max(14px, env(safe-area-inset-top))',
+        borderBottom:'1px solid var(--color-divider)' },
+      statStyle: { display:'flex', alignItems:'flex-end', gap:'14px',
+        marginTop:wide ? '0' : '10px', flex:wide ? '0 1 260px' : null, maxWidth:wide ? '260px' : null },
+      tabsStyle: { display:'flex', gap:'6px', marginTop:wide ? '0' : '12px', overflowX:'auto',
+        paddingBottom:'2px', flex:wide ? '1 1 auto' : null, minWidth:wide ? '0' : null,
+        justifyContent:'flex-start' },
+      bodyStyle: { flex:'1', minHeight:'0', display:'flex', flexDirection:wide ? 'row' : 'column' },
+      paneStyle: { flex:'1', minHeight:'0', overflowY:'auto', padding:'14px 16px 28px' },
+      dueStyle: { overflowY:'auto', minHeight:'0', flex:wide ? '0 0 400px' : '1',
+        borderLeft:wide ? '1px solid var(--color-divider)' : null, padding:'14px 16px 24px' },
+      navStyle: { flex:'none', display:'grid', gridTemplateColumns:'1fr 1fr 1fr',
+        borderTop:'1px solid var(--color-divider)', background:'var(--color-bg)',
+        paddingBottom:'env(safe-area-inset-bottom)' },
+      sheetStyle: wide
+        ? { position:'absolute', top:0, right:0, bottom:0, width:'440px', overflowY:'auto',
+            background:'var(--color-bg)', borderLeft:'1px solid var(--color-divider)',
+            boxShadow:'var(--shadow-lg)', animation:'drawerIn .22s cubic-bezier(.22,.8,.28,1)' }
+        : { position:'absolute', left:0, right:0, bottom:0, maxHeight:'88%', overflowY:'auto',
+            background:'var(--color-bg)', borderTop:'1px solid var(--color-divider)',
+            boxShadow:'var(--shadow-lg)', animation:'sheetUp .22s cubic-bezier(.22,.8,.28,1)' },
+
+      isBranch: !this.isCompact(), isCompact: this.isCompact(),
+      allNodes: secs.filter(s => mem.some(p => p.section === s.id)).map((s, i, a) => this.buildNode(s, i, a.length)),
+      topNodes: secs.filter(s => s.id === 'CMD').map(s => this.buildNode(s, 0, 1)),
+      hqNodes: secs.filter(s => s.id === 'HQ').map(s => this.buildNode(s, 0, 1)),
+      secCols,
+      busStyle: 'position:absolute;left:0;top:22px;height:1px;width:' + busW + 'px;background:color-mix(in srgb,#1d1f20 35%,transparent)',
+
+      strength: this.strengthRows(), strengthOpen: this.state.strengthOpen,
+      strengthChev: this.state.strengthOpen ? '▾' : '▸',
+      onToggleStrength: () => this.setState({ strengthOpen: !this.state.strengthOpen }),
+
+      showTree: !convoyTab && view !== 'loc' && (wide || view === 'tree'),
+      showConvoy: convoyTab && view !== 'loc' && (wide || view === 'tree'),
+      showLoc: view === 'loc',
+      showDue: (wide && view === 'tree' && !convoyTab && !!(this.tab() || {}).all) || (!wide && view === 'due'),
+      showNav: !wide, showToggle: wide,
+      navItems: navDefs.map(n => ({ label:n[0],
+        cls: view === n[1] ? 'btn btn-primary' : 'btn btn-secondary',
+        onTap: () => this.setState({ view:n[1] }) })),
+
+      locRoster: (this.roster() || {}).name || '', locSummary: loc.rows, locGroups: loc.groups,
+      cv, vehTypes: this.VEH_TYPES.map(t => ({ id:t, label:t })),
+      memberOptions: this.byRank(mem).map(p => ({ id:p.id, label:p.rank + ' ' + p.name })),
+
+      tabs: this.state.rosters.map(r => ({ label: r.kind === 'convoy' ? '⛟ ' + r.name : r.name,
+        cls: r.id === this.state.active ? 'btn btn-primary' : 'btn btn-secondary',
+        removable: !r.all,
+        onTap: () => this.setState({ active:r.id, sel:null }, ()=>{ this.save({}); this.queueCam(); }),
+        onRemove: (e) => {
+          e.stopPropagation();
+          if(!window.confirm('Delete "' + r.name + '"? The company roster is not affected.')) return;
+          const rosters = this.state.rosters.filter(x => x.id !== r.id && x.parent !== r.id);
+          const active = rosters.some(x => x.id === this.state.active) ? this.state.active : rosters[0].id;
+          this.set({ rosters, active, sel:null });
+          this.queueCam();
+        } })),
+      onNewRoster: () => this.setState({ modal:'roster', draft:{ ...d, rosterName:'', picked:{}, locs:{} } }),
+      onNewConvoy: () => {
+        const base = this.roster(); if(!base) return;
+        const n = this.state.rosters.filter(x => x.kind === 'convoy' && x.parent === base.id).length + 1;
+        const id = 'c' + Date.now();
+        this.set({ rosters:[...this.state.rosters,
+          { id, kind:'convoy', parent:base.id, name:'CONVOY ' + n + ' · ' + base.name, vehicles:[] }],
+          active:id, view:'tree', sel:null });
+      },
+
       canvasStyle: { transformOrigin:'0 0', width:'max-content', padding:'8px 8px 40px',
         transform:'translate(' + this.state.tx + 'px,' + this.state.ty + 'px) scale(' + this.state.scale + ')' },
-      vpRef: (el) => { if(el && !this.vp){ this.vp = el; setTimeout(()=>this.initCam(), 0); } },
+      vpRef: this.vpRef,
+      spRef: this.spRef,
       onPanStart:this.onPanStart, onPanMove:this.onPanMove, onPanEnd:this.onPanEnd, onWheel:this.onWheel,
-      onZoomIn: () => this.zoom(1.18), onZoomOut: () => this.zoom(0.85), onFit: () => this.fit(),
-      collapseLabel: allCollapsed ? 'EXPAND ALL' : 'COLLAPSE ALL',
+      onZoomIn: () => this.zoom(1.18), onZoomOut: () => this.zoom(0.85), onFit: () => this.fit(),      collapseLabel: allCollapsed ? 'EXPAND ALL' : 'COLLAPSE ALL',
       onCollapseAll: () => { const c = {}; if(!allCollapsed) secs.forEach(s => { c[s.id] = true; }); this.setState({ collapsed:c }); },
+
       hasSel: !!this.state.sel, sel:this.selVals(),
       onCloseSheet: () => this.setState({ sel:null }),
       dueFilters: ['All','Late','Open','Closed'].map(f => ({ label:f.toUpperCase(),
         cls: this.state.dueFilter === f ? 'btn btn-primary' : 'btn btn-secondary',
         onTap: () => this.setState({ dueFilter:f }) })),
       dueList: this.dueVals(),
+      evalStatusOptions: this.EVAL_STATUS.map(s => ({ id:s, label:s })),
       ownerOptions: mem.map(p => ({ id:p.id, label:p.rank + ' ' + p.name })),
       onNewDue: () => { const id = 'd' + Date.now();
-        this.set({ dueouts:[{ id, task:'New due out', section:'HQ', owner:'', pct:0, sub:'Added manually', priority:'Priority', status:'Open' }, ...this.state.dueouts] }); },
+        this.set({ dueouts:[{ id, task:'New due out', section:'HHC', owner:'', pct:0, sub:'', priority:'Priority', status:'Open' }, ...this.state.dueouts], expEdit:id }); },
+
       showAdd: this.state.modal === 'add', showRoster: this.state.modal === 'roster',
-      draft: { rank:d.rank, name:d.name, section:d.section, rosterName:d.rosterName },
+      showManifest: this.state.modal === 'manifest',
+      man: { title:'Convoy manifest — ' + cv.name,
+        sub: manRows.length + ' personnel · ' + (cv.vehicles || []).length + ' vehicles · generated ' + new Date().toLocaleString(),
+        rows: manRows, copyLabel: this.state.copied ? 'COPIED' : 'COPY',
+        onCopy: () => { const txt = this.manifestCsv(manRows, cv);
+          if(navigator.clipboard) navigator.clipboard.writeText(txt);
+          this.setState({ copied:true }); },
+        onDownload: () => {
+          const blob = new Blob([this.manifestCsv(manRows, cv)], { type:'text/csv' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'manifest-' + cv.name.replace(/[^a-z0-9]+/gi, '-').toLowerCase() + '.csv';
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+        } },
+      draft: { rank:d.rank, name:d.name, section:d.section, rosterName:d.rosterName, locList:d.locList },
       sectionOptions: secs.map(s => ({ id:s.id, label:s.name })),
+      locOptions: (locs.length ? locs : ['UNASSIGNED']).map(l => ({ id:l, label:l })),
       onDraftRank: (e) => this.setState({ draft:{ ...d, rank:e.target.value.toUpperCase() } }),
       onDraftName: (e) => this.setState({ draft:{ ...d, name:e.target.value } }),
       onDraftSection: (e) => this.setState({ draft:{ ...d, section:e.target.value } }),
       onDraftRosterName: (e) => this.setState({ draft:{ ...d, rosterName:e.target.value } }),
+      onDraftLocList: (e) => this.setState({ draft:{ ...d, locList:e.target.value } }),
       onCancelModal: () => this.setState({ modal:null }),
       onConfirmAdd: () => {
         if(!d.name.trim()) { this.setState({ modal:null }); return; }
         const id = 'n' + Date.now();
         const person = { id, section:d.section, rank:d.rank || 'PVT', name:d.name.trim(), category:'Enlisted',
-          agr:false, status:'PRES', remark:'', loc:'', dodid:'', mos:'', phone:'', email:'', hor:'', profile:'', nok:'', weapon:'', notes:'', clearance:'', clearanceNote:'' };
-        const rosters = this.state.rosters.map(r => r.id === this.state.active && !r.all
-          ? { ...r, ids:[...r.ids, id], statuses:{ ...r.statuses, [id]:'PRES' } }
-          : { ...r, statuses:{ ...r.statuses, [id]:'PRES' } });
+          agr:false, status:'PRES', remark:'', loc:'', dodid:'', mos:'', phone:'', email:'', hor:'', profile:'', nok:'', weapon:'', sensitive:'', notes:'', clearance:'', clearanceNote:'' };
+        const rosters = this.state.rosters.map(r => r.kind === 'convoy' ? r
+          : (r.id === (this.roster() || {}).id && !r.all
+            ? { ...r, ids:[...(r.ids || []), id], statuses:{ ...r.statuses, [id]:'PRES' } }
+            : { ...r, statuses:{ ...r.statuses, [id]:'PRES' } }));
         this.set({ people:[...this.state.people, person], rosters, modal:null, sel:id });
       },
+      pickAllLabel: pickedIds.length === this.state.people.length ? 'CLEAR ALL' : 'SELECT ALL',
+      onPickAll: () => {
+        const all = pickedIds.length === this.state.people.length;
+        const picked = {};
+        if(!all) this.state.people.forEach(p => { picked[p.id] = true; });
+        this.setState({ draft:{ ...d, picked } });
+      },
       pickList: this.state.people.map(p => ({ rank:p.rank, name:p.name, section:p.section,
-        box: 'width:16px;height:16px;border:1px solid ' + (d.picked[p.id] ? 'var(--color-accent)' : 'var(--color-divider)') + ';background:' + (d.picked[p.id] ? 'var(--color-accent)' : 'transparent'),
+        picked: !!d.picked[p.id],
+        loc: d.locs[p.id] || (locs[0] || 'UNASSIGNED'),
+        box: 'width:16px;height:16px;cursor:pointer;border:1px solid ' + (d.picked[p.id] ? 'var(--color-accent)' : 'var(--color-divider)') + ';background:' + (d.picked[p.id] ? 'var(--color-accent)' : 'transparent'),
+        onLoc: (e) => this.setState({ draft:{ ...d, locs:{ ...d.locs, [p.id]:e.target.value } } }),
         onToggle: () => this.setState({ draft:{ ...d, picked:{ ...d.picked, [p.id]: !d.picked[p.id] } } }) })),
-      createLabel: 'Create (' + Object.keys(d.picked).filter(k => d.picked[k]).length + ')',
+      createLabel: 'Create (' + pickedIds.length + ')',
       onConfirmRoster: () => {
-        const ids = Object.keys(d.picked).filter(k => d.picked[k]);
+        const ids = pickedIds;
         if(!ids.length) { this.setState({ modal:null }); return; }
-        const statuses = {}; ids.forEach(i => { statuses[i] = 'PRES'; });
+        const statuses = {}, rlocs = {};
+        ids.forEach(i => { statuses[i] = 'PRES'; rlocs[i] = d.locs[i] || locs[0] || 'UNASSIGNED'; });
         const id = 'r' + Date.now();
         const name = (d.rosterName || 'MISSION').toUpperCase();
-        this.set({ rosters:[...this.state.rosters, { id, name, ids, statuses }], active:id, modal:null });
+        this.set({ rosters:[...this.state.rosters, { id, name, ids, statuses, locs:rlocs, locations:locs }], active:id, modal:null, view:'tree' });
+        this.queueCam();
       }
     };
   }
+
+  dueVals(){
+    const f = this.state.dueFilter;
+    const list = this.state.dueouts.filter(d => f === 'All' || d.status === f);
+    return list.map(d => {
+      const items = d.items || [];
+      const done = items.filter(i => i.status === 'Submitted').length;
+      const pct = d.kind === 'eval' ? (items.length ? Math.round(done / items.length * 100) : 0) : d.pct;
+      return {
+        ...d, isEval: d.kind === 'eval', showStep: d.kind !== 'eval',
+        pctLabel: pct + '%', meter:this.meter(pct, false),
+        evalLabel: items.length ? (done + '/' + items.length + ' SUBMITTED') : 'NO EVALS LISTED',
+        evalOpen: this.state.expEval === d.id,
+        evalChev: this.state.expEval === d.id ? '▾' : '▸',
+        editLabel: this.state.expEdit === d.id ? 'DONE' : 'EDIT',
+        onToggleEval: () => this.setState({ expEval: this.state.expEval === d.id ? null : d.id }),
+        editOpen: this.state.expEdit === d.id,
+        onToggleEdit: () => this.setState({ expEdit: this.state.expEdit === d.id ? null : d.id }),
+        onTask: (e) => this.updDue(d.id, { task:e.target.value }),
+        onSection: (e) => this.updDue(d.id, { section:e.target.value.toUpperCase() }),
+        onPriority: (e) => this.updDue(d.id, { priority:e.target.value }),
+        onSub: (e) => this.updDue(d.id, { sub:e.target.value }),
+        onDelete: () => {
+          if(!window.confirm('Delete the due out "' + d.task + '"?')) return;
+          this.set({ dueouts:this.state.dueouts.filter(x => x.id !== d.id), expEdit:null, expEval:null });
+        },
+        onAddItem: () => this.updDue(d.id, { items:[...items,
+          { id:'e' + Date.now(), ratee:'', rater:'', sr:'', due:'', status:'Draft' }] }),
+        items: items.map((it, k) => {
+          const patch = (p) => { const nx = items.slice(); nx[k] = { ...nx[k], ...p }; this.updDue(d.id, { items:nx }); };
+          const p = this.person(it.ratee);
+          return { id:it.id, ratee:it.ratee || '', rater:it.rater || '', sr:it.sr || '', due:it.due || '',
+            status:it.status || 'Draft',
+            boxStyle: 'padding:9px 10px 10px;border:1px solid ' + (it.status === 'Submitted'
+                ? 'var(--color-accent)' : 'var(--color-divider)')
+              + ';border-left:4px solid ' + (it.status === 'Submitted' ? 'var(--color-accent)'
+                : it.status === 'With senior rater' ? 'var(--color-accent-600)'
+                : it.status === 'With rater' ? 'var(--color-accent-400)' : 'var(--color-neutral-400)')
+              + ';background:' + (it.status === 'Submitted'
+                ? 'color-mix(in srgb,var(--color-accent) 12%,transparent)'
+                : 'color-mix(in srgb,#f2f2f3 70%,#fff)')
+              + ';box-shadow:var(--shadow-sm)',
+            name: p ? p.rank + ' ' + p.name : 'Unassigned',
+            statusCls: it.status === 'Submitted' ? 'tag tag-accent' : (it.status === 'Draft' ? 'tag tag-outline' : 'tag tag-neutral'),
+            onRatee: (e) => patch({ ratee:e.target.value }),
+            onRater: (e) => patch({ rater:e.target.value }),
+            onSr: (e) => patch({ sr:e.target.value }),
+            onDue: (e) => patch({ due:e.target.value }),
+            onStatus: (e) => patch({ status:e.target.value }),
+            onCycle: () => patch({ status:this.EVAL_STATUS[(this.EVAL_STATUS.indexOf(it.status || 'Draft') + 1) % this.EVAL_STATUS.length] }),
+            onRemove: () => { const nx = items.slice(); nx.splice(k, 1); this.updDue(d.id, { items:nx }); } };
+        }),
+        ownerOpen: this.state.expOwner === d.id,
+        ownerLabel: d.owner ? (this.person(d.owner) || {}).rank + ' ' + (this.person(d.owner) || {}).name : 'ASSIGN',
+        onToggleOwner: () => this.setState({ expOwner: this.state.expOwner === d.id ? null : d.id }),
+        statusCls: d.status === 'Closed' ? 'tag tag-accent' : (d.status === 'Late' ? 'tag tag-outline' : 'tag tag-neutral'),
+        onCycle: () => this.updDue(d.id, { status:this.DUE_STATUS[(this.DUE_STATUS.indexOf(d.status) + 1) % 3] }),
+        onInc: () => this.updDue(d.id, { pct:Math.min(100, d.pct + 10) }),
+        onDec: () => this.updDue(d.id, { pct:Math.max(0, d.pct - 10) }),
+        onOwner: (e) => this.updDue(d.id, { owner:e.target.value })
+      };
+    });
+  }
+  updDue(id, patch){ this.set({ dueouts:this.state.dueouts.map(d => d.id === id ? { ...d, ...patch } : d) }); }
 }
 </script>
 </body>
