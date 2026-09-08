@@ -17,6 +17,7 @@ html,body{margin:0;height:100%;background:#dededf;overscroll-behavior:none;-webk
 a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
 @keyframes sheetUp{from{transform:translateY(101%)}to{transform:translateY(0)}}
 @keyframes drawerIn{from{transform:translateX(101%)}to{transform:translateX(0)}}
+@keyframes drawerLeft{from{transform:translateX(-101%)}to{transform:translateX(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .hhc-scroll{-webkit-overflow-scrolling:touch;scrollbar-width:thin}
 .hhc-grid{background-image:linear-gradient(color-mix(in srgb,#1d1f20 5%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,#1d1f20 5%,transparent) 1px,transparent 1px);background-size:34px 34px}
@@ -27,17 +28,17 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
 <div style="{{ shellStyle }}">
 
   <div style="{{ headStyle }}">
-    <div style="display:flex;align-items:baseline;gap:8px;flex:none">
+    <div style="display:flex;align-items:center;gap:10px;flex:none">
       <div style="font-family:var(--font-heading);font-weight:600;font-size:19px;line-height:1;letter-spacing:-.01em">HHC / 192 EN BN</div>
       <div style="margin-left:auto;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">XO Tracker</div>
     </div>
     <div style="{{ statStyle }}">
-      <div style="display:flex;align-items:baseline;gap:4px">
+      <div style="display:flex;flex:none;align-items:baseline;gap:4px;white-space:nowrap">
         <span style="font-family:var(--font-heading);font-weight:600;font-size:34px;line-height:.9;color:var(--color-accent-700)">{{ sum.pres }}</span>
         <span style="font-family:var(--font-heading);font-size:17px;color:color-mix(in srgb,#1d1f20 45%,transparent)">/ {{ sum.total }}</span>
       </div>
       <div style="flex:1;padding-bottom:2px">
-        <div style="display:flex;justify-content:space-between;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent);margin-bottom:4px">
+        <div style="display:flex;justify-content:space-between;gap:8px;white-space:nowrap;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent);margin-bottom:4px">
           <span>Accounted present</span><span>{{ sum.pct }}%</span>
         </div>
         <div style="height:6px;background:var(--color-neutral-200);border:1px solid var(--color-divider);position:relative">
@@ -63,6 +64,7 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
       </sc-for>
       <button class="btn btn-ghost" onClick="{{ onNewRoster }}" style="flex:none;white-space:nowrap;font-size:12px;padding:5px 9px;border:1px dashed var(--color-divider)">+ ROSTER</button>
       <button class="btn btn-ghost" onClick="{{ onNewConvoy }}" style="flex:none;white-space:nowrap;font-size:12px;padding:5px 9px;border:1px dashed var(--color-accent)">+ CONVOY</button>
+      <input type="file" accept="application/json,.json" ref="{{ fileRef }}" onChange="{{ onImportFile }}" style="display:none">
     </div>
   </div>
 
@@ -77,65 +79,67 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
         <div style="display:flex;align-items:flex-start">
 
           <sc-for list="{{ topNodes }}" as="node" hint-placeholder-count="1">
-            <div class="blueprint" style="width:290px;flex:none;background:var(--color-accent-900);color:#f2f2f3;padding:11px 12px 12px;box-shadow:var(--shadow-md)">
-              <i class="corner tl" style="color:color-mix(in srgb,#f2f2f3 55%,transparent)"></i><i class="corner tr" style="color:color-mix(in srgb,#f2f2f3 55%,transparent)"></i><i class="corner bl" style="color:color-mix(in srgb,#f2f2f3 55%,transparent)"></i><i class="corner br" style="color:color-mix(in srgb,#f2f2f3 55%,transparent)"></i>
-              <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onClick="{{ node.onToggle }}">
-                <div style="flex:1;min-width:0">
-                  <div style="font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.02em;text-transform:uppercase">{{ node.name }}</div>
-                  <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.65">{{ node.sub }}</div>
+            <div class="blueprint" style="{{ node.cardStyle }}">
+                <i class="corner tl" style="{{ node.cornerStyle }}"></i><i class="corner tr" style="{{ node.cornerStyle }}"></i><i class="corner bl" style="{{ node.cornerStyle }}"></i><i class="corner br" style="{{ node.cornerStyle }}"></i>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div onClick="{{ node.onToggle }}" style="flex:1;min-width:0;cursor:pointer">
+                    <div style="{{ node.titleStyle }}">{{ node.name }}</div>
+                    <div style="{{ node.subStyle }}">{{ node.sub }}</div>
+                  </div>
+                  <div onClick="{{ node.onToggle }}" style="{{ node.tallyStyle }}">{{ node.tally }}</div>
+                  <button onClick="{{ node.onColor }}" title="Change card color" style="{{ node.swatchStyle }}"></button>
+                  <div onClick="{{ node.onToggle }}" style="{{ node.chevStyle }}">{{ node.chev }}</div>
                 </div>
-                <div style="font-family:var(--font-heading);font-size:15px;opacity:.9">{{ node.tally }}</div>
-                <div style="font-size:11px;opacity:.7;width:10px;text-align:center">{{ node.chev }}</div>
-              </div>
-              <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
-                <div style="display:flex;flex-direction:column;margin-top:10px;border-top:1px solid color-mix(in srgb,#f2f2f3 22%,transparent);padding-top:4px">
-                  <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
-                    <div style="{{ m.rowStyleDark }}">
-                      <div style="font-family:var(--font-heading);font-size:13px;opacity:.75;letter-spacing:.04em">{{ m.rank }}</div>
-                      <div onClick="{{ m.onOpen }}" style="min-width:0;cursor:pointer;padding:6px 0">
-                        <div style="font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
-                        <div style="font-size:10px;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.note }}</div>
+                <div style="{{ node.trackStyle }}"><div style="{{ node.meter }}"></div></div>
+                <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
+                  <div style="{{ node.listStyle }}">
+                    <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
+                      <div style="{{ m.row }}" data-mid="{{ m.id }}" data-node="{{ m.nodeId }}">
+                        <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
+                        <div onPointerDown="{{ m.onDown }}" title="Drag to reorder · tap to open" style="{{ m.grabStyle }}">
+                          <div style="{{ m.nameStyle }}">{{ m.name }}</div>
+                          <div style="{{ m.noteStyle }}">{{ m.note }}</div>
+                        </div>
+                        <button onClick="{{ m.onCycle }}" style="{{ m.pill }}">{{ m.abbr }}</button>
                       </div>
-                      <button onClick="{{ m.onCycle }}" style="{{ m.pillDark }}">{{ m.abbr }}</button>
-                    </div>
-                  </sc-for>
-                </div>
-              </sc-if>
-            </div>
+                    </sc-for>
+                    <button onClick="{{ node.onAdd }}" style="{{ node.addStyle }}">+ ADD SOLDIER</button>
+                  </div>
+                </sc-if>
+              </div>
           </sc-for>
 
           <div style="flex:none;width:34px;height:1px;margin-top:22px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
 
           <sc-for list="{{ hqNodes }}" as="node" hint-placeholder-count="1">
-            <div class="blueprint" style="width:290px;flex:none;background:var(--color-bg);padding:11px 12px 12px;box-shadow:var(--shadow-sm)">
-              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-              <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onClick="{{ node.onToggle }}">
-                <div style="flex:1;min-width:0">
-                  <div style="font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.02em;text-transform:uppercase">{{ node.name }}</div>
-                  <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ node.sub }}</div>
+            <div class="blueprint" style="{{ node.cardStyle }}">
+                <i class="corner tl" style="{{ node.cornerStyle }}"></i><i class="corner tr" style="{{ node.cornerStyle }}"></i><i class="corner bl" style="{{ node.cornerStyle }}"></i><i class="corner br" style="{{ node.cornerStyle }}"></i>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div onClick="{{ node.onToggle }}" style="flex:1;min-width:0;cursor:pointer">
+                    <div style="{{ node.titleStyle }}">{{ node.name }}</div>
+                    <div style="{{ node.subStyle }}">{{ node.sub }}</div>
+                  </div>
+                  <div onClick="{{ node.onToggle }}" style="{{ node.tallyStyle }}">{{ node.tally }}</div>
+                  <button onClick="{{ node.onColor }}" title="Change card color" style="{{ node.swatchStyle }}"></button>
+                  <div onClick="{{ node.onToggle }}" style="{{ node.chevStyle }}">{{ node.chev }}</div>
                 </div>
-                <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent-700)">{{ node.tally }}</div>
-                <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 45%,transparent);width:10px;text-align:center">{{ node.chev }}</div>
-              </div>
-              <div style="height:4px;margin-top:9px;background:var(--color-neutral-200);border:1px solid var(--color-divider)">
-                <div style="{{ node.meter }}"></div>
-              </div>
-              <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
-                <div style="display:flex;flex-direction:column;margin-top:8px;border-top:1px solid var(--color-divider);padding-top:4px">
-                  <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
-                    <div style="{{ m.rowStyle }}">
-                      <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
-                      <div onClick="{{ m.onOpen }}" style="min-width:0;cursor:pointer;padding:6px 0">
-                        <div style="font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
-                        <div style="{{ m.noteStyle }}">{{ m.note }}</div>
+                <div style="{{ node.trackStyle }}"><div style="{{ node.meter }}"></div></div>
+                <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
+                  <div style="{{ node.listStyle }}">
+                    <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
+                      <div style="{{ m.row }}" data-mid="{{ m.id }}" data-node="{{ m.nodeId }}">
+                        <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
+                        <div onPointerDown="{{ m.onDown }}" title="Drag to reorder · tap to open" style="{{ m.grabStyle }}">
+                          <div style="{{ m.nameStyle }}">{{ m.name }}</div>
+                          <div style="{{ m.noteStyle }}">{{ m.note }}</div>
+                        </div>
+                        <button onClick="{{ m.onCycle }}" style="{{ m.pill }}">{{ m.abbr }}</button>
                       </div>
-                      <button class="{{ m.pillCls }}" onClick="{{ m.onCycle }}" style="border:1px solid var(--color-divider);cursor:pointer;font-family:var(--font-heading);letter-spacing:.06em;min-width:52px;justify-content:center;min-height:30px">{{ m.abbr }}</button>
-                    </div>
-                  </sc-for>
-                  <button class="btn btn-ghost" onClick="{{ node.onAdd }}" style="align-self:flex-start;font-size:11px;margin-top:8px">+ ADD SOLDIER</button>
-                </div>
-              </sc-if>
-            </div>
+                    </sc-for>
+                    <button onClick="{{ node.onAdd }}" style="{{ node.addStyle }}">+ ADD SOLDIER</button>
+                  </div>
+                </sc-if>
+              </div>
           </sc-for>
 
           <div style="flex:none;width:34px;height:1px;margin-top:22px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
@@ -151,35 +155,34 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                       <sc-if value="{{ node.linkUp }}" hint-placeholder-val="{{ false }}">
                         <div style="width:1px;height:20px;margin-left:144px;background:color-mix(in srgb,#1d1f20 35%,transparent)"></div>
                       </sc-if>
-                      <div class="blueprint" style="width:290px;background:var(--color-bg);padding:11px 12px 12px;box-shadow:var(--shadow-sm)">
-                        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-                        <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onClick="{{ node.onToggle }}">
-                          <div style="flex:1;min-width:0">
-                            <div style="font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.02em;text-transform:uppercase">{{ node.name }}</div>
-                            <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ node.sub }}</div>
-                          </div>
-                          <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent-700)">{{ node.tally }}</div>
-                          <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 45%,transparent);width:10px;text-align:center">{{ node.chev }}</div>
+                      <div class="blueprint" style="{{ node.cardStyle }}">
+                <i class="corner tl" style="{{ node.cornerStyle }}"></i><i class="corner tr" style="{{ node.cornerStyle }}"></i><i class="corner bl" style="{{ node.cornerStyle }}"></i><i class="corner br" style="{{ node.cornerStyle }}"></i>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div onClick="{{ node.onToggle }}" style="flex:1;min-width:0;cursor:pointer">
+                    <div style="{{ node.titleStyle }}">{{ node.name }}</div>
+                    <div style="{{ node.subStyle }}">{{ node.sub }}</div>
+                  </div>
+                  <div onClick="{{ node.onToggle }}" style="{{ node.tallyStyle }}">{{ node.tally }}</div>
+                  <button onClick="{{ node.onColor }}" title="Change card color" style="{{ node.swatchStyle }}"></button>
+                  <div onClick="{{ node.onToggle }}" style="{{ node.chevStyle }}">{{ node.chev }}</div>
+                </div>
+                <div style="{{ node.trackStyle }}"><div style="{{ node.meter }}"></div></div>
+                <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
+                  <div style="{{ node.listStyle }}">
+                    <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
+                      <div style="{{ m.row }}" data-mid="{{ m.id }}" data-node="{{ m.nodeId }}">
+                        <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
+                        <div onPointerDown="{{ m.onDown }}" title="Drag to reorder · tap to open" style="{{ m.grabStyle }}">
+                          <div style="{{ m.nameStyle }}">{{ m.name }}</div>
+                          <div style="{{ m.noteStyle }}">{{ m.note }}</div>
                         </div>
-                        <div style="height:4px;margin-top:9px;background:var(--color-neutral-200);border:1px solid var(--color-divider)">
-                          <div style="{{ node.meter }}"></div>
-                        </div>
-                        <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
-                          <div style="display:flex;flex-direction:column;margin-top:8px;border-top:1px solid var(--color-divider);padding-top:4px">
-                            <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
-                              <div style="{{ m.rowStyle }}">
-                                <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
-                                <div onClick="{{ m.onOpen }}" style="min-width:0;cursor:pointer;padding:6px 0">
-                                  <div style="font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
-                                  <div style="{{ m.noteStyle }}">{{ m.note }}</div>
-                                </div>
-                                <button class="{{ m.pillCls }}" onClick="{{ m.onCycle }}" style="border:1px solid var(--color-divider);cursor:pointer;font-family:var(--font-heading);letter-spacing:.06em;min-width:52px;justify-content:center;min-height:30px">{{ m.abbr }}</button>
-                              </div>
-                            </sc-for>
-                            <button class="btn btn-ghost" onClick="{{ node.onAdd }}" style="align-self:flex-start;font-size:11px;margin-top:8px">+ ADD SOLDIER</button>
-                          </div>
-                        </sc-if>
+                        <button onClick="{{ m.onCycle }}" style="{{ m.pill }}">{{ m.abbr }}</button>
                       </div>
+                    </sc-for>
+                    <button onClick="{{ node.onAdd }}" style="{{ node.addStyle }}">+ ADD SOLDIER</button>
+                  </div>
+                </sc-if>
+              </div>
                     </div>
                   </sc-for>
                 </div>
@@ -192,35 +195,34 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
         <sc-if value="{{ isCompact }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;width:920px">
           <sc-for list="{{ allNodes }}" as="node" hint-placeholder-count="3">
-            <div class="blueprint" style="width:290px;background:var(--color-bg);padding:11px 12px 12px;box-shadow:var(--shadow-sm)">
-              <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-              <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onClick="{{ node.onToggle }}">
-                <div style="flex:1;min-width:0">
-                  <div style="font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.02em;text-transform:uppercase">{{ node.name }}</div>
-                  <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ node.sub }}</div>
+            <div class="blueprint" style="{{ node.cardStyle }}">
+                <i class="corner tl" style="{{ node.cornerStyle }}"></i><i class="corner tr" style="{{ node.cornerStyle }}"></i><i class="corner bl" style="{{ node.cornerStyle }}"></i><i class="corner br" style="{{ node.cornerStyle }}"></i>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div onClick="{{ node.onToggle }}" style="flex:1;min-width:0;cursor:pointer">
+                    <div style="{{ node.titleStyle }}">{{ node.name }}</div>
+                    <div style="{{ node.subStyle }}">{{ node.sub }}</div>
+                  </div>
+                  <div onClick="{{ node.onToggle }}" style="{{ node.tallyStyle }}">{{ node.tally }}</div>
+                  <button onClick="{{ node.onColor }}" title="Change card color" style="{{ node.swatchStyle }}"></button>
+                  <div onClick="{{ node.onToggle }}" style="{{ node.chevStyle }}">{{ node.chev }}</div>
                 </div>
-                <div style="font-family:var(--font-heading);font-size:15px;color:var(--color-accent-700)">{{ node.tally }}</div>
-                <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 45%,transparent);width:10px;text-align:center">{{ node.chev }}</div>
-              </div>
-              <div style="height:4px;margin-top:9px;background:var(--color-neutral-200);border:1px solid var(--color-divider)">
-                <div style="{{ node.meter }}"></div>
-              </div>
-              <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
-                <div style="display:flex;flex-direction:column;margin-top:8px;border-top:1px solid var(--color-divider);padding-top:4px">
-                  <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
-                    <div style="{{ m.rowStyle }}">
-                      <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
-                      <div onClick="{{ m.onOpen }}" style="min-width:0;cursor:pointer;padding:6px 0">
-                        <div style="font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
-                        <div style="{{ m.noteStyle }}">{{ m.note }}</div>
+                <div style="{{ node.trackStyle }}"><div style="{{ node.meter }}"></div></div>
+                <sc-if value="{{ node.open }}" hint-placeholder-val="{{ true }}">
+                  <div style="{{ node.listStyle }}">
+                    <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
+                      <div style="{{ m.row }}" data-mid="{{ m.id }}" data-node="{{ m.nodeId }}">
+                        <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
+                        <div onPointerDown="{{ m.onDown }}" title="Drag to reorder · tap to open" style="{{ m.grabStyle }}">
+                          <div style="{{ m.nameStyle }}">{{ m.name }}</div>
+                          <div style="{{ m.noteStyle }}">{{ m.note }}</div>
+                        </div>
+                        <button onClick="{{ m.onCycle }}" style="{{ m.pill }}">{{ m.abbr }}</button>
                       </div>
-                      <button class="{{ m.pillCls }}" onClick="{{ m.onCycle }}" style="border:1px solid var(--color-divider);cursor:pointer;font-family:var(--font-heading);letter-spacing:.06em;min-width:52px;justify-content:center;min-height:30px">{{ m.abbr }}</button>
-                    </div>
-                  </sc-for>
-                  <button class="btn btn-ghost" onClick="{{ node.onAdd }}" style="align-self:flex-start;font-size:11px;margin-top:8px">+ ADD SOLDIER</button>
-                </div>
-              </sc-if>
-            </div>
+                    </sc-for>
+                    <button onClick="{{ node.onAdd }}" style="{{ node.addStyle }}">+ ADD SOLDIER</button>
+                  </div>
+                </sc-if>
+              </div>
           </sc-for>
         </div>
         </sc-if>
@@ -244,6 +246,11 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                 <div style="font-family:var(--font-heading);font-size:12px;text-align:right;color:var(--color-accent-700);width:34px">{{ s.pct }}</div>
               </div>
             </sc-for>
+            <div style="display:flex;flex-wrap:wrap;gap:6px 10px;margin-top:8px;padding-top:8px;border-top:1px solid var(--color-divider)">
+              <sc-for list="{{ statusLegend }}" as="l" hint-placeholder-count="8">
+                <span style="{{ l.style }}"><i style="{{ l.dot }}"></i>{{ l.label }}</span>
+              </sc-for>
+            </div>
           </div>
         </sc-if>
       </div>
@@ -254,8 +261,10 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
       <button class="btn btn-secondary" onClick="{{ onZoomOut }}" style="width:38px;height:38px;padding:0;background:var(--color-bg);box-shadow:var(--shadow-sm)">–</button>
       <button class="btn btn-secondary" onClick="{{ onFit }}" style="width:38px;height:38px;padding:0;font-size:9px;letter-spacing:.06em;background:var(--color-bg);box-shadow:var(--shadow-sm)">FIT</button>
     </div>
-    <div style="position:absolute;left:12px;bottom:14px;display:flex;gap:6px;align-items:center">
-      <button class="btn btn-secondary" onClick="{{ onCollapseAll }}" style="font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">{{ collapseLabel }}</button>
+    <div style="position:absolute;left:12px;bottom:14px;display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+      <button class="btn btn-secondary" onClick="{{ onClearStatus }}" title="Blank the status of everyone in this roster" style="white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">CLEAR STATUSES</button>
+      <button class="btn btn-secondary" onClick="{{ onCollapseAll }}" style="white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">{{ collapseLabel }}</button>
+      <button class="btn btn-secondary" onClick="{{ onOpenTransfer }}" title="Move data between devices" style="white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">EXPORT / IMPORT</button>
     </div>
   </div>
   </sc-if>
@@ -413,7 +422,7 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                   <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
                   <div style="font-size:10px;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ m.section }}</div>
                 </div>
-                <span class="{{ m.pillCls }}">{{ m.abbr }}</span>
+                <span style="{{ m.pill }}">{{ m.abbr }}</span>
               </div>
             </sc-for>
           </div>
@@ -424,7 +433,12 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
   </sc-if>
 
   <sc-if value="{{ showDue }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ onCloseDue }}" style="position:absolute;inset:0;z-index:55;background:color-mix(in srgb,#2b2b2d 40%,transparent);animation:fadeIn .14s ease-out"></div>
   <div data-screen-label="Due Outs" class="hhc-scroll" style="{{ dueStyle }}">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <div style="flex:1;font-family:var(--font-heading);font-weight:600;font-size:20px;letter-spacing:.04em;text-transform:uppercase;color:#b53333">Due outs</div>
+      <button class="btn btn-secondary" onClick="{{ onCloseDue }}" style="width:32px;height:32px;padding:0">✕</button>
+    </div>
     <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:12px">
       <sc-for list="{{ dueFilters }}" as="f" hint-placeholder-count="4">
         <button class="{{ f.cls }}" onClick="{{ f.onTap }}" style="flex:none;white-space:nowrap;font-size:11px;letter-spacing:.06em;padding:5px 11px">{{ f.label }}</button>
@@ -543,6 +557,18 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
     <button class="btn btn-secondary btn-block" onClick="{{ onNewDue }}" style="margin-top:14px">+ NEW DUE OUT</button>
   </div>
   </sc-if>
+
+  <sc-if value="{{ showDueBtn }}" hint-placeholder-val="{{ true }}">
+  <button onClick="{{ onToggleDue }}" title="Due outs" style="{{ dueBtnStyle }}">
+    <span style="display:flex;flex-direction:column;gap:2px;width:13px">
+      <i style="height:2px;background:#fff;display:block"></i>
+      <i style="height:2px;background:#fff;display:block"></i>
+      <i style="height:2px;background:#fff;display:block"></i>
+    </span>
+    <span>Due outs</span>
+    <span style="min-width:17px;height:17px;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#b53333;font-size:10px;padding:0 3px">{{ dueBadge }}</span>
+  </button>
+  </sc-if>
   </div>
 
   <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
@@ -582,6 +608,43 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
             <input class="input" value="{{ sel.remark }}" onChange="{{ sel.onRemark }}" placeholder="e.g. SUTA FRI / ALT AT">
           </div>
         </div>
+        <sc-if value="{{ sel.hasGroups }}" hint-placeholder-val="{{ false }}">
+          <div class="field" style="margin-top:10px"><label>Task org group — this roster</label>
+            <select class="input" value="{{ sel.group }}" onChange="{{ sel.onGroup }}">
+              <option value="">— unassigned —</option>
+              <sc-for list="{{ sel.groupOptions }}" as="g" hint-placeholder-count="0">
+                <option value="{{ g.id }}">{{ g.label }}</option>
+              </sc-for>
+            </select>
+          </div>
+        </sc-if>
+        <div style="height:1px;background:var(--color-divider);margin:18px 0 14px"></div>
+        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent);margin-bottom:10px">Identity &amp; assignment</div>
+        <div style="display:grid;grid-template-columns:80px 1fr 1fr;gap:10px">
+          <sc-for list="{{ sel.ident }}" as="f" hint-placeholder-count="3">
+            <div class="field" style="{{ f.span }}"><label>{{ f.label }}</label>
+              <input class="input" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.ph }}">
+            </div>
+          </sc-for>
+          <div class="field" style="grid-column:span 3"><label>Section — moves them in the task org</label>
+            <select class="input" value="{{ sel.section }}" onChange="{{ sel.onSection }}">
+              <sc-for list="{{ sel.sectionOptions }}" as="o" hint-placeholder-count="0">
+                <option value="{{ o.id }}">{{ o.label }}</option>
+              </sc-for>
+            </select>
+          </div>
+          <div class="field" style="grid-column:span 2"><label>Create a new section</label>
+            <input class="input" value="{{ newSec }}" onChange="{{ onNewSecName }}" placeholder="3rd PLT">
+          </div>
+          <button class="btn btn-secondary" onClick="{{ sel.onAddSection }}" style="align-self:end;height:38px;white-space:nowrap;font-size:11px;letter-spacing:.06em">+ CREATE</button>
+          <div class="field" style="grid-column:span 3"><label>Duty status</label>
+            <select class="input" value="{{ sel.duty }}" onChange="{{ sel.onDuty }}">
+              <sc-for list="{{ sel.dutyOptions }}" as="o" hint-placeholder-count="0">
+                <option value="{{ o.id }}">{{ o.label }}</option>
+              </sc-for>
+            </select>
+          </div>
+        </div>
         <div style="height:1px;background:var(--color-divider);margin:18px 0 14px"></div>
         <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent);margin-bottom:10px">Soldier record</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -597,6 +660,26 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
         <div style="display:flex;gap:8px;margin-top:16px">
           <button class="btn btn-secondary" onClick="{{ sel.onRemoveFromRoster }}" style="flex:1;font-size:11px">{{ sel.removeLabel }}</button>
           <button class="btn btn-secondary" onClick="{{ sel.onDelete }}" style="flex:1;font-size:11px;color:var(--color-accent-900)">DELETE RECORD</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showTransfer }}" hint-placeholder-val="{{ false }}">
+    <div class="dialog-backdrop" style="position:absolute;animation:fadeIn .14s ease-out">
+      <div class="dialog blueprint" style="background:var(--color-bg)">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div class="dialog-title">Export / import</div>
+        <div style="font-size:12px;line-height:1.45;color:color-mix(in srgb,#1d1f20 65%,transparent)">{{ transferSummary }}</div>
+        <div style="display:flex;flex-direction:column;gap:9px;margin-top:4px">
+          <button class="btn btn-primary btn-block" onClick="{{ onExport }}" style="letter-spacing:.08em">EXPORT TO FILE</button>
+          <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 55%,transparent)">Saves a dated .json with people, sections, rosters, due outs, card colors and row order. Move it to the other device.</div>
+          <div style="height:1px;background:var(--color-divider);margin:4px 0"></div>
+          <button class="btn btn-secondary btn-block" onClick="{{ onImport }}" style="letter-spacing:.08em">IMPORT FROM FILE</button>
+          <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 55%,transparent)">Replaces everything on this device. You will be asked to confirm first.</div>
+        </div>
+        <div class="dialog-actions">
+          <button class="btn btn-secondary" onClick="{{ onCancelModal }}">Close</button>
         </div>
       </div>
     </div>
@@ -633,6 +716,7 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
         <div class="dialog-title">New mission roster</div>
         <div class="field"><label>Name</label><input class="input" value="{{ draft.rosterName }}" onChange="{{ onDraftRosterName }}" placeholder="Annual Training 26"></div>
         <div class="field"><label>Locations (comma separated)</label><input class="input" value="{{ draft.locList }}" onChange="{{ onDraftLocList }}" placeholder="Camp Rell, Home Station, Rear D"></div>
+        <div class="field"><label>Task organization — squads / platoons (comma separated)</label><input class="input" value="{{ draft.grpList }}" onChange="{{ onDraftGrpList }}" placeholder="1st SQD, 2nd SQD, HQ ELM"></div>
         <div style="display:flex;align-items:center;gap:8px">
           <div style="flex:1;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent)">Who is participating · set location per person</div>
           <button class="btn btn-ghost" onClick="{{ onPickAll }}" style="font-size:10px;letter-spacing:.06em;padding:3px 8px">{{ pickAllLabel }}</button>
@@ -647,6 +731,14 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                 <select class="input" value="{{ p.loc }}" onChange="{{ p.onLoc }}" style="grid-column:2 / span 2;font-size:11px;min-height:32px;padding:3px 6px">
                   <sc-for list="{{ locOptions }}" as="l" hint-placeholder-count="0">
                     <option value="{{ l.id }}">{{ l.label }}</option>
+                  </sc-for>
+                </select>
+              </sc-if>
+              <sc-if value="{{ p.showGrp }}" hint-placeholder-val="{{ false }}">
+                <select class="input" value="{{ p.grp }}" onChange="{{ p.onGrp }}" style="grid-column:2 / span 2;font-size:11px;min-height:32px;padding:3px 6px;border-left:3px solid var(--color-accent)">
+                  <option value="">— no group —</option>
+                  <sc-for list="{{ grpOptions }}" as="g" hint-placeholder-count="0">
+                    <option value="{{ g.id }}">{{ g.label }}</option>
                   </sc-for>
                 </select>
               </sc-if>
@@ -699,7 +791,26 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:430,&quot;height&quot;:900}}">
 class Component extends DCLogic {
   STATUSES = ['PRES','SUTA','OFF SITE TRAINING','AWOL','PROFILE','APPOINTMENT','SICK CALL','OTHER'];
-  ABBR = {'PRES':'PRES','SUTA':'SUTA','OFF SITE TRAINING':'OST','AWOL':'AWOL','PROFILE':'PROF','APPOINTMENT':'APPT','SICK CALL':'SICK','OTHER':'OTHR'};
+  ABBR = {'':'—','PRES':'PRES','SUTA':'SUTA','OFF SITE TRAINING':'OST','AWOL':'AWOL','PROFILE':'PROF','APPOINTMENT':'APPT','SICK CALL':'SICK','OTHER':'OTHR'};
+  TONE = {
+    '':{bg:'#ffffff',fg:'#6b7075',bd:'#b9bdc2'},
+    'PRES':{bg:'#dcefdd',fg:'#1e5c2b',bd:'#4c8c58'},
+    'SUTA':{bg:'#dbe7f3',fg:'#254a70',bd:'#5980a6'},
+    'OFF SITE TRAINING':{bg:'#e3e0f1',fg:'#39336d',bd:'#6f68a8'},
+    'AWOL':{bg:'#f7d8d8',fg:'#7d1f1f',bd:'#b53333'},
+    'PROFILE':{bg:'#fae3c9',fg:'#7a4310',bd:'#c07d24'},
+    'APPOINTMENT':{bg:'#fbf1c4',fg:'#665211',bd:'#b39a2a'},
+    'SICK CALL':{bg:'#f6ddca',fg:'#7d3d12',bd:'#bf6a2c'},
+    'OTHER':{bg:'#e5e5e7',fg:'#3c3f42',bd:'#8b9096'}
+  };
+  DUTY = ['M-Day','AGR','ADOS','Title 10','Title 32'];
+  SCHEMES = [
+    { id:'paper',  label:'Paper',  bg:'var(--color-bg)',          dark:false },
+    { id:'tint',   label:'Tint',   bg:'var(--color-accent-100)',  dark:false },
+    { id:'steel',  label:'Steel',  bg:'var(--color-accent-900)',  dark:true  },
+    { id:'field',  label:'Field',  bg:'var(--color-accent-700)',  dark:true  },
+    { id:'slate',  label:'Slate',  bg:'var(--color-neutral-900)', dark:true  }
+  ];
   DUE_STATUS = ['Open','Late','Closed'];
   EVAL_STATUS = ['Draft','With rater','With senior rater','Submitted'];
   RANKS = ['GEN','LTG','MG','BG','COL','LTC','MAJ','CPT','1LT','2LT',
@@ -711,8 +822,8 @@ class Component extends DCLogic {
   state = { ready:false, people:[], sections:[], dueouts:[], rosters:[], active:'company',
             collapsed:{}, sel:null, view:'tree', scale:0.62, tx:0, ty:0, modal:null, expOwner:null,
             vw:1024, vh:768, strengthOpen:true, copied:false, expEval:null, expEdit:null,
-            draft:{rank:'',name:'',section:'HQ',rosterName:'',picked:{},locs:{},locList:'Camp Rell, Home Station'},
-            dueFilter:'All' };
+            draft:{rank:'',name:'',section:'HQ',rosterName:'',picked:{},locs:{},locList:'Camp Rell, Home Station',grpList:'',grps:{}},
+            dueFilter:'All', dueOpen:false, newSec:'', cardColor:{}, order:{}, drag:null };
 
   componentDidMount(){
     this.boot();
@@ -753,8 +864,8 @@ class Component extends DCLogic {
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem(this.KEY) || 'null'); } catch(e) {}
     if(saved && saved.people && saved.people.length){
-      this.setState({ ready:true, sections:d.sections, people:saved.people, dueouts:this.withEvals(saved.dueouts || d.dueouts),
-                      rosters:saved.rosters, active:saved.active || 'company' }, ()=>this.initCam());
+      this.setState({ ready:true, sections:(saved.sections && saved.sections.length) ? saved.sections : d.sections, people:saved.people, dueouts:this.withEvals(saved.dueouts || d.dueouts),
+                      rosters:saved.rosters, active:saved.active || 'company', cardColor:saved.cardColor || {}, order:saved.order || {} }, ()=>this.initCam());
       return;
     }
     const statuses = {};
@@ -765,7 +876,7 @@ class Component extends DCLogic {
 
   save(next){
     const s = { ...this.state, ...next };
-    try { localStorage.setItem(this.KEY, JSON.stringify({ people:s.people, dueouts:s.dueouts, rosters:s.rosters, active:s.active })); } catch(e) {}
+    try { localStorage.setItem(this.KEY, JSON.stringify({ people:s.people, dueouts:s.dueouts, rosters:s.rosters, active:s.active, sections:s.sections, cardColor:s.cardColor, order:s.order })); } catch(e) {}
   }
   set(next){ this.setState(next, ()=>this.save({})); }
 
@@ -786,7 +897,11 @@ class Component extends DCLogic {
   byRank(list){ return list.slice().sort((a, b) => this.rankIdx(a.rank) - this.rankIdx(b.rank) || a.name.localeCompare(b.name)); }
   isCompact(){ const r = this.roster(); return !!r && !r.all; }
 
-  statusOf(id){ const r = this.roster(); return (r && r.statuses && r.statuses[id]) || 'PRES'; }
+  statusOf(id){
+    const r = this.roster(); if(!r || !r.statuses) return 'PRES';
+    const v = r.statuses[id];
+    return v === undefined ? 'PRES' : v;
+  }
   locOf(id){
     const r = this.roster();
     const p = this.person(id) || {};
@@ -820,14 +935,40 @@ class Component extends DCLogic {
     });
   }
 
+  clearStatuses(){
+    const r = this.roster(); if(!r) return;
+    if(!window.confirm('Clear status for everyone in "' + r.name + '"? Every entry goes blank / not accounted.')) return;
+    const statuses = {};
+    this.members().forEach(p => { statuses[p.id] = ''; });
+    this.set({ rosters:this.state.rosters.map(x => x.id === r.id ? { ...x, statuses } : x) });
+  }
+  addSection(assignId){
+    const nm = (this.state.newSec || '').trim();
+    if(!nm) return;
+    let id = nm.toUpperCase().replace(/[^A-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    if(!id) return;
+    if(this.state.sections.some(s => s.id === id)) id = id + '-' + String(Date.now()).slice(-3);
+    const sections = [...this.state.sections, { id, name:nm.toUpperCase(), sub:'Attached' }];
+    const people = assignId ? this.state.people.map(p => p.id === assignId ? { ...p, section:id } : p) : this.state.people;
+    this.setState({ newSec:'' });
+    this.set({ sections, people });
+  }
+  groupsOf(){ const r = this.roster(); return (r && r.groups) || []; }
+  groupOf(id){ const r = this.roster(); return (r && r.grp && r.grp[id]) || ''; }
+  setGroup(id, val){
+    const r = this.roster(); if(!r) return;
+    this.set({ rosters:this.state.rosters.map(x => x.id === r.id
+      ? { ...x, grp:{ ...(x.grp || {}), [id]:val } } : x) });
+  }
   setStatus(id, st){
     const r = this.roster(); if(!r) return;
     const rosters = this.state.rosters.map(x => x.id === r.id ? { ...x, statuses:{ ...x.statuses, [id]:st } } : x);
     this.set({ rosters });
   }
   cycle(id){
-    const i = this.STATUSES.indexOf(this.statusOf(id));
-    this.setStatus(id, this.STATUSES[(i + 1) % this.STATUSES.length]);
+    const order = this.STATUSES.concat(['']);
+    const i = order.indexOf(this.statusOf(id));
+    this.setStatus(id, order[(i + 1) % order.length]);
   }
   updatePerson(id, field, val){
     this.set({ people:this.state.people.map(p => p.id === id ? { ...p, [field]:val } : p) });
@@ -872,8 +1013,9 @@ class Component extends DCLogic {
     const offY = roomy ? 12 : panelH + 24;
     if(this.isCompact()){
       const scale = Math.max(0.6, Math.min(1, (w - 24) / this.contentW()));
-      this._auto = { scale, tx:12, ty:offY };
-      this.setState({ scale, tx:12, ty:offY });
+      const ctx = roomy ? 260 : 12;
+      this._auto = { scale, tx:ctx, ty:offY };
+      this.setState({ scale, tx:ctx, ty:offY });
       return;
     }
     const scale = w >= 1200 ? 0.86 : 0.72, tx = roomy ? 260 : 12;
@@ -887,53 +1029,181 @@ class Component extends DCLogic {
     this.setState({ scale, tx:Math.max(12, (w - this.contentW() * scale) / 2), ty:12 });
   }
 
-  pillCls(st){
-    if(st === 'PRES') return 'tag tag-accent';
-    if(st === 'AWOL' || st === 'SICK CALL') return 'tag tag-outline';
-    return 'tag tag-neutral';
+  tone(st){ return this.TONE[st] || this.TONE['OTHER']; }
+  scheme(nodeId, defaultDark){
+    const cur = (this.state.cardColor || {})[nodeId];
+    const hit = this.SCHEMES.filter(s => s.id === cur)[0];
+    if(hit) return hit;
+    return this.SCHEMES.filter(s => s.id === (defaultDark ? 'steel' : 'paper'))[0];
   }
-  pillDark(st){
-    const base = 'display:inline-flex;align-items:center;justify-content:center;min-width:52px;min-height:30px;padding:3px 8px;font-family:var(--font-heading);font-size:11px;letter-spacing:.06em;cursor:pointer;border-radius:0;';
-    if(st === 'PRES') return base + 'background:#f2f2f3;color:var(--color-accent-900);border:1px solid #f2f2f3';
-    return base + 'background:transparent;color:#f2f2f3;border:1px solid color-mix(in srgb,#f2f2f3 45%,transparent)';
+  cycleColor(nodeId, defaultDark){
+    const cur = this.scheme(nodeId, defaultDark);
+    const i = this.SCHEMES.indexOf(cur);
+    const next = this.SCHEMES[(i + 1) % this.SCHEMES.length];
+    this.set({ cardColor:{ ...(this.state.cardColor || {}), [nodeId]:next.id } });
+  }
+  pillStyle(st, dark){
+    const t = this.tone(st);
+    const base = 'display:inline-flex;align-items:center;justify-content:center;min-width:56px;min-height:30px;padding:3px 8px;font-family:var(--font-heading);font-weight:600;font-size:11px;letter-spacing:.06em;cursor:pointer;border-radius:0;';
+    if(dark) return base + 'background:' + t.bd + ';color:#fff;border:1px solid #fff';
+    return base + 'background:' + t.bg + ';color:' + t.fg + ';border:1px solid ' + t.bd;
   }
   meter(pct, dark){
     return 'height:100%;width:' + pct + '%;background:' + (dark ? '#f2f2f3' : 'var(--color-accent)') + ';transition:width .2s ease-out';
   }
 
-  buildNode(sec, idx, count){
-    const mem = this.byRank(this.members().filter(p => p.section === sec.id));
+  ordered(nodeId, list){
+    let mem = this.byRank(list);
+    const ord = (this.state.order || {})[nodeId];
+    if(ord && ord.length){
+      const pos = {};
+      ord.forEach((id, i) => { pos[id] = i; });
+      mem = mem.map((p, i) => ({ p, i })).sort((a, b) => {
+        const pa = pos[a.p.id] === undefined ? 9999 : pos[a.p.id];
+        const pb = pos[b.p.id] === undefined ? 9999 : pos[b.p.id];
+        return pa - pb || a.i - b.i;
+      }).map(x => x.p);
+    }
+    this._ord = this._ord || {};
+    this._ord[nodeId] = mem.map(p => p.id);
+    return mem;
+  }
+  reorder(nodeId, id, overId){
+    const cur = ((this._ord || {})[nodeId] || []).slice();
+    const from = cur.indexOf(id), to = cur.indexOf(overId);
+    if(from < 0 || to < 0 || from === to) return;
+    cur.splice(from, 1);
+    cur.splice(to, 0, id);
+    this.set({ order:{ ...(this.state.order || {}), [nodeId]:cur } });
+  }
+  onRowDown(nodeId, id, e){
+    e.stopPropagation();
+    this._dg = { nodeId, id, x:e.clientX, y:e.clientY, moved:false };
+    window.addEventListener('pointermove', this.onRowMove);
+    window.addEventListener('pointerup', this.onRowUp);
+    window.addEventListener('pointercancel', this.onRowUp);
+  }
+  onRowMove = (e) => {
+    const g = this._dg; if(!g) return;
+    if(!g.moved){
+      if(Math.abs(e.clientX - g.x) < 6 && Math.abs(e.clientY - g.y) < 6) return;
+      g.moved = true;
+      this.setState({ drag:{ node:g.nodeId, id:g.id, over:g.id } });
+    }
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    const row = el && el.closest ? el.closest('[data-mid]') : null;
+    if(!row || row.getAttribute('data-node') !== g.nodeId) return;
+    const over = row.getAttribute('data-mid');
+    const d = this.state.drag;
+    if(d && over !== d.over) this.setState({ drag:{ ...d, over } });
+  };
+  onRowUp = () => {
+    const g = this._dg; this._dg = null;
+    window.removeEventListener('pointermove', this.onRowMove);
+    window.removeEventListener('pointerup', this.onRowUp);
+    window.removeEventListener('pointercancel', this.onRowUp);
+    if(!g) return;
+    if(!g.moved){ this.setState({ sel:g.id, drag:null }); return; }
+    const d = this.state.drag;
+    if(d && d.over && d.over !== d.id) this.reorder(d.node, d.id, d.over);
+    this.setState({ drag:null });
+  };
+  exportData(){
+    const s = this.state;
+    const payload = { app:'hhc-xo-tracker', v:1, exported:new Date().toISOString(),
+      people:s.people, sections:s.sections, rosters:s.rosters, dueouts:s.dueouts,
+      active:s.active, cardColor:s.cardColor, order:s.order };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'hhc-xo-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+  importData(file){
+    if(!file) return;
+    const fr = new FileReader();
+    fr.onload = () => {
+      let j = null;
+      try { j = JSON.parse(String(fr.result)); } catch(err) { window.alert('That file is not valid tracker data.'); return; }
+      if(!j || !Array.isArray(j.people) || !Array.isArray(j.rosters)){
+        window.alert('That file is missing people or rosters.'); return;
+      }
+      if(!window.confirm('Replace everything on this device with the file\'s data? ' + j.people.length + ' soldiers, ' + j.rosters.length + ' rosters.')) return;
+      const active = j.rosters.some(r => r.id === j.active) ? j.active : j.rosters[0].id;
+      this.set({ people:j.people, rosters:j.rosters,
+        sections:(j.sections && j.sections.length) ? j.sections : this.state.sections,
+        dueouts:this.withEvals(j.dueouts || []), cardColor:j.cardColor || {}, order:j.order || {},
+        active, sel:null, modal:null, collapsed:{} });
+      this.queueCam();
+    };
+    fr.readAsText(file);
+  }
+  buildNode(sec, idx, count, list){
+    const mem = this.ordered(sec.id, list || this.members().filter(p => p.section === sec.id));
     const open = !this.state.collapsed[sec.id];
     const pres = mem.filter(p => this.statusOf(p.id) === 'PRES').length;
-    const dark = sec.id === 'CMD';
+    const sch = this.scheme(sec.id, sec.id === 'CMD');
+    const dark = sch.dark;
+    const ink = dark ? '#f2f2f3' : '#1d1f20';
+    const soft = (pc) => dark ? 'color-mix(in srgb,#f2f2f3 ' + pc + '%,transparent)' : 'color-mix(in srgb,#1d1f20 ' + pc + '%,transparent)';
     return {
       id:sec.id, name:sec.name, sub:sec.sub, open, chev: open ? '▾' : '▸', linkUp: idx > 0,
       tally: pres + '/' + mem.length,
       meter: this.meter(mem.length ? Math.round(pres / mem.length * 100) : 0, dark),
       onToggle: () => this.setState({ collapsed:{ ...this.state.collapsed, [sec.id]: open } }),
-      onAdd: () => this.setState({ modal:'add', draft:{ ...this.state.draft, rank:'', name:'', section:sec.id } }),
+      onColor: (e) => { if(e) e.stopPropagation(); this.cycleColor(sec.id, sec.id === 'CMD'); },
+      cardStyle: 'width:290px;flex:none;padding:11px 12px 12px;background:' + sch.bg + ';color:' + ink
+        + ';box-shadow:var(--' + (dark ? 'shadow-md' : 'shadow-sm') + ')',
+      cornerStyle: dark ? 'color:color-mix(in srgb,#f2f2f3 55%,transparent)' : '',
+      titleStyle: 'font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.02em;text-transform:uppercase;color:' + ink,
+      subStyle: 'font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:' + soft(dark ? 65 : 50),
+      tallyStyle: 'font-family:var(--font-heading);font-size:15px;cursor:pointer;color:' + (dark ? '#f2f2f3' : 'var(--color-accent-700)'),
+      chevStyle: 'font-size:11px;width:10px;text-align:center;cursor:pointer;color:' + soft(dark ? 70 : 45),
+      swatchStyle: 'width:15px;height:15px;flex:none;padding:0;cursor:pointer;border-radius:0;background:'
+        + sch.bg + ';border:1px solid ' + (dark ? 'color-mix(in srgb,#f2f2f3 70%,transparent)' : 'var(--color-divider)')
+        + ';box-shadow:inset 0 0 0 1px ' + (dark ? 'color-mix(in srgb,#1d1f20 40%,transparent)' : '#fff'),
+      trackStyle: 'height:4px;margin-top:9px;background:' + (dark ? 'color-mix(in srgb,#f2f2f3 20%,transparent)' : 'var(--color-neutral-200)')
+        + ';border:1px solid ' + (dark ? 'color-mix(in srgb,#f2f2f3 32%,transparent)' : 'var(--color-divider)'),
+      listStyle: 'display:flex;flex-direction:column;margin-top:8px;padding-top:4px;border-top:1px solid '
+        + (dark ? 'color-mix(in srgb,#f2f2f3 22%,transparent)' : 'var(--color-divider)'),
+      addStyle: 'align-self:flex-start;white-space:nowrap;margin-top:8px;padding:5px 10px;font-family:var(--font-heading);font-size:11px;letter-spacing:.08em;cursor:pointer;border-radius:0;background:transparent;color:'
+        + (dark ? '#f2f2f3' : 'var(--color-accent-800)') + ';border:1px dashed '
+        + (dark ? 'color-mix(in srgb,#f2f2f3 50%,transparent)' : 'var(--color-divider)'),
+      onAdd: () => this.setState({ modal:'add', draft:{ ...this.state.draft, rank:'', name:'', section: sec.addTo || sec.id } }),
       members: mem.map((p, i) => {
+        const dg = this.state.drag && this.state.drag.node === sec.id ? this.state.drag : null;
         const st = this.statusOf(p.id);
-        const lead = i === 0 && mem.length > 1;
-        const base = 'display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:8px;min-height:44px;';
+        const t = this.tone(st);
+        const base = 'display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:8px;min-height:44px;margin:0 -12px;padding:0 9px;';
         const tk = (this._tasked || {})[p.id];
-        const note = p.position || p.remark || this.locOf(p.id) || (p.agr ? 'AGR' : p.category);
+        const note = p.position || p.remark || this.locOf(p.id) || (p.duty || (p.agr ? 'AGR' : 'M-Day'));
         return { id:p.id, rank:p.rank, name:p.name,
-          note: tk ? ('⛟ ' + tk.bumper + ' · ' + tk.role)
-                   : (lead ? ('Section lead' + (p.position ? ' · ' + p.position : '')) : note),
-          rowStyle: base + 'border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent);'
-            + (lead ? 'background:var(--color-accent-100);margin:0 -12px;padding:0 12px' : '')
-            + (tk ? 'background:color-mix(in srgb,var(--color-accent) 14%,transparent);margin:0 -12px;padding:0 9px;border-left:3px solid var(--color-accent)' : ''),
-          rowStyleDark: base + 'border-bottom:1px solid color-mix(in srgb,#f2f2f3 12%,transparent);'
-            + (lead ? 'background:color-mix(in srgb,#f2f2f3 13%,transparent);margin:0 -12px;padding:0 12px' : '')
-            + (tk ? 'background:color-mix(in srgb,#f2f2f3 22%,transparent);margin:0 -12px;padding:0 9px;border-left:3px solid #f2f2f3' : ''),
-          rankStyle: 'font-family:var(--font-heading);font-size:13px;letter-spacing:.04em;'
-            + (lead ? 'color:var(--color-accent-800);font-weight:600' : 'color:color-mix(in srgb,#1d1f20 60%,transparent)'),
-          noteStyle: 'font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'
-            + (tk || lead ? 'color:var(--color-accent-800);letter-spacing:.06em;text-transform:uppercase'
-                    : 'color:color-mix(in srgb,#1d1f20 50%,transparent)'),
-          abbr:this.ABBR[st], pillCls:this.pillCls(st), pillDark:this.pillDark(st),
-          onOpen: () => this.setState({ sel:p.id }),
+          note: tk ? ('⛟ ' + tk.bumper + ' · ' + tk.role) : note,
+          rowStyle: base + 'border-bottom:1px solid color-mix(in srgb,#1d1f20 8%,transparent);background:'
+            + t.bg + ';border-left:4px solid ' + t.bd,
+          rowStyleDark: base + 'border-bottom:1px solid color-mix(in srgb,#f2f2f3 12%,transparent);background:color-mix(in srgb,'
+            + t.bd + ' 45%,transparent);border-left:4px solid ' + t.bd,
+          rankStyle: 'font-family:var(--font-heading);font-size:13px;letter-spacing:.04em;color:'
+            + (dark ? 'color-mix(in srgb,#f2f2f3 80%,transparent)' : t.fg),
+          nameStyle: 'font-size:13px;line-height:1.2;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:'
+            + (dark ? '#f2f2f3' : t.fg),
+          noteStyle: 'font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:'
+            + (dark ? 'color-mix(in srgb,#f2f2f3 65%,transparent)' : 'color-mix(in srgb,' + t.fg + ' 72%,transparent)')
+            + (tk ? ';letter-spacing:.06em;text-transform:uppercase' : ''),
+          nodeId: sec.id,
+          grabStyle: 'min-width:0;padding:6px 0;cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none',
+          onDown: (e) => this.onRowDown(sec.id, p.id, e),
+          row: (dark
+            ? base + 'border-bottom:1px solid color-mix(in srgb,#f2f2f3 12%,transparent);background:color-mix(in srgb,'
+              + t.bd + ' 45%,transparent);border-left:4px solid ' + t.bd
+            : base + 'border-bottom:1px solid color-mix(in srgb,#1d1f20 8%,transparent);background:'
+              + t.bg + ';border-left:4px solid ' + t.bd)
+            + (dg && dg.id === p.id ? ';opacity:.4' : '')
+            + (dg && dg.over === p.id && dg.id !== p.id ? ';box-shadow:inset 0 3px 0 0 var(--color-accent)' : ''),
+          abbr:this.ABBR[st], pill:this.pillStyle(st, dark),
+          
+          onOpen: (e) => { if(e) e.stopPropagation(); this.setState({ sel:p.id }); },
           onCycle: (e) => { e.stopPropagation(); this.cycle(p.id); } };
       })
     };
@@ -949,15 +1219,30 @@ class Component extends DCLogic {
     const r = this.roster();
     return {
       title: p.rank + ' ' + p.name,
-      meta: [p.category, p.agr ? 'AGR' : 'M-Day', p.clearanceNote].filter(Boolean).join('  ·  '),
+      meta: [p.category, p.duty || (p.agr ? 'AGR' : 'M-Day'), p.clearanceNote].filter(Boolean).join('  ·  '),
       sectionLabel: (sec ? sec.name : p.section) + ' — ' + (p.position || 'Assigned'),
       notes: p.notes || '', remark: p.remark || '', loc: this.locOf(p.id) === 'UNASSIGNED' ? '' : this.locOf(p.id),
       onNotes: (e) => this.updatePerson(p.id, 'notes', e.target.value),
       onRemark: (e) => this.updatePerson(p.id, 'remark', e.target.value),
       onLoc: (e) => this.setLoc(p.id, e.target.value),
-      statusOptions: this.STATUSES.map(s => ({ label:s,
-        cls: s === st ? 'btn btn-primary' : 'btn btn-secondary',
-        onTap: () => this.setStatus(p.id, s) })),
+      statusOptions: [{ label:'NOT ACCOUNTED', v:'' }].concat(this.STATUSES.map(s => ({ label:s, v:s })))
+        .map(o => ({ label:o.label,
+          cls: o.v === st ? 'btn btn-primary' : 'btn btn-secondary',
+          onTap: () => this.setStatus(p.id, o.v) })),
+      duty: p.duty || (p.agr ? 'AGR' : 'M-Day'),
+      dutyOptions: this.DUTY.map(x => ({ id:x, label:x })),
+      onDuty: (e) => { const v = e.target.value;
+        this.set({ people:this.state.people.map(x => x.id === p.id ? { ...x, duty:v, agr: v === 'AGR' } : x) }); },
+      section: p.section,
+      sectionOptions: this.state.sections.map(s => ({ id:s.id, label:s.name })),
+      onSection: (e) => this.updatePerson(p.id, 'section', e.target.value),
+      onAddSection: () => this.addSection(p.id),
+      hasGroups: this.groupsOf().length > 0,
+      group: this.groupOf(p.id),
+      groupOptions: this.groupsOf().map(g => ({ id:g, label:g })),
+      onGroup: (e) => this.setGroup(p.id, e.target.value),
+      ident: [ F('Rank','rank','SSG'), F('Name','name','Last First','grid-column:span 2'),
+               F('Position','position','Squad leader','grid-column:span 3') ],
       fields: [ F('DODID','dodid','10-digit'), F('MOS','mos','12N / 42A'), F('Phone','phone','(203) 555-0100'),
                 F('Email','email','first.last.mil@army.mil','grid-column:span 2'),
                 F('Home of record','hor','City, ST','grid-column:span 2'),
@@ -994,7 +1279,7 @@ class Component extends DCLogic {
         const st = this.statusOf(p.id);
         const sec = this.state.sections.find(s => s.id === p.section);
         return { rank:p.rank, name:p.name, section: sec ? sec.name : p.section,
-          abbr:this.ABBR[st], pillCls:this.pillCls(st), onOpen: () => this.setState({ sel:p.id }) };
+          abbr:this.ABBR[st], pill:this.pillStyle(st, false), onOpen: () => this.setState({ sel:p.id }) };
       }) }));
     return { rows, groups };
   }
@@ -1143,10 +1428,15 @@ class Component extends DCLogic {
   ptrs = new Map();
   onPanStart = (e) => {
     this.ptrs.set(e.pointerId, { x:e.clientX, y:e.clientY });
-    if(e.currentTarget.setPointerCapture) e.currentTarget.setPointerCapture(e.pointerId);
-    if(this.ptrs.size === 2){ this.pan = null; this.pinch = this.pinchBase(); }
+    this.capTarget = e.currentTarget;
+    this.captured = false;
+    if(this.ptrs.size === 2){ this.pan = null; this.pinch = this.pinchBase(); this.capture(e.pointerId); }
     else { this.pinch = null; this.pan = { x:e.clientX, y:e.clientY, tx:this.state.tx, ty:this.state.ty }; }
   };
+  capture(id){
+    if(this.captured || !this.capTarget || !this.capTarget.setPointerCapture) return;
+    try { this.capTarget.setPointerCapture(id); this.captured = true; } catch(err) {}
+  }
   pinchBase(){
     const p = [...this.ptrs.values()];
     const rect = this.vp ? this.vp.getBoundingClientRect() : { left:0, top:0 };
@@ -1167,11 +1457,17 @@ class Component extends DCLogic {
       return;
     }
     if(!this.pan) return;
-    this.setState({ tx:this.pan.tx + (e.clientX - this.pan.x), ty:this.pan.ty + (e.clientY - this.pan.y) });
+    const dx = e.clientX - this.pan.x, dy = e.clientY - this.pan.y;
+    if(!this.captured){
+      if(Math.abs(dx) < 5 && Math.abs(dy) < 5) return;
+      this.capture(e.pointerId);
+    }
+    this.setState({ tx:this.pan.tx + dx, ty:this.pan.ty + dy });
   };
   onPanEnd = (e) => {
     if(e && e.pointerId !== undefined) this.ptrs.delete(e.pointerId); else this.ptrs.clear();
     this.pinch = null;
+    if(!this.ptrs.size) this.captured = false;
     if(this.ptrs.size === 1){
       const p = [...this.ptrs.values()][0];
       this.pan = { x:p.x, y:p.y, tx:this.state.tx, ty:this.state.ty };
@@ -1215,11 +1511,14 @@ class Component extends DCLogic {
     const cv = this.convoyVals();
     const manRows = this.state.modal === 'manifest' ? this.manifestRows() : [];
     const locs = (d.locList || '').split(',').map(s => s.trim()).filter(Boolean);
+    const grps = (d.grpList || '').split(',').map(s => s.trim()).filter(Boolean);
     const pickedIds = Object.keys(d.picked).filter(k => d.picked[k]);
 
     const navDefs = wide
       ? [['TASK ORG','tree'], ['LOCATION','loc']]
-      : [[convoyTab ? 'CONVOY' : 'TASK ORG','tree'], ['LOCATION','loc'], ['DUE OUTS','due']];
+      : [[convoyTab ? 'CONVOY' : 'TASK ORG','tree'], ['LOCATION','loc']];
+    const groups = this.groupsOf();
+    const openDue = this.state.dueouts.filter(x => x.status !== 'Closed').length;
 
     return {
       sum: { pres, total:mem.length, pct, meter:this.meter(pct, false) },
@@ -1231,15 +1530,38 @@ class Component extends DCLogic {
         paddingTop:wide ? '10px' : 'max(14px, env(safe-area-inset-top))',
         borderBottom:'1px solid var(--color-divider)' },
       statStyle: { display:'flex', alignItems:'flex-end', gap:'14px',
-        marginTop:wide ? '0' : '10px', flex:wide ? '0 1 260px' : null, maxWidth:wide ? '260px' : null },
+        marginTop:wide ? '0' : '10px', flex:wide ? '0 1 340px' : null, maxWidth:wide ? '340px' : null },
       tabsStyle: { display:'flex', gap:'6px', marginTop:wide ? '0' : '12px', overflowX:'auto',
         paddingBottom:'2px', flex:wide ? '1 1 auto' : null, minWidth:wide ? '0' : null,
         justifyContent:'flex-start' },
-      bodyStyle: { flex:'1', minHeight:'0', display:'flex', flexDirection:wide ? 'row' : 'column' },
+      bodyStyle: { flex:'1', minHeight:'0', position:'relative', display:'flex', flexDirection:wide ? 'row' : 'column' },
       paneStyle: { flex:'1', minHeight:'0', overflowY:'auto', padding:'14px 16px 28px' },
-      dueStyle: { overflowY:'auto', minHeight:'0', flex:wide ? '0 0 400px' : '1',
-        borderLeft:wide ? '1px solid var(--color-divider)' : null, padding:'14px 16px 24px' },
-      navStyle: { flex:'none', display:'grid', gridTemplateColumns:'1fr 1fr 1fr',
+      dueStyle: { position:'absolute', right:0, top:0, bottom:0, zIndex:60,
+        width:wide ? '420px' : '88%', maxWidth:'420px', overflowY:'auto',
+        background:'var(--color-bg)', borderLeft:'3px solid #b53333',
+        boxShadow:'var(--shadow-lg)', padding:'14px 16px 24px',
+        animation:'drawerIn .2s cubic-bezier(.22,.8,.28,1)' },
+      showDueBtn: !this.state.sel && !this.state.modal && !this.state.dueOpen,
+      fileRef: (el) => { this.fileEl = el; },
+      showTransfer: this.state.modal === 'transfer',
+      onOpenTransfer: () => this.setState({ modal:'transfer' }),
+      transferSummary: 'On this device: ' + this.state.people.length + ' soldiers · '
+        + this.state.sections.length + ' sections · ' + this.state.rosters.length + ' rosters · '
+        + this.state.dueouts.length + ' due outs.',
+      onExport: () => this.exportData(),
+      onImport: () => { if(this.fileEl) this.fileEl.click(); },
+      onImportFile: (e) => { const file = e.target.files && e.target.files[0];
+        e.target.value = ''; this.importData(file); },
+      onCloseDue: () => this.setState({ dueOpen:false }),
+      onToggleDue: () => this.setState({ dueOpen: !this.state.dueOpen }),
+      dueBadge: String(openDue),
+      dueBtnStyle: 'position:absolute;right:12px;top:12px;z-index:50;display:flex;align-items:center;gap:7px;background:#b53333;color:#fff;border:1px solid #8f2626;font-family:var(--font-heading);font-weight:600;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:7px 11px;cursor:pointer;border-radius:0;box-shadow:var(--shadow-sm)',
+      onClearStatus: () => this.clearStatuses(),
+      statusLegend: [''].concat(this.STATUSES).map(s => { const t = this.tone(s);
+        return { label:this.ABBR[s],
+          style:'display:inline-flex;align-items:center;gap:5px;font-family:var(--font-heading);font-size:9px;letter-spacing:.06em;color:' + t.fg,
+          dot:'width:9px;height:9px;flex:none;display:block;background:' + t.bg + ';border:1px solid ' + t.bd }; }),
+      navStyle: { flex:'none', display:'grid', gridTemplateColumns:'1fr 1fr',
         borderTop:'1px solid var(--color-divider)', background:'var(--color-bg)',
         paddingBottom:'env(safe-area-inset-bottom)' },
       sheetStyle: wide
@@ -1251,7 +1573,11 @@ class Component extends DCLogic {
             boxShadow:'var(--shadow-lg)', animation:'sheetUp .22s cubic-bezier(.22,.8,.28,1)' },
 
       isBranch: !this.isCompact(), isCompact: this.isCompact(),
-      allNodes: secs.filter(s => mem.some(p => p.section === s.id)).map((s, i, a) => this.buildNode(s, i, a.length)),
+      allNodes: groups.length
+        ? groups.concat(mem.some(p => !this.groupOf(p.id)) ? ['UNASSIGNED'] : []).map((g, i, a) =>
+            this.buildNode({ id:'g:' + g, name:g, sub:'Task organization', addTo:'HQ' }, i, a.length,
+              mem.filter(p => (this.groupOf(p.id) || 'UNASSIGNED') === g)))
+        : secs.filter(s => mem.some(p => p.section === s.id)).map((s, i, a) => this.buildNode(s, i, a.length)),
       topNodes: secs.filter(s => s.id === 'CMD').map(s => this.buildNode(s, 0, 1)),
       hqNodes: secs.filter(s => s.id === 'HQ').map(s => this.buildNode(s, 0, 1)),
       secCols,
@@ -1264,7 +1590,7 @@ class Component extends DCLogic {
       showTree: !convoyTab && view !== 'loc' && (wide || view === 'tree'),
       showConvoy: convoyTab && view !== 'loc' && (wide || view === 'tree'),
       showLoc: view === 'loc',
-      showDue: (wide && view === 'tree' && !convoyTab && !!(this.tab() || {}).all) || (!wide && view === 'due'),
+      showDue: this.state.dueOpen,
       showNav: !wide, showToggle: wide,
       navItems: navDefs.map(n => ({ label:n[0],
         cls: view === n[1] ? 'btn btn-primary' : 'btn btn-secondary',
@@ -1286,7 +1612,7 @@ class Component extends DCLogic {
           this.set({ rosters, active, sel:null });
           this.queueCam();
         } })),
-      onNewRoster: () => this.setState({ modal:'roster', draft:{ ...d, rosterName:'', picked:{}, locs:{} } }),
+      onNewRoster: () => this.setState({ modal:'roster', draft:{ ...d, rosterName:'', picked:{}, locs:{}, grps:{}, grpList:'' } }),
       onNewConvoy: () => {
         const base = this.roster(); if(!base) return;
         const n = this.state.rosters.filter(x => x.kind === 'convoy' && x.parent === base.id).length + 1;
@@ -1331,7 +1657,7 @@ class Component extends DCLogic {
           document.body.appendChild(a); a.click(); document.body.removeChild(a);
           setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
         } },
-      draft: { rank:d.rank, name:d.name, section:d.section, rosterName:d.rosterName, locList:d.locList },
+      draft: { rank:d.rank, name:d.name, section:d.section, rosterName:d.rosterName, locList:d.locList, grpList:d.grpList || '' },
       sectionOptions: secs.map(s => ({ id:s.id, label:s.name })),
       locOptions: (locs.length ? locs : ['UNASSIGNED']).map(l => ({ id:l, label:l })),
       onDraftRank: (e) => this.setState({ draft:{ ...d, rank:e.target.value.toUpperCase() } }),
@@ -1339,12 +1665,16 @@ class Component extends DCLogic {
       onDraftSection: (e) => this.setState({ draft:{ ...d, section:e.target.value } }),
       onDraftRosterName: (e) => this.setState({ draft:{ ...d, rosterName:e.target.value } }),
       onDraftLocList: (e) => this.setState({ draft:{ ...d, locList:e.target.value } }),
+      onDraftGrpList: (e) => this.setState({ draft:{ ...d, grpList:e.target.value } }),
+      newSec: this.state.newSec,
+      onNewSecName: (e) => this.setState({ newSec:e.target.value }),
+      grpOptions: grps.map(g => ({ id:g, label:g })),
       onCancelModal: () => this.setState({ modal:null }),
       onConfirmAdd: () => {
         if(!d.name.trim()) { this.setState({ modal:null }); return; }
         const id = 'n' + Date.now();
         const person = { id, section:d.section, rank:d.rank || 'PVT', name:d.name.trim(), category:'Enlisted',
-          agr:false, status:'PRES', remark:'', loc:'', dodid:'', mos:'', phone:'', email:'', hor:'', profile:'', nok:'', weapon:'', sensitive:'', notes:'', clearance:'', clearanceNote:'' };
+          agr:false, duty:'M-Day', position:'', status:'PRES', remark:'', loc:'', dodid:'', mos:'', phone:'', email:'', hor:'', profile:'', nok:'', weapon:'', sensitive:'', notes:'', clearance:'', clearanceNote:'' };
         const rosters = this.state.rosters.map(r => r.kind === 'convoy' ? r
           : (r.id === (this.roster() || {}).id && !r.all
             ? { ...r, ids:[...(r.ids || []), id], statuses:{ ...r.statuses, [id]:'PRES' } }
@@ -1361,18 +1691,22 @@ class Component extends DCLogic {
       pickList: this.state.people.map(p => ({ rank:p.rank, name:p.name, section:p.section,
         picked: !!d.picked[p.id],
         loc: d.locs[p.id] || (locs[0] || 'UNASSIGNED'),
+        grp: (d.grps || {})[p.id] || '',
+        showGrp: !!d.picked[p.id] && grps.length > 0,
         box: 'width:16px;height:16px;cursor:pointer;border:1px solid ' + (d.picked[p.id] ? 'var(--color-accent)' : 'var(--color-divider)') + ';background:' + (d.picked[p.id] ? 'var(--color-accent)' : 'transparent'),
         onLoc: (e) => this.setState({ draft:{ ...d, locs:{ ...d.locs, [p.id]:e.target.value } } }),
+        onGrp: (e) => this.setState({ draft:{ ...d, grps:{ ...(d.grps || {}), [p.id]:e.target.value } } }),
         onToggle: () => this.setState({ draft:{ ...d, picked:{ ...d.picked, [p.id]: !d.picked[p.id] } } }) })),
       createLabel: 'Create (' + pickedIds.length + ')',
       onConfirmRoster: () => {
         const ids = pickedIds;
         if(!ids.length) { this.setState({ modal:null }); return; }
-        const statuses = {}, rlocs = {};
-        ids.forEach(i => { statuses[i] = 'PRES'; rlocs[i] = d.locs[i] || locs[0] || 'UNASSIGNED'; });
+        const statuses = {}, rlocs = {}, rgrp = {};
+        ids.forEach(i => { statuses[i] = 'PRES'; rlocs[i] = d.locs[i] || locs[0] || 'UNASSIGNED';
+          rgrp[i] = (d.grps || {})[i] || grps[0] || ''; });
         const id = 'r' + Date.now();
         const name = (d.rosterName || 'MISSION').toUpperCase();
-        this.set({ rosters:[...this.state.rosters, { id, name, ids, statuses, locs:rlocs, locations:locs }], active:id, modal:null, view:'tree' });
+        this.set({ rosters:[...this.state.rosters, { id, name, ids, statuses, locs:rlocs, locations:locs, groups:grps, grp:rgrp }], active:id, modal:null, view:'tree' });
         this.queueCam();
       }
     };
