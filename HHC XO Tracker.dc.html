@@ -88,6 +88,9 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                   </div>
                   <div onClick="{{ node.onToggle }}" style="{{ node.tallyStyle }}">{{ node.tally }}</div>
                   <button onClick="{{ node.onColor }}" title="Change card color" style="{{ node.swatchStyle }}"></button>
+                  <sc-if value="{{ node.canRemove }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ node.onRemove }}" title="Remove this section" style="{{ node.removeStyle }}">✕</button>
+                  </sc-if>
                   <div onClick="{{ node.onToggle }}" style="{{ node.chevStyle }}">{{ node.chev }}</div>
                 </div>
                 <div style="{{ node.trackStyle }}"><div style="{{ node.meter }}"></div></div>
@@ -96,11 +99,12 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                     <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
                       <div style="{{ m.row }}" data-mid="{{ m.id }}" data-node="{{ m.nodeId }}">
                         <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
-                        <div onPointerDown="{{ m.onDown }}" title="Drag to reorder · tap to open" style="{{ m.grabStyle }}">
+                        <div onClick="{{ m.onOpen }}" title="Tap to open" style="{{ m.grabStyle }}">
                           <div style="{{ m.nameStyle }}">{{ m.name }}</div>
                           <div style="{{ m.noteStyle }}">{{ m.note }}</div>
                         </div>
                         <button onClick="{{ m.onCycle }}" style="{{ m.pill }}">{{ m.abbr }}</button>
+                        <div onPointerDown="{{ m.onDown }}" title="Drag to reorder" style="{{ m.handleStyle }}">⠿</div>
                       </div>
                     </sc-for>
                     <button onClick="{{ node.onAdd }}" style="{{ node.addStyle }}">+ ADD SOLDIER</button>
@@ -121,6 +125,9 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                   </div>
                   <div onClick="{{ node.onToggle }}" style="{{ node.tallyStyle }}">{{ node.tally }}</div>
                   <button onClick="{{ node.onColor }}" title="Change card color" style="{{ node.swatchStyle }}"></button>
+                  <sc-if value="{{ node.canRemove }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ node.onRemove }}" title="Remove this section" style="{{ node.removeStyle }}">✕</button>
+                  </sc-if>
                   <div onClick="{{ node.onToggle }}" style="{{ node.chevStyle }}">{{ node.chev }}</div>
                 </div>
                 <div style="{{ node.trackStyle }}"><div style="{{ node.meter }}"></div></div>
@@ -129,11 +136,12 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                     <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
                       <div style="{{ m.row }}" data-mid="{{ m.id }}" data-node="{{ m.nodeId }}">
                         <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
-                        <div onPointerDown="{{ m.onDown }}" title="Drag to reorder · tap to open" style="{{ m.grabStyle }}">
+                        <div onClick="{{ m.onOpen }}" title="Tap to open" style="{{ m.grabStyle }}">
                           <div style="{{ m.nameStyle }}">{{ m.name }}</div>
                           <div style="{{ m.noteStyle }}">{{ m.note }}</div>
                         </div>
                         <button onClick="{{ m.onCycle }}" style="{{ m.pill }}">{{ m.abbr }}</button>
+                        <div onPointerDown="{{ m.onDown }}" title="Drag to reorder" style="{{ m.handleStyle }}">⠿</div>
                       </div>
                     </sc-for>
                     <button onClick="{{ node.onAdd }}" style="{{ node.addStyle }}">+ ADD SOLDIER</button>
@@ -164,6 +172,9 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                   </div>
                   <div onClick="{{ node.onToggle }}" style="{{ node.tallyStyle }}">{{ node.tally }}</div>
                   <button onClick="{{ node.onColor }}" title="Change card color" style="{{ node.swatchStyle }}"></button>
+                  <sc-if value="{{ node.canRemove }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ node.onRemove }}" title="Remove this section" style="{{ node.removeStyle }}">✕</button>
+                  </sc-if>
                   <div onClick="{{ node.onToggle }}" style="{{ node.chevStyle }}">{{ node.chev }}</div>
                 </div>
                 <div style="{{ node.trackStyle }}"><div style="{{ node.meter }}"></div></div>
@@ -172,11 +183,12 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                     <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
                       <div style="{{ m.row }}" data-mid="{{ m.id }}" data-node="{{ m.nodeId }}">
                         <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
-                        <div onPointerDown="{{ m.onDown }}" title="Drag to reorder · tap to open" style="{{ m.grabStyle }}">
+                        <div onClick="{{ m.onOpen }}" title="Tap to open" style="{{ m.grabStyle }}">
                           <div style="{{ m.nameStyle }}">{{ m.name }}</div>
                           <div style="{{ m.noteStyle }}">{{ m.note }}</div>
                         </div>
                         <button onClick="{{ m.onCycle }}" style="{{ m.pill }}">{{ m.abbr }}</button>
+                        <div onPointerDown="{{ m.onDown }}" title="Drag to reorder" style="{{ m.handleStyle }}">⠿</div>
                       </div>
                     </sc-for>
                     <button onClick="{{ node.onAdd }}" style="{{ node.addStyle }}">+ ADD SOLDIER</button>
@@ -204,6 +216,9 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                   </div>
                   <div onClick="{{ node.onToggle }}" style="{{ node.tallyStyle }}">{{ node.tally }}</div>
                   <button onClick="{{ node.onColor }}" title="Change card color" style="{{ node.swatchStyle }}"></button>
+                  <sc-if value="{{ node.canRemove }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ node.onRemove }}" title="Remove this section" style="{{ node.removeStyle }}">✕</button>
+                  </sc-if>
                   <div onClick="{{ node.onToggle }}" style="{{ node.chevStyle }}">{{ node.chev }}</div>
                 </div>
                 <div style="{{ node.trackStyle }}"><div style="{{ node.meter }}"></div></div>
@@ -212,11 +227,12 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
                     <sc-for list="{{ node.members }}" as="m" hint-placeholder-count="3">
                       <div style="{{ m.row }}" data-mid="{{ m.id }}" data-node="{{ m.nodeId }}">
                         <div style="{{ m.rankStyle }}">{{ m.rank }}</div>
-                        <div onPointerDown="{{ m.onDown }}" title="Drag to reorder · tap to open" style="{{ m.grabStyle }}">
+                        <div onClick="{{ m.onOpen }}" title="Tap to open" style="{{ m.grabStyle }}">
                           <div style="{{ m.nameStyle }}">{{ m.name }}</div>
                           <div style="{{ m.noteStyle }}">{{ m.note }}</div>
                         </div>
                         <button onClick="{{ m.onCycle }}" style="{{ m.pill }}">{{ m.abbr }}</button>
+                        <div onPointerDown="{{ m.onDown }}" title="Drag to reorder" style="{{ m.handleStyle }}">⠿</div>
                       </div>
                     </sc-for>
                     <button onClick="{{ node.onAdd }}" style="{{ node.addStyle }}">+ ADD SOLDIER</button>
@@ -229,8 +245,8 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
       </div>
     </div>
 
-    <div ref="{{ spRef }}" style="position:absolute;left:12px;top:12px;width:236px;max-width:calc(100% - 24px)">
-      <div class="blueprint" style="background:var(--color-bg);box-shadow:var(--shadow-md);padding:9px 11px 10px">
+    <div ref="{{ spRef }}" style="position:absolute;left:12px;top:12px;display:flex;align-items:flex-start;gap:8px;max-width:calc(100% - 24px)">
+      <div class="blueprint" style="width:236px;flex:none;background:var(--color-bg);box-shadow:var(--shadow-md);padding:9px 11px 10px">
         <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
         <div onClick="{{ onToggleStrength }}" style="display:flex;align-items:center;gap:8px;cursor:pointer">
           <div style="flex:1;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 60%,transparent)">Strength summary</div>
@@ -254,6 +270,7 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
           </div>
         </sc-if>
       </div>
+      <button class="btn btn-secondary" onClick="{{ onAddTaskSection }}" title="Add a section to the task org" style="flex:none;white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:8px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">+ SECTION</button>
     </div>
 
     <div style="position:absolute;right:12px;bottom:14px;display:flex;flex-direction:column;gap:6px">
@@ -279,25 +296,19 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
           <div style="font-family:var(--font-heading);font-weight:600;font-size:20px;line-height:1.1">{{ cv.name }}</div>
         </div>
       </div>
-      <div style="margin-top:9px;border-top:1px solid var(--color-divider)">
-        <sc-for list="{{ cv.summary }}" as="s" hint-placeholder-count="6">
-          <div style="{{ s.rowStyle }}">
-            <div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 65%,transparent)">{{ s.label }}</div>
-            <div style="font-family:var(--font-heading);font-size:15px;text-align:right">{{ s.value }}</div>
-          </div>
-        </sc-for>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding-top:10px;border-top:1px solid var(--color-divider)">
-        <div class="field"><label>Convoy OIC</label>
-          <select class="input" value="{{ cv.oic }}" onChange="{{ cv.onOic }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px;padding-top:12px;border-top:2px solid var(--color-accent)">
+        <div>
+          <div style="font-family:var(--font-heading);font-weight:600;font-size:19px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:5px">Convoy OIC</div>
+          <select class="input" value="{{ cv.oic }}" onChange="{{ cv.onOic }}" style="font-size:12px">
             <option value="">— unassigned —</option>
             <sc-for list="{{ cv.oicOpts }}" as="o" hint-placeholder-count="0">
               <option value="{{ o.id }}">{{ o.label }}</option>
             </sc-for>
           </select>
         </div>
-        <div class="field"><label>Convoy NCOIC</label>
-          <select class="input" value="{{ cv.ncoic }}" onChange="{{ cv.onNcoic }}">
+        <div>
+          <div style="font-family:var(--font-heading);font-weight:600;font-size:19px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:5px">Convoy NCOIC</div>
+          <select class="input" value="{{ cv.ncoic }}" onChange="{{ cv.onNcoic }}" style="font-size:12px">
             <option value="">— unassigned —</option>
             <sc-for list="{{ cv.ncoicOpts }}" as="o" hint-placeholder-count="0">
               <option value="{{ o.id }}">{{ o.label }}</option>
@@ -308,6 +319,45 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
       <div style="display:flex;gap:8px;margin-top:12px">
         <button class="btn btn-secondary" onClick="{{ cv.onAddChalk }}" style="flex:1;font-size:11px;letter-spacing:.06em">+ ADD CHALK</button>
         <button class="btn btn-primary" onClick="{{ cv.onManifest }}" style="flex:1;font-size:11px;letter-spacing:.06em">MANIFEST</button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(206px,1fr));gap:12px;margin-bottom:16px">
+      <div class="blueprint" style="background:var(--color-bg);padding:10px 12px 12px">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-700)">Chalks &amp; vehicles</div>
+        <div style="margin-top:7px;border-top:1px solid var(--color-divider)">
+          <sc-for list="{{ cv.cardChalks }}" as="s" hint-placeholder-count="5">
+            <div style="{{ s.rowStyle }}">
+              <div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 65%,transparent)">{{ s.label }}</div>
+              <div style="font-family:var(--font-heading);font-size:16px;text-align:right">{{ s.value }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div class="blueprint" style="background:var(--color-bg);padding:10px 12px 12px">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-700)">By vehicle type</div>
+        <div style="margin-top:7px;border-top:1px solid var(--color-divider)">
+          <sc-for list="{{ cv.cardTypes }}" as="s" hint-placeholder-count="4">
+            <div style="{{ s.rowStyle }}">
+              <div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 65%,transparent)">{{ s.label }}</div>
+              <div style="font-family:var(--font-heading);font-size:16px;text-align:right">{{ s.value }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div class="blueprint" style="background:var(--color-bg);padding:10px 12px 12px">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-700)">Personnel</div>
+        <div style="margin-top:7px;border-top:1px solid var(--color-divider)">
+          <sc-for list="{{ cv.cardPax }}" as="s" hint-placeholder-count="4">
+            <div style="{{ s.rowStyle }}">
+              <div style="font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 65%,transparent)">{{ s.label }}</div>
+              <div style="font-family:var(--font-heading);font-size:16px;text-align:right">{{ s.value }}</div>
+            </div>
+          </sc-for>
+        </div>
       </div>
     </div>
 
@@ -690,20 +740,95 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
       <div class="dialog blueprint" style="background:var(--color-bg)">
         <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
         <div class="dialog-title">Add soldier</div>
-        <div style="display:grid;grid-template-columns:80px 1fr;gap:10px">
-          <div class="field"><label>Rank</label><input class="input" value="{{ draft.rank }}" onChange="{{ onDraftRank }}" placeholder="SPC"></div>
-          <div class="field"><label>Name</label><input class="input" value="{{ draft.name }}" onChange="{{ onDraftName }}" placeholder="Last First"></div>
-        </div>
-        <div class="field"><label>Section</label>
-          <select class="input" value="{{ draft.section }}" onChange="{{ onDraftSection }}">
-            <sc-for list="{{ sectionOptions }}" as="s" hint-placeholder-count="0">
-              <option value="{{ s.id }}">{{ s.label }}</option>
-            </sc-for>
-          </select>
-        </div>
+        <sc-if value="{{ hasAddPicks }}" hint-placeholder-val="{{ true }}">
+          <div class="field"><label>From the unit</label>
+            <select class="input" value="{{ draft.pick }}" onChange="{{ onDraftPick }}">
+              <option value="">+ NEW SOLDIER — not in the unit yet</option>
+              <sc-for list="{{ addPickOptions }}" as="o" hint-placeholder-count="0">
+                <option value="{{ o.id }}">{{ o.label }}</option>
+              </sc-for>
+            </select>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showNewFields }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;grid-template-columns:80px 1fr;gap:10px">
+            <div class="field"><label>Rank</label><input class="input" value="{{ draft.rank }}" onChange="{{ onDraftRank }}" placeholder="SPC"></div>
+            <div class="field"><label>Name</label><input class="input" value="{{ draft.name }}" onChange="{{ onDraftName }}" placeholder="Last First"></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ hasAddGrp }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700)">Task org element · {{ addGrpLabel }}</div>
+        </sc-if>
+        <sc-if value="{{ showSectionSelect }}" hint-placeholder-val="{{ true }}">
+          <div class="field"><label>Section — company roster</label>
+            <select class="input" value="{{ draft.section }}" onChange="{{ onDraftSection }}">
+              <sc-for list="{{ sectionOptions }}" as="s" hint-placeholder-count="0">
+                <option value="{{ s.id }}">{{ s.label }}</option>
+              </sc-for>
+            </select>
+          </div>
+        </sc-if>
+        <sc-if value="{{ hasAddGrp }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:11px;line-height:1.4;color:color-mix(in srgb,#1d1f20 55%,transparent)">{{ addGrpNote }}</div>
+        </sc-if>
         <div class="dialog-actions">
           <button class="btn btn-secondary" onClick="{{ onCancelModal }}">Cancel</button>
           <button class="btn btn-primary" onClick="{{ onConfirmAdd }}">Add</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showVehType }}" hint-placeholder-val="{{ false }}">
+    <div class="dialog-backdrop" style="position:absolute;animation:fadeIn .14s ease-out">
+      <div class="dialog blueprint" style="background:var(--color-bg)">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div class="dialog-title">New vehicle type</div>
+        <div class="field"><label>Type</label>
+          <input class="input" value="{{ draft.vehType }}" onChange="{{ onDraftVehType }}" placeholder="GATOR 6X6">
+        </div>
+        <div style="font-size:11px;line-height:1.4;color:color-mix(in srgb,#1d1f20 55%,transparent)">Names starting with GSA — and BUS — count as GSA in the convoy summary. Everything else counts as green.</div>
+        <div class="dialog-actions">
+          <button class="btn btn-secondary" onClick="{{ onCancelModal }}">Cancel</button>
+          <button class="btn btn-primary" onClick="{{ onConfirmVehType }}">Add type</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showSection }}" hint-placeholder-val="{{ false }}">
+    <div class="dialog-backdrop" style="position:absolute;animation:fadeIn .14s ease-out">
+      <div class="dialog blueprint hhc-scroll" style="background:var(--color-bg);max-height:86vh;overflow-y:auto">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div class="dialog-title">Task org sections</div>
+        <sc-if value="{{ secMod.hasOptions }}" hint-placeholder-val="{{ true }}">
+          <div class="field"><label>Add an existing section</label>
+            <select class="input" value="{{ secMod.pick }}" onChange="{{ secMod.onPick }}">
+              <option value="">— choose a section —</option>
+              <sc-for list="{{ secMod.options }}" as="o" hint-placeholder-count="0">
+                <option value="{{ o.id }}">{{ o.label }}</option>
+              </sc-for>
+            </select>
+          </div>
+        </sc-if>
+        <div class="field"><label>Or create a new one</label>
+          <input class="input" value="{{ secMod.newName }}" onChange="{{ secMod.onNewName }}" placeholder="3rd PLT">
+        </div>
+        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent)">Who is in it · {{ secMod.count }} selected</div>
+        <div class="hhc-scroll" style="overflow-y:auto;border:1px solid var(--color-divider);max-height:26vh">
+          <sc-for list="{{ secMod.members }}" as="m" hint-placeholder-count="6">
+            <div onClick="{{ m.onToggle }}" style="display:grid;grid-template-columns:20px 38px 1fr auto;align-items:center;gap:8px;padding:7px 10px;min-height:44px;cursor:pointer;border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent)">
+              <div style="{{ m.box }}"></div>
+              <div style="font-family:var(--font-heading);font-size:12px;color:color-mix(in srgb,#1d1f20 60%,transparent)">{{ m.rank }}</div>
+              <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
+              <div style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 45%,transparent)">{{ m.from }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:11px;line-height:1.4;color:color-mix(in srgb,#1d1f20 55%,transparent)">To remove a section, use the ✕ on its card in the task org.</div>
+        <div class="dialog-actions">
+          <button class="btn btn-secondary" onClick="{{ onCancelModal }}">Close</button>
+          <button class="btn btn-primary" onClick="{{ secMod.onConfirm }}">Add section</button>
         </div>
       </div>
     </div>
@@ -821,7 +946,7 @@ class Component extends DCLogic {
 
   state = { ready:false, people:[], sections:[], dueouts:[], rosters:[], active:'company',
             collapsed:{}, sel:null, view:'tree', scale:0.62, tx:0, ty:0, modal:null, expOwner:null,
-            vw:1024, vh:768, strengthOpen:true, copied:false, expEval:null, expEdit:null,
+            customTypes:[], vw:1024, vh:768, strengthOpen:true, copied:false, expEval:null, expEdit:null,
             draft:{rank:'',name:'',section:'HQ',rosterName:'',picked:{},locs:{},locList:'Camp Rell, Home Station',grpList:'',grps:{}},
             dueFilter:'All', dueOpen:false, newSec:'', cardColor:{}, order:{}, drag:null };
 
@@ -865,7 +990,8 @@ class Component extends DCLogic {
     try { saved = JSON.parse(localStorage.getItem(this.KEY) || 'null'); } catch(e) {}
     if(saved && saved.people && saved.people.length){
       this.setState({ ready:true, sections:(saved.sections && saved.sections.length) ? saved.sections : d.sections, people:saved.people, dueouts:this.withEvals(saved.dueouts || d.dueouts),
-                      rosters:saved.rosters, active:saved.active || 'company', cardColor:saved.cardColor || {}, order:saved.order || {} }, ()=>this.initCam());
+                      rosters:saved.rosters, active:saved.active || 'company', cardColor:saved.cardColor || {}, order:saved.order || {},
+                      customTypes:saved.customTypes || [] }, ()=>this.initCam());
       return;
     }
     const statuses = {};
@@ -876,7 +1002,7 @@ class Component extends DCLogic {
 
   save(next){
     const s = { ...this.state, ...next };
-    try { localStorage.setItem(this.KEY, JSON.stringify({ people:s.people, dueouts:s.dueouts, rosters:s.rosters, active:s.active, sections:s.sections, cardColor:s.cardColor, order:s.order })); } catch(e) {}
+    try { localStorage.setItem(this.KEY, JSON.stringify({ people:s.people, dueouts:s.dueouts, rosters:s.rosters, active:s.active, sections:s.sections, cardColor:s.cardColor, order:s.order, customTypes:s.customTypes || [] })); } catch(e) {}
   }
   set(next){ this.setState(next, ()=>this.save({})); }
 
@@ -889,7 +1015,7 @@ class Component extends DCLogic {
   }
   members(){
     const r = this.roster(); if(!r) return [];
-    if(r.all) return this.state.people;
+    if(r.all) return this.state.people.filter(p => !p.attached);
     return this.state.people.filter(p => (r.ids || []).indexOf(p.id) >= 0);
   }
   person(id){ return this.state.people.find(p => p.id === id); }
@@ -942,8 +1068,8 @@ class Component extends DCLogic {
     this.members().forEach(p => { statuses[p.id] = ''; });
     this.set({ rosters:this.state.rosters.map(x => x.id === r.id ? { ...x, statuses } : x) });
   }
-  addSection(assignId){
-    const nm = (this.state.newSec || '').trim();
+  addSection(assignId, nameArg){
+    const nm = (nameArg || this.state.newSec || '').trim();
     if(!nm) return;
     let id = nm.toUpperCase().replace(/[^A-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     if(!id) return;
@@ -952,6 +1078,99 @@ class Component extends DCLogic {
     const people = assignId ? this.state.people.map(p => p.id === assignId ? { ...p, section:id } : p) : this.state.people;
     this.setState({ newSec:'' });
     this.set({ sections, people });
+  }
+  addPickOptions(){
+    const r = this.roster();
+    const inRoster = {};
+    this.members().forEach(p => { inRoster[p.id] = true; });
+    const pool = (r && r.all) ? [] : this.state.people.filter(p => !inRoster[p.id]);
+    const secName = (id) => { const s = this.state.sections.find(x => x.id === id); return s ? s.name : id; };
+    return this.byRank(pool).map(p => ({ id:p.id, label:p.rank + ' ' + p.name + ' · ' + secName(p.section) }));
+  }
+  seedGroups(r){
+    const groups = (r.groups || []).slice();
+    const grp = { ...(r.grp || {}) };
+    if(groups.length) return { groups, grp };
+    const mem = this.members();
+    this.state.sections.filter(s => mem.some(p => p.section === s.id)).forEach(s => {
+      if(groups.indexOf(s.name) < 0) groups.push(s.name);
+    });
+    mem.forEach(p => {
+      const s = this.state.sections.find(x => x.id === p.section);
+      if(s) grp[p.id] = s.name;
+    });
+    return { groups, grp };
+  }
+  removeTaskSection(name){
+    const r = this.roster(); if(!r) return;
+    const where = r.all ? 'move to COMPANY HQ' : 'move to UNASSIGNED';
+    if(!window.confirm('Remove "' + name + '" from the task org? Its soldiers stay on the roster and ' + where + '.')) return;
+    if(!r.all){
+      const seed = this.seedGroups(r);
+      const groups = seed.groups.filter(g => g !== name);
+      const grp = { ...seed.grp };
+      Object.keys(grp).forEach(k => { if(grp[k] === name) grp[k] = ''; });
+      this.set({ rosters:this.state.rosters.map(x => x.id === r.id ? { ...x, groups, grp } : x) });
+      return;
+    }
+    const sec = this.state.sections.find(s => s.name === name);
+    if(!sec || sec.id === 'CMD' || sec.id === 'HQ'){ window.alert('Command and Company HQ cannot be removed.'); return; }
+    const sections = this.state.sections.filter(s => s.id !== sec.id);
+    const people = this.state.people.map(p => p.section === sec.id ? { ...p, section:'HQ' } : p);
+    this.set({ sections, people });
+  }
+  sectionVals(){
+    const r = this.roster();
+    const d = this.state.draft || {};
+    const groupMode = !!r && !r.all;
+    const mem = this.byRank(this.members());
+    const names = groupMode ? this.seedGroups(r || {}).groups : this.state.sections.map(s => s.name);
+    const grpOf = (p) => groupMode ? (this.groupOf(p.id) || 'UNASSIGNED')
+      : ((this.state.sections.find(s => s.id === p.section) || {}).name || p.section);
+    const picked = d.secMembers || {};
+    const takenNames = {};
+    names.forEach(n => { takenNames[n] = true; });
+    return {
+      groupMode,
+      pick: d.secPick || '', newName: d.secNew || '',
+      options: this.state.sections.filter(s => !takenNames[s.name]).map(s => ({ id:s.name, label:s.name })),
+      hasOptions: this.state.sections.some(s => !takenNames[s.name]),
+      onPick: (e) => this.setState({ draft:{ ...d, secPick:e.target.value } }),
+      onNewName: (e) => this.setState({ draft:{ ...d, secNew:e.target.value } }),
+      count: Object.keys(picked).filter(k => picked[k]).length,
+      members: mem.map(p => ({ id:p.id, rank:p.rank, name:p.name, from:grpOf(p),
+        box: 'width:16px;height:16px;flex:none;cursor:pointer;border:1px solid '
+          + (picked[p.id] ? 'var(--color-accent)' : 'var(--color-divider)')
+          + ';background:' + (picked[p.id] ? 'var(--color-accent)' : 'transparent'),
+        onToggle: () => this.setState({ draft:{ ...d, secMembers:{ ...picked, [p.id]: !picked[p.id] } } }) })),
+      current: names.map(n => ({ name:n,
+        count: mem.filter(p => grpOf(p) === n).length,
+        onRemove: () => this.removeTaskSection(n) })),
+      onConfirm: () => {
+        const name = (((d.secNew || '').trim() || d.secPick || '')).toUpperCase();
+        if(!name){ this.setState({ modal:null }); return; }
+        const ids = Object.keys(picked).filter(k => picked[k]);
+        if(groupMode){
+          const seed = this.seedGroups(r);
+          const groups = seed.groups.slice();
+          const grp = { ...seed.grp };
+          if(groups.indexOf(name) < 0) groups.push(name);
+          ids.forEach(id => { grp[id] = name; });
+          this.set({ rosters:this.state.rosters.map(x => x.id === r.id ? { ...x, groups, grp } : x), modal:null });
+          return;
+        }
+        let sec = this.state.sections.find(s => s.name === name);
+        let sections = this.state.sections;
+        let sid = sec ? sec.id : '';
+        if(!sec){
+          sid = name.replace(/[^A-Z0-9]+/g, '-').replace(/^-+|-+$/g, '') || ('S' + Date.now());
+          if(sections.some(s => s.id === sid)) sid = sid + '-' + String(Date.now()).slice(-3);
+          sections = [...sections, { id:sid, name, sub:'Attached' }];
+        }
+        const people = this.state.people.map(p => ids.indexOf(p.id) >= 0 ? { ...p, section:sid } : p);
+        this.set({ sections, people, modal:null });
+      }
+    };
   }
   groupsOf(){ const r = this.roster(); return (r && r.groups) || []; }
   groupOf(id){ const r = this.roster(); return (r && r.grp && r.grp[id]) || ''; }
@@ -1009,16 +1228,17 @@ class Component extends DCLogic {
     if(w < 60){ this.queueCam(); return; }
     this._camTries = 0;
     const panelH = this.sp ? this.sp.offsetHeight : 236;
-    const roomy = w >= 574;
+    const panelW = Math.max(236, this.sp ? this.sp.offsetWidth : 236);
+    const roomy = w >= panelW + 338;
     const offY = roomy ? 12 : panelH + 24;
     if(this.isCompact()){
       const scale = Math.max(0.6, Math.min(1, (w - 24) / this.contentW()));
-      const ctx = roomy ? 260 : 12;
+      const ctx = roomy ? panelW + 24 : 12;
       this._auto = { scale, tx:ctx, ty:offY };
       this.setState({ scale, tx:ctx, ty:offY });
       return;
     }
-    const scale = w >= 1200 ? 0.86 : 0.72, tx = roomy ? 260 : 12;
+    const scale = w >= 1200 ? 0.86 : 0.72, tx = roomy ? panelW + 24 : 12;
     this._auto = { scale, tx, ty:offY };
     this.setState({ scale, tx, ty:offY });
   }
@@ -1077,14 +1297,23 @@ class Component extends DCLogic {
     this.set({ order:{ ...(this.state.order || {}), [nodeId]:cur } });
   }
   onRowDown(nodeId, id, e){
-    e.stopPropagation();
+    if(this.ptrs && this.ptrs.size) return;
     this._dg = { nodeId, id, x:e.clientX, y:e.clientY, moved:false };
     window.addEventListener('pointermove', this.onRowMove);
     window.addEventListener('pointerup', this.onRowUp);
     window.addEventListener('pointercancel', this.onRowUp);
   }
+  cancelRowDrag(){
+    if(!this._dg) return;
+    this._dg = null;
+    window.removeEventListener('pointermove', this.onRowMove);
+    window.removeEventListener('pointerup', this.onRowUp);
+    window.removeEventListener('pointercancel', this.onRowUp);
+    if(this.state.drag) this.setState({ drag:null });
+  }
   onRowMove = (e) => {
     const g = this._dg; if(!g) return;
+    if(this.ptrs && this.ptrs.size > 1) { this.cancelRowDrag(); return; }
     if(!g.moved){
       if(Math.abs(e.clientX - g.x) < 6 && Math.abs(e.clientY - g.y) < 6) return;
       g.moved = true;
@@ -1112,7 +1341,7 @@ class Component extends DCLogic {
     const s = this.state;
     const payload = { app:'hhc-xo-tracker', v:1, exported:new Date().toISOString(),
       people:s.people, sections:s.sections, rosters:s.rosters, dueouts:s.dueouts,
-      active:s.active, cardColor:s.cardColor, order:s.order };
+      active:s.active, cardColor:s.cardColor, order:s.order, customTypes:s.customTypes || [] };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -1134,6 +1363,7 @@ class Component extends DCLogic {
       this.set({ people:j.people, rosters:j.rosters,
         sections:(j.sections && j.sections.length) ? j.sections : this.state.sections,
         dueouts:this.withEvals(j.dueouts || []), cardColor:j.cardColor || {}, order:j.order || {},
+        customTypes:j.customTypes || this.state.customTypes || [],
         active, sel:null, modal:null, collapsed:{} });
       this.queueCam();
     };
@@ -1170,12 +1400,24 @@ class Component extends DCLogic {
       addStyle: 'align-self:flex-start;white-space:nowrap;margin-top:8px;padding:5px 10px;font-family:var(--font-heading);font-size:11px;letter-spacing:.08em;cursor:pointer;border-radius:0;background:transparent;color:'
         + (dark ? '#f2f2f3' : 'var(--color-accent-800)') + ';border:1px dashed '
         + (dark ? 'color-mix(in srgb,#f2f2f3 50%,transparent)' : 'var(--color-divider)'),
-      onAdd: () => this.setState({ modal:'add', draft:{ ...this.state.draft, rank:'', name:'', section: sec.addTo || sec.id } }),
+      canRemove: sec.id !== 'CMD' && sec.id !== 'HQ',
+      removeStyle: 'width:18px;height:18px;flex:none;padding:0;display:flex;align-items:center;justify-content:center;'
+        + 'font-size:10px;line-height:1;cursor:pointer;border-radius:0;background:transparent;border:1px solid '
+        + (dark ? 'color-mix(in srgb,#f2f2f3 45%,transparent)' : 'var(--color-divider)') + ';color:'
+        + (dark ? 'color-mix(in srgb,#f2f2f3 80%,transparent)' : 'color-mix(in srgb,#1d1f20 55%,transparent)'),
+      onRemove: (e) => { if(e) e.stopPropagation(); this.removeTaskSection(sec.name); },
+      onAdd: () => {
+        const isGrp = /^g:/.test(sec.id);
+        const match = isGrp ? this.state.sections.find(s => s.name === sec.name) : null;
+        this.setState({ modal:'add', draft:{ ...this.state.draft, rank:'', name:'', pick:'',
+          grp: isGrp ? sec.name : '',
+          section: isGrp ? (match ? match.id : (sec.addTo || 'HQ')) : sec.id } });
+      },
       members: mem.map((p, i) => {
         const dg = this.state.drag && this.state.drag.node === sec.id ? this.state.drag : null;
         const st = this.statusOf(p.id);
         const t = this.tone(st);
-        const base = 'display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:8px;min-height:44px;margin:0 -12px;padding:0 9px;';
+        const base = 'display:grid;grid-template-columns:40px 1fr auto 24px;align-items:center;gap:8px;min-height:44px;margin:0 -12px;padding:0 9px;';
         const tk = (this._tasked || {})[p.id];
         const note = p.position || p.remark || this.locOf(p.id) || (p.duty || (p.agr ? 'AGR' : 'M-Day'));
         return { id:p.id, rank:p.rank, name:p.name,
@@ -1192,7 +1434,9 @@ class Component extends DCLogic {
             + (dark ? 'color-mix(in srgb,#f2f2f3 65%,transparent)' : 'color-mix(in srgb,' + t.fg + ' 72%,transparent)')
             + (tk ? ';letter-spacing:.06em;text-transform:uppercase' : ''),
           nodeId: sec.id,
-          grabStyle: 'min-width:0;padding:6px 0;cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none',
+          grabStyle: 'min-width:0;padding:6px 0;cursor:pointer;-webkit-user-select:none;user-select:none',
+          handleStyle: 'display:flex;align-items:center;justify-content:center;height:34px;font-size:13px;line-height:1;cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none;color:'
+            + (dark ? 'color-mix(in srgb,#f2f2f3 60%,transparent)' : 'color-mix(in srgb,#1d1f20 38%,transparent)'),
           onDown: (e) => this.onRowDown(sec.id, p.id, e),
           row: (dark
             ? base + 'border-bottom:1px solid color-mix(in srgb,#f2f2f3 12%,transparent);background:color-mix(in srgb,'
@@ -1284,7 +1528,20 @@ class Component extends DCLogic {
     return { rows, groups };
   }
 
-  isGreen(type){ return !/^GSA/.test(type || '') && (type || '') !== 'POV'; }
+  isGreen(type){ const t = (type || '').toUpperCase(); return !/^GSA/.test(t) && t !== 'POV' && t !== 'BUS'; }
+  isGsa(type){ const t = (type || '').toUpperCase(); return /^GSA/.test(t) || t === 'BUS'; }
+  allVehTypes(){ return this.VEH_TYPES.concat((this.state.customTypes || []).filter(t => this.VEH_TYPES.indexOf(t) < 0)); }
+  addVehType(vid){
+    this.setState({ modal:'vehtype', draft:{ ...this.state.draft, vehType:'', vehFor:vid } });
+  }
+  confirmVehType(){
+    const d = this.state.draft || {};
+    const nm = (d.vehType || '').trim().toUpperCase();
+    if(!nm){ this.setState({ modal:null }); return; }
+    const customTypes = (this.state.customTypes || []).indexOf(nm) < 0
+      ? [...(this.state.customTypes || []), nm] : (this.state.customTypes || []);
+    this.setState({ customTypes, modal:null }, () => { if(d.vehFor) this.updVeh(d.vehFor, { type:nm }); });
+  }
   taskedMap(){
     const r = this.roster(); if(!r) return {};
     const out = {};
@@ -1320,7 +1577,7 @@ class Component extends DCLogic {
   }
   convoyVals(){
     const t = this.tab();
-    if(!t || t.kind !== 'convoy') return { name:'', parentName:'', vehicles:[], chalks:[], summary:[], empty:true, oicOpts:[], ncoicOpts:[], onAddVehicle:()=>{}, onAddChalk:()=>{}, onManifest:()=>{} };
+    if(!t || t.kind !== 'convoy') return { name:'', parentName:'', vehicles:[], chalks:[], cardChalks:[], cardTypes:[], cardPax:[], empty:true, oicOpts:[], ncoicOpts:[], onAddVehicle:()=>{}, onAddChalk:()=>{}, onManifest:()=>{} };
     const parent = this.state.rosters.find(x => x.id === t.parent);
     const vehicles = t.vehicles || [];
     const taken = this.convoyAssigned(t);
@@ -1340,16 +1597,25 @@ class Component extends DCLogic {
         + (kind === 'head' ? 'border-bottom:1px solid var(--color-divider);margin-top:4px'
           : kind === 'total' ? 'border-top:1px solid var(--color-divider);margin-top:2px'
           : 'border-bottom:1px solid color-mix(in srgb,#1d1f20 7%,transparent)') });
-    const summary = [
+    const gsaOnly = vehicles.filter(v => this.isGsa(v.type));
+    const pov = vehicles.filter(v => (v.type || '') === 'POV');
+    const cardChalks = [
       row('Chalks', chalkNames.length),
       row('Vehicles total', vehicles.length),
       row('Green (military)', green.length),
-      row('GSA / POV', gsa.length),
-      row('By type', '', 'head')
-    ].concat(Object.keys(byType).sort().map(k => row(k, byType[k])))
-     .concat([ row('Personnel — green', cnt(green), 'head'),
-               row('Personnel — GSA / POV', cnt(gsa)),
-               row('Personnel total', cnt(vehicles), 'total') ]);
+      row('GSA', gsaOnly.length),
+      row('POV', pov.length, 'total')
+    ];
+    const typeKeys = Object.keys(byType).sort();
+    const cardTypes = typeKeys.length
+      ? typeKeys.map((k, i) => row(k, byType[k], i === typeKeys.length - 1 ? 'total' : ''))
+      : [row('No vehicles yet', '—')];
+    const cardPax = [
+      row('Green (military)', cnt(green)),
+      row('GSA', cnt(gsaOnly)),
+      row('POV', cnt(pov)),
+      row('Total on board', cnt(vehicles), 'total')
+    ];
     const vviews = vehicles.map((v, i) => ({
         n:i + 1, chalk:chalkOf(v), type:v.type || '', bumper:v.bumper || '—', driver:v.driver || '', adriver:v.adriver || '',
         onChalk: (e) => this.updVeh(v.id, { chalk:e.target.value }),
@@ -1357,7 +1623,9 @@ class Component extends DCLogic {
         tagCls: this.isGreen(v.type) ? 'tag tag-accent' : 'tag tag-outline',
         paxCount:(v.pax || []).length, total:paxOf(v).length,
         driverOpts: optsFor(v.driver), adriverOpts: optsFor(v.adriver),
-        onType: (e) => this.updVeh(v.id, { type:e.target.value }),
+        onType: (e) => { const val = e.target.value;
+          if(val === '__new'){ this.addVehType(v.id); return; }
+          this.updVeh(v.id, { type:val }); },
         onBumper: (e) => this.updVeh(v.id, { bumper:e.target.value.toUpperCase() }),
         onDriver: (e) => this.updVeh(v.id, { driver:e.target.value }),
         onADriver: (e) => this.updVeh(v.id, { adriver:e.target.value }),
@@ -1384,7 +1652,8 @@ class Component extends DCLogic {
     });
     const nameOf = (id) => { const p = this.person(id); return p ? p.rank + ' ' + p.name : ''; };
     return {
-      name:t.name, parentName: parent ? parent.name : '', empty: vehicles.length === 0, summary,
+      name:t.name, parentName: parent ? parent.name : '', empty: vehicles.length === 0,
+      cardChalks, cardTypes, cardPax,
       chalks, vehicles:vviews, chalkOpts: chalkNames.map(c => ({ id:c, label:c })),
       oic:t.oic || '', ncoic:t.ncoic || '',
       oicName: nameOf(t.oic) || 'UNASSIGNED', ncoicName: nameOf(t.ncoic) || 'UNASSIGNED',
@@ -1430,7 +1699,8 @@ class Component extends DCLogic {
     this.ptrs.set(e.pointerId, { x:e.clientX, y:e.clientY });
     this.capTarget = e.currentTarget;
     this.captured = false;
-    if(this.ptrs.size === 2){ this.pan = null; this.pinch = this.pinchBase(); this.capture(e.pointerId); }
+    if(this.ptrs.size === 2){ this.cancelRowDrag(); this.pan = null; this.pinch = this.pinchBase(); this.capture(e.pointerId); }
+    else if(this._dg){ this.pinch = null; this.pan = null; }
     else { this.pinch = null; this.pan = { x:e.clientX, y:e.clientY, tx:this.state.tx, ty:this.state.ty }; }
   };
   capture(id){
@@ -1597,7 +1867,7 @@ class Component extends DCLogic {
         onTap: () => this.setState({ view:n[1] }) })),
 
       locRoster: (this.roster() || {}).name || '', locSummary: loc.rows, locGroups: loc.groups,
-      cv, vehTypes: this.VEH_TYPES.map(t => ({ id:t, label:t })),
+      cv, vehTypes: this.allVehTypes().map(t => ({ id:t, label:t })).concat([{ id:'__new', label:'+ ADD TYPE…' }]),
       memberOptions: this.byRank(mem).map(p => ({ id:p.id, label:p.rank + ' ' + p.name })),
 
       tabs: this.state.rosters.map(r => ({ label: r.kind === 'convoy' ? '⛟ ' + r.name : r.name,
@@ -1657,7 +1927,21 @@ class Component extends DCLogic {
           document.body.appendChild(a); a.click(); document.body.removeChild(a);
           setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
         } },
-      draft: { rank:d.rank, name:d.name, section:d.section, rosterName:d.rosterName, locList:d.locList, grpList:d.grpList || '' },
+      draft: { rank:d.rank, name:d.name, section:d.section, rosterName:d.rosterName, locList:d.locList, grpList:d.grpList || '', pick:d.pick || '', vehType:d.vehType || '' },
+      hasAddGrp: !!(d.grp || ''), addGrpLabel: d.grp || '',
+      showSectionSelect: !(d.grp && !this.state.sections.some(s => s.name === d.grp)),
+      addGrpNote: (d.grp && !this.state.sections.some(s => s.name === d.grp))
+        ? (d.grp + ' is attached to this roster only — new soldiers here stay off the company roster.')
+        : 'Placed in ' + (d.grp || '') + ' on this roster.',
+      addPickOptions: this.addPickOptions(),
+      hasAddPicks: this.addPickOptions().length > 0,
+      showNewFields: !(d.pick || ''),
+      onDraftPick: (e) => this.setState({ draft:{ ...d, pick:e.target.value } }),
+      onAddTaskSection: () => this.setState({ modal:'section', draft:{ ...d, secPick:'', secNew:'', secMembers:{} } }),
+      showSection: this.state.modal === 'section', secMod: this.sectionVals(),
+      showVehType: this.state.modal === 'vehtype',
+      onDraftVehType: (e) => this.setState({ draft:{ ...d, vehType:e.target.value.toUpperCase() } }),
+      onConfirmVehType: () => this.confirmVehType(),
       sectionOptions: secs.map(s => ({ id:s.id, label:s.name })),
       locOptions: (locs.length ? locs : ['UNASSIGNED']).map(l => ({ id:l, label:l })),
       onDraftRank: (e) => this.setState({ draft:{ ...d, rank:e.target.value.toUpperCase() } }),
@@ -1671,13 +1955,29 @@ class Component extends DCLogic {
       grpOptions: grps.map(g => ({ id:g, label:g })),
       onCancelModal: () => this.setState({ modal:null }),
       onConfirmAdd: () => {
+        const rid = (this.roster() || {}).id;
+        const grp = d.grp || '';
+        if(d.pick){
+          const pid = d.pick;
+          const people = grp ? this.state.people
+            : this.state.people.map(p => p.id === pid ? { ...p, section: d.section || p.section } : p);
+          const rosters = this.state.rosters.map(r => (r.kind === 'convoy' || r.id !== rid || r.all) ? r
+            : { ...r, ids:(r.ids || []).indexOf(pid) < 0 ? [...(r.ids || []), pid] : r.ids,
+                statuses:{ ...r.statuses, [pid]: (r.statuses || {})[pid] || 'PRES' },
+                grp: grp ? { ...(r.grp || {}), [pid]:grp } : r.grp });
+          this.set({ people, rosters, modal:null, sel:pid });
+          return;
+        }
         if(!d.name.trim()) { this.setState({ modal:null }); return; }
         const id = 'n' + Date.now();
-        const person = { id, section:d.section, rank:d.rank || 'PVT', name:d.name.trim(), category:'Enlisted',
+        const known = grp ? this.state.sections.find(s => s.name === grp) : null;
+        const attached = !!grp && !known;
+        const person = { id, attached, section: known ? known.id : d.section, rank:d.rank || 'PVT', name:d.name.trim(), category:'Enlisted',
           agr:false, duty:'M-Day', position:'', status:'PRES', remark:'', loc:'', dodid:'', mos:'', phone:'', email:'', hor:'', profile:'', nok:'', weapon:'', sensitive:'', notes:'', clearance:'', clearanceNote:'' };
         const rosters = this.state.rosters.map(r => r.kind === 'convoy' ? r
-          : (r.id === (this.roster() || {}).id && !r.all
-            ? { ...r, ids:[...(r.ids || []), id], statuses:{ ...r.statuses, [id]:'PRES' } }
+          : (r.id === rid && !r.all
+            ? { ...r, ids:[...(r.ids || []), id], statuses:{ ...r.statuses, [id]:'PRES' },
+                grp: grp ? { ...(r.grp || {}), [id]:grp } : r.grp }
             : { ...r, statuses:{ ...r.statuses, [id]:'PRES' } }));
         this.set({ people:[...this.state.people, person], rosters, modal:null, sel:id });
       },
