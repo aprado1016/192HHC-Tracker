@@ -13,7 +13,8 @@
 <script src="_ds/industry-0fb1b72e-5618-4890-8662-1ed74144782f/_ds_bundle.js"></script>
 <script src="roster-data.js"></script>
 <style>
-html,body{margin:0;height:100%;background:#dededf;overscroll-behavior:none;-webkit-text-size-adjust:100%}
+html,body{margin:0;height:100%;background:#f2f2f3;overscroll-behavior:none;-webkit-text-size-adjust:100%}
+@keyframes orbUp{from{opacity:0;transform:translate(-50%,14px)}to{opacity:1;transform:translate(-50%,0)}}
 a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
 @keyframes sheetUp{from{transform:translateY(101%)}to{transform:translateY(0)}}
 @keyframes drawerIn{from{transform:translateX(101%)}to{transform:translateX(0)}}
@@ -273,12 +274,12 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
       <button class="btn btn-secondary" onClick="{{ onAddTaskSection }}" title="Add a section to the task org" style="flex:none;white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:8px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">+ SECTION</button>
     </div>
 
-    <div style="position:absolute;right:12px;bottom:14px;display:flex;flex-direction:column;gap:6px">
+    <div style="{{ treeCornerR }}">
       <button class="btn btn-secondary" onClick="{{ onZoomIn }}" style="width:38px;height:38px;padding:0;background:var(--color-bg);box-shadow:var(--shadow-sm)">+</button>
       <button class="btn btn-secondary" onClick="{{ onZoomOut }}" style="width:38px;height:38px;padding:0;background:var(--color-bg);box-shadow:var(--shadow-sm)">–</button>
       <button class="btn btn-secondary" onClick="{{ onFit }}" style="width:38px;height:38px;padding:0;font-size:9px;letter-spacing:.06em;background:var(--color-bg);box-shadow:var(--shadow-sm)">FIT</button>
     </div>
-    <div style="position:absolute;left:12px;bottom:14px;display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+    <div style="{{ treeCornerL }}">
       <button class="btn btn-secondary" onClick="{{ onClearStatus }}" title="Blank the status of everyone in this roster" style="white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">CLEAR STATUSES</button>
       <button class="btn btn-secondary" onClick="{{ onCollapseAll }}" style="white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">{{ collapseLabel }}</button>
       <button class="btn btn-secondary" onClick="{{ onOpenTransfer }}" title="Move data between devices" style="white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">EXPORT / IMPORT</button>
@@ -622,10 +623,26 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
   </div>
 
   <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
-  <div style="{{ navStyle }}">
-    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="3">
-      <button class="{{ n.cls }}" onClick="{{ n.onTap }}" style="border:0;border-right:1px solid var(--color-divider);min-height:52px;font-size:11px;letter-spacing:.08em">{{ n.label }}</button>
-    </sc-for>
+  <div style="{{ orbStyle }}">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+    <button onClick="{{ orb.onTree }}" title="{{ orb.treeTitle }}" style="{{ orb.treeBtn }}">
+      <sc-if value="{{ orb.isConvoy }}" hint-placeholder-val="{{ false }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a1 1 0 0 0-1-1H2v11a2 2 0 0 0 2 2h1"></path><path d="M14 9h4l4 4v5h-2"></path><circle cx="7" cy="18" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg>
+      </sc-if>
+      <sc-if value="{{ orb.isTree }}" hint-placeholder-val="{{ true }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="6"></rect><rect x="2" y="16" width="6" height="6"></rect><rect x="16" y="16" width="6" height="6"></rect><path d="M12 8v4"></path><path d="M5 16v-4h14v4"></path></svg>
+      </sc-if>
+    </button>
+    <button onClick="{{ orb.onLoc }}" title="Location" style="{{ orb.locBtn }}">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+    </button>
+    <i style="width:1px;align-self:stretch;margin:8px 2px;background:var(--color-divider);display:block"></i>
+    <button onClick="{{ onToggleDue }}" title="Due outs" style="{{ orb.dueBtn }}">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M8 11h.01M8 16h.01M12 11h4M12 16h4"></path></svg>
+      <sc-if value="{{ orb.hasDue }}" hint-placeholder-val="{{ false }}">
+        <span style="{{ orb.badge }}">{{ dueBadge }}</span>
+      </sc-if>
+    </button>
   </div>
   </sc-if>
 
@@ -1805,13 +1822,13 @@ class Component extends DCLogic {
         paddingBottom:'2px', flex:wide ? '1 1 auto' : null, minWidth:wide ? '0' : null,
         justifyContent:'flex-start' },
       bodyStyle: { flex:'1', minHeight:'0', position:'relative', display:'flex', flexDirection:wide ? 'row' : 'column' },
-      paneStyle: { flex:'1', minHeight:'0', overflowY:'auto', padding:'14px 16px 28px' },
+      paneStyle: { flex:'1', minHeight:'0', overflowY:'auto', padding:wide ? '14px 16px 28px' : '14px 16px calc(96px + env(safe-area-inset-bottom))' },
       dueStyle: { position:'absolute', right:0, top:0, bottom:0, zIndex:60,
         width:wide ? '420px' : '88%', maxWidth:'420px', overflowY:'auto',
         background:'var(--color-bg)', borderLeft:'3px solid #b53333',
         boxShadow:'var(--shadow-lg)', padding:'14px 16px 24px',
         animation:'drawerIn .2s cubic-bezier(.22,.8,.28,1)' },
-      showDueBtn: !this.state.sel && !this.state.modal && !this.state.dueOpen,
+      showDueBtn: wide && !this.state.sel && !this.state.modal && !this.state.dueOpen,
       fileRef: (el) => { this.fileEl = el; },
       showTransfer: this.state.modal === 'transfer',
       onOpenTransfer: () => this.setState({ modal:'transfer' }),
@@ -1834,6 +1851,35 @@ class Component extends DCLogic {
       navStyle: { flex:'none', display:'grid', gridTemplateColumns:'1fr 1fr',
         borderTop:'1px solid var(--color-divider)', background:'var(--color-bg)',
         paddingBottom:'env(safe-area-inset-bottom)' },
+      orbStyle: { position:'absolute', left:'50%', bottom:'calc(14px + env(safe-area-inset-bottom))',
+        transform:'translateX(-50%)', zIndex:50, display:'flex', alignItems:'center', gap:'2px',
+        padding:'6px', background:'var(--color-bg)', border:'1px solid var(--color-divider)',
+        boxShadow:'var(--shadow-lg)', animation:'orbUp .18s cubic-bezier(.22,.8,.28,1)' },
+      orb: (() => {
+        const base = 'width:52px;height:48px;padding:0;display:inline-flex;align-items:center;justify-content:center;position:relative;border:1px solid transparent;background:transparent;cursor:pointer;';
+        const on = 'background:var(--color-accent);border-color:var(--color-accent-600);color:#fff;';
+        const off = 'color:color-mix(in srgb,#1d1f20 60%,transparent);';
+        return {
+          isConvoy: convoyTab, isTree: !convoyTab,
+          treeTitle: convoyTab ? 'Convoy' : 'Task org',
+          onTree: () => this.setState({ view:'tree', dueOpen:false }),
+          onLoc: () => this.setState({ view:'loc', dueOpen:false }),
+          treeBtn: base + (view === 'tree' ? on : off),
+          locBtn: base + (view === 'loc' ? on : off),
+          dueBtn: base + (this.state.dueOpen
+            ? 'background:#b53333;border-color:#8f2626;color:#fff;'
+            : 'color:#b53333;'),
+          hasDue: openDue > 0,
+          badge: 'position:absolute;top:2px;right:4px;min-width:17px;height:17px;display:inline-flex;'
+            + 'align-items:center;justify-content:center;padding:0 3px;background:#b53333;color:#fff;'
+            + 'font-family:var(--font-heading);font-weight:600;font-size:10px;line-height:1;'
+            + 'border:1px solid var(--color-bg)'
+        };
+      })(),
+      treeCornerL: 'position:absolute;left:12px;bottom:' + (wide ? '14px' : 'calc(90px + env(safe-area-inset-bottom))')
+        + ';display:flex;flex-direction:column;gap:6px;align-items:flex-start',
+      treeCornerR: 'position:absolute;right:12px;bottom:' + (wide ? '14px' : 'calc(90px + env(safe-area-inset-bottom))')
+        + ';display:flex;flex-direction:column;gap:6px',
       sheetStyle: wide
         ? { position:'absolute', top:0, right:0, bottom:0, width:'440px', overflowY:'auto',
             background:'var(--color-bg)', borderLeft:'1px solid var(--color-divider)',
