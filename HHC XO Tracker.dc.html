@@ -275,14 +275,42 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
     </div>
 
     <div style="{{ treeCornerR }}">
+      <div style="display:flex;flex-direction:row-reverse;align-items:flex-start;gap:6px">
+        <button class="btn btn-secondary" onClick="{{ onToggleSearch }}" title="Find a soldier" style="{{ searchBtnStyle }}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+        </button>
+        <sc-if value="{{ searchOpen }}" hint-placeholder-val="{{ false }}">
+          <div class="blueprint" style="width:236px;padding:7px;background:var(--color-bg);border:1px solid var(--color-divider);box-shadow:var(--shadow-lg)">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            <input class="input" ref="{{ searchRef }}" value="{{ query }}" onInput="{{ onSearchInput }}" onKeyDown="{{ onSearchKey }}" placeholder="Find soldier" style="width:100%;box-sizing:border-box;font-size:13px;padding:7px 8px">
+            <div style="display:flex;flex-direction:column;margin-top:6px">
+              <sc-for list="{{ matches }}" as="mt" hint-placeholder-count="0">
+                <button onClick="{{ mt.onPick }}" style="{{ mt.style }}">
+                  <span style="min-width:36px;text-align:left;font-family:var(--font-heading);font-size:11px;letter-spacing:.06em;color:var(--color-accent-700)">{{ mt.rank }}</span>
+                  <span style="flex:1;min-width:0;text-align:left;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ mt.name }}</span>
+                  <span style="font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ mt.sec }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ noMatch }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:8px 4px 2px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">No soldier by that name</div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
       <button class="btn btn-secondary" onClick="{{ onZoomIn }}" style="width:38px;height:38px;padding:0;background:var(--color-bg);box-shadow:var(--shadow-sm)">+</button>
       <button class="btn btn-secondary" onClick="{{ onZoomOut }}" style="width:38px;height:38px;padding:0;background:var(--color-bg);box-shadow:var(--shadow-sm)">–</button>
       <button class="btn btn-secondary" onClick="{{ onFit }}" style="width:38px;height:38px;padding:0;font-size:9px;letter-spacing:.06em;background:var(--color-bg);box-shadow:var(--shadow-sm)">FIT</button>
     </div>
     <div style="{{ treeCornerL }}">
-      <button class="btn btn-secondary" onClick="{{ onClearStatus }}" title="Blank the status of everyone in this roster" style="white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">CLEAR STATUSES</button>
-      <button class="btn btn-secondary" onClick="{{ onCollapseAll }}" style="white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">{{ collapseLabel }}</button>
-      <button class="btn btn-secondary" onClick="{{ onOpenTransfer }}" title="Move data between devices" style="white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">EXPORT / IMPORT</button>
+      <sc-if value="{{ toolsOpen }}" hint-placeholder-val="{{ false }}">
+        <button class="btn btn-secondary" onClick="{{ onClearStatus }}" title="Blank the status of everyone in this roster" style="white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">CLEAR STATUSES</button>
+        <button class="btn btn-secondary" onClick="{{ onCollapseAll }}" style="white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">{{ collapseLabel }}</button>
+        <button class="btn btn-secondary" onClick="{{ onOpenTransfer }}" title="Move data between devices" style="white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">EXPORT / IMPORT</button>
+      </sc-if>
+      <button class="btn btn-secondary" onClick="{{ onToggleTools }}" title="Tools" style="{{ toolsBtnStyle }}">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg>
+      </button>
     </div>
   </div>
   </sc-if>
@@ -963,6 +991,7 @@ class Component extends DCLogic {
 
   state = { ready:false, people:[], sections:[], dueouts:[], rosters:[], active:'company',
             collapsed:{}, sel:null, view:'tree', scale:0.62, tx:0, ty:0, modal:null, expOwner:null,
+            toolsOpen:false, searchOpen:false, query:'', hit:null,
             customTypes:[], vw:1024, vh:768, strengthOpen:true, copied:false, expEval:null, expEdit:null,
             draft:{rank:'',name:'',section:'HQ',rosterName:'',picked:{},locs:{},locList:'Camp Rell, Home Station',grpList:'',grps:{}},
             dueFilter:'All', dueOpen:false, newSec:'', cardColor:{}, order:{}, drag:null };
@@ -1461,6 +1490,7 @@ class Component extends DCLogic {
             : base + 'border-bottom:1px solid color-mix(in srgb,#1d1f20 8%,transparent);background:'
               + t.bg + ';border-left:4px solid ' + t.bd)
             + (dg && dg.id === p.id ? ';opacity:.4' : '')
+            + (this.state.hit === p.id ? ';box-shadow:0 0 0 3px var(--color-accent);position:relative;z-index:3' : '')
             + (dg && dg.over === p.id && dg.id !== p.id ? ';box-shadow:inset 0 3px 0 0 var(--color-accent)' : ''),
           abbr:this.ABBR[st], pill:this.pillStyle(st, dark),
           
@@ -1777,6 +1807,49 @@ class Component extends DCLogic {
     this.setState({ scale:s, tx:w / 2 - (w / 2 - this.state.tx) * k, ty:h / 2 - (h / 2 - this.state.ty) * k });
   }
 
+  searchRef = (el) => { this.searchEl = el; };
+  focusRow(id, tries){
+    const el = this.vp && this.vp.querySelector('[data-mid="' + id + '"]');
+    if(!el){
+      if(tries > 0){ this.setState({ collapsed:{} }); setTimeout(() => this.focusRow(id, tries - 1), 80); }
+      return;
+    }
+    const vr = this.vp.getBoundingClientRect(), er = el.getBoundingClientRect();
+    this.setState({
+      tx: this.state.tx + (vr.left + vr.width / 2 - (er.left + er.width / 2)),
+      ty: this.state.ty + (vr.top + vr.height / 2 - (er.top + er.height / 2))
+    });
+  }
+  jumpToPerson(p){
+    if(!p) return;
+    const c = { ...this.state.collapsed };
+    delete c[p.section];
+    this.setState({ collapsed:c, hit:p.id, query:'', searchOpen:false,
+      scale: Math.max(this.state.scale, 0.92) });
+    setTimeout(() => this.focusRow(p.id, 1), 90);
+    clearTimeout(this._hitT);
+    this._hitT = setTimeout(() => this.setState({ hit:null }), 6000);
+  }
+  searchMatches(){
+    const q = (this.state.query || '').trim().toLowerCase();
+    if(!q) return [];
+    const score = (p) => {
+      const n = (p.name || '').toLowerCase();
+      if(n.startsWith(q)) return 0;
+      const last = n.split(',')[0].trim();
+      if(last.startsWith(q)) return 1;
+      if(n.includes(q)) return 2;
+      if((p.rank || '').toLowerCase().startsWith(q)) return 3;
+      return -1;
+    };
+    return this.members()
+      .map(p => ({ p, s:score(p) }))
+      .filter(x => x.s >= 0)
+      .sort((a, b) => a.s - b.s || a.p.name.localeCompare(b.p.name))
+      .slice(0, 6)
+      .map(x => x.p);
+  }
+
   renderVals(){
     const mem = this.members();
     const pres = mem.filter(p => this.statusOf(p.id) === 'PRES').length;
@@ -1944,6 +2017,38 @@ class Component extends DCLogic {
       spRef: this.spRef,
       onPanStart:this.onPanStart, onPanMove:this.onPanMove, onPanEnd:this.onPanEnd, onWheel:this.onWheel,
       onZoomIn: () => this.zoom(1.18), onZoomOut: () => this.zoom(0.85), onFit: () => this.fit(),      collapseLabel: allCollapsed ? 'EXPAND ALL' : 'COLLAPSE ALL',
+
+      toolsOpen: this.state.toolsOpen,
+      onToggleTools: () => this.setState({ toolsOpen: !this.state.toolsOpen }),
+      toolsBtnStyle: 'width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);'
+        + (this.state.toolsOpen
+          ? 'background:var(--color-accent);border-color:var(--color-accent-600);color:#fff'
+          : 'background:var(--color-bg)'),
+      searchOpen: this.state.searchOpen,
+      searchBtnStyle: 'width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);'
+        + (this.state.searchOpen
+          ? 'background:var(--color-accent);border-color:var(--color-accent-600);color:#fff'
+          : 'background:var(--color-bg)'),
+      searchRef: this.searchRef,
+      query: this.state.query,
+      onToggleSearch: () => {
+        const open = !this.state.searchOpen;
+        this.setState({ searchOpen:open, query: open ? this.state.query : '' });
+        if(open) setTimeout(() => { if(this.searchEl) this.searchEl.focus(); }, 40);
+      },
+      onSearchInput: (e) => this.setState({ query:e.target.value }),
+      onSearchKey: (e) => {
+        if(e.key === 'Enter'){ e.preventDefault(); this.jumpToPerson(this.searchMatches()[0]); }
+        else if(e.key === 'Escape'){ this.setState({ searchOpen:false, query:'' }); }
+      },
+      noMatch: (this.state.query || '').trim().length > 0 && this.searchMatches().length === 0,
+      matches: this.searchMatches().map((p, i) => ({
+        rank:p.rank, name:p.name,
+        sec:(secs.find(s => s.id === p.section) || {}).name || p.section,
+        style: 'display:flex;align-items:center;gap:8px;width:100%;min-height:38px;padding:6px 4px;cursor:pointer;'
+          + 'border:0;border-top:' + (i ? '1px solid var(--color-divider)' : '0') + ';background:transparent;color:#1d1f20',
+        onPick: () => this.jumpToPerson(p)
+      })),
       onCollapseAll: () => { const c = {}; if(!allCollapsed) secs.forEach(s => { c[s.id] = true; }); this.setState({ collapsed:c }); },
 
       hasSel: !!this.state.sel, sel:this.selVals(),
