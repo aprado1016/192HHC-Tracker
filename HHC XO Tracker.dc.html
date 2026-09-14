@@ -511,6 +511,118 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
   </div>
   </sc-if>
 
+  <sc-if value="{{ showCal }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Calendar" class="hhc-scroll" style="{{ paneStyle }}">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <button class="btn btn-secondary" onClick="{{ cal.onPrev }}" style="width:34px;height:34px;padding:0;background:var(--color-bg)">‹</button>
+      <sc-if value="{{ cal.isYear }}" hint-placeholder-val="{{ true }}">
+        <div style="min-width:190px">
+          <div style="font-family:var(--font-heading);font-weight:600;font-size:21px;letter-spacing:.03em;line-height:1">{{ cal.yearLabel }}</div>
+          <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent);margin-top:3px">{{ cal.yearSub }}</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ cal.isMonth }}" hint-placeholder-val="{{ false }}">
+        <div style="min-width:190px">
+          <div style="font-family:var(--font-heading);font-weight:600;font-size:21px;letter-spacing:.03em;text-transform:uppercase;line-height:1">{{ cal.monthLabel }}</div>
+          <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent);margin-top:3px">{{ cal.fyLabel }}</div>
+        </div>
+      </sc-if>
+      <button class="btn btn-secondary" onClick="{{ cal.onNext }}" style="width:34px;height:34px;padding:0;background:var(--color-bg)">›</button>
+      <sc-if value="{{ cal.isMonth }}" hint-placeholder-val="{{ false }}">
+        <button class="btn btn-secondary" onClick="{{ cal.onOpenYear }}" style="font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg)">ALL MONTHS</button>
+      </sc-if>
+      <button class="btn btn-secondary" onClick="{{ cal.onToday }}" style="font-size:10px;letter-spacing:.08em;padding:6px 10px;background:var(--color-bg)">TODAY</button>
+      <div style="flex:1"></div>
+    </div>
+
+    <sc-if value="{{ cal.isYear }}" hint-placeholder-val="{{ true }}">
+      <div style="{{ cal.gridStyle }}">
+        <sc-for list="{{ cal.months }}" as="mo" hint-placeholder-count="12">
+          <div class="blueprint" onClick="{{ mo.onTap }}" style="{{ mo.style }}">
+            <div style="display:flex;align-items:baseline;gap:6px">
+              <div style="{{ mo.labelStyle }}">{{ mo.label }}</div>
+              <div style="font-size:10px;letter-spacing:.1em;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ mo.year }}</div>
+              <div style="font-family:var(--font-heading);font-size:13px;color:var(--color-accent-700)">{{ mo.count }}</div>
+            </div>
+            <div style="margin-top:6px">
+              <sc-for list="{{ mo.items }}" as="it" hint-placeholder-count="2">
+                <div style="{{ it.style }}">
+                  <i style="{{ it.dot }}"></i>
+                  <span style="{{ it.dayStyle }}">{{ it.day }}</span>
+                  <span style="{{ it.titleStyle }}">{{ it.title }}</span>
+                </div>
+              </sc-for>
+              <sc-if value="{{ mo.hasMore }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:4px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 50%,transparent)">{{ mo.more }}</div>
+              </sc-if>
+              <sc-if value="{{ mo.empty }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 40%,transparent)">No events</div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ cal.isMonth }}" hint-placeholder-val="{{ false }}">
+    <div class="hhc-scroll" style="display:flex;gap:4px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px">
+      <sc-for list="{{ cal.strip }}" as="s" hint-placeholder-count="12">
+        <button onClick="{{ s.onTap }}" style="{{ s.style }}">{{ s.label }}</button>
+      </sc-for>
+    </div>
+
+    <div class="blueprint" style="background:var(--color-bg);padding:8px">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;margin-bottom:1px">
+        <sc-for list="{{ cal.dows }}" as="d" hint-placeholder-count="7">
+          <div style="padding:4px 6px;font-family:var(--font-heading);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 55%,transparent)">{{ d.label }}</div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--color-divider);border:1px solid var(--color-divider)">
+        <sc-for list="{{ cal.cells }}" as="c" hint-placeholder-count="35">
+          <div onClick="{{ c.onTap }}" style="{{ c.style }}">
+            <div style="{{ c.numStyle }}">{{ c.num }}</div>
+            <div style="display:flex;flex-direction:column;gap:2px;margin-top:3px">
+              <sc-for list="{{ c.chips }}" as="ch" hint-placeholder-count="0">
+                <div style="{{ ch.style }}">{{ ch.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ cal.hasSel }}" hint-placeholder-val="{{ false }}">
+      <div class="blueprint" style="background:var(--color-bg);padding:11px 12px 12px;margin-top:12px">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px">
+          <div style="font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.03em;text-transform:uppercase">{{ cal.selLabel }}</div>
+          <button class="btn btn-ghost" onClick="{{ cal.onCloseDay }}" style="font-size:11px;padding:4px 8px">CLOSE</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <sc-for list="{{ cal.selEvents }}" as="e" hint-placeholder-count="0">
+            <div style="display:flex;align-items:center;gap:7px">
+              <button onClick="{{ e.onCycle }}" title="{{ e.colorLabel }}" style="{{ e.swatch }}"></button>
+              <input class="input" value="{{ e.title }}" onInput="{{ e.onEdit }}" style="flex:1;min-width:0;font-size:13px;padding:7px 8px">
+              <button class="btn btn-secondary" onClick="{{ e.onRemove }}" title="Delete event" style="width:34px;height:34px;padding:0;background:var(--color-bg)">✕</button>
+            </div>
+          </sc-for>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+            <sc-for list="{{ cal.swatches }}" as="sw" hint-placeholder-count="6">
+              <button onClick="{{ sw.onPick }}" title="{{ sw.title }}" style="{{ sw.style }}"></button>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px">
+            <input class="input" value="{{ cal.newEvent }}" onInput="{{ cal.onNewInput }}" onKeyDown="{{ cal.onNewKey }}" placeholder="Add training event" style="flex:1;min-width:0;font-size:13px;padding:7px 8px">
+            <button class="btn btn-primary" onClick="{{ cal.onAdd }}" style="font-size:11px;letter-spacing:.08em;padding:8px 12px">ADD</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+  </sc-if>
+
   <sc-if value="{{ showDue }}" hint-placeholder-val="{{ false }}">
   <div onClick="{{ onCloseDue }}" style="position:absolute;inset:0;z-index:55;background:color-mix(in srgb,#2b2b2d 40%,transparent);animation:fadeIn .14s ease-out"></div>
   <div data-screen-label="Due Outs" class="hhc-scroll" style="{{ dueStyle }}">
@@ -663,6 +775,9 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
     </button>
     <button onClick="{{ orb.onLoc }}" title="Location" style="{{ orb.locBtn }}">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+    </button>
+    <button onClick="{{ orb.onCal }}" title="Calendar" style="{{ orb.calBtn }}">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>
     </button>
     <i style="width:1px;align-self:stretch;margin:8px 2px;background:var(--color-divider);display:block"></i>
     <button onClick="{{ onToggleDue }}" title="Due outs" style="{{ orb.dueBtn }}">
@@ -977,6 +1092,8 @@ class Component extends DCLogic {
   SCHEMES = [
     { id:'paper',  label:'Paper',  bg:'var(--color-bg)',          dark:false },
     { id:'tint',   label:'Tint',   bg:'var(--color-accent-100)',  dark:false },
+    { id:'aid',    label:'Aid',    bg:'#f3d9d9',                  dark:false },
+    { id:'med',    label:'Medic',  bg:'#8f2626',                  dark:true  },
     { id:'steel',  label:'Steel',  bg:'var(--color-accent-900)',  dark:true  },
     { id:'field',  label:'Field',  bg:'var(--color-accent-700)',  dark:true  },
     { id:'slate',  label:'Slate',  bg:'var(--color-neutral-900)', dark:true  }
@@ -991,6 +1108,7 @@ class Component extends DCLogic {
 
   state = { ready:false, people:[], sections:[], dueouts:[], rosters:[], active:'company',
             collapsed:{}, sel:null, view:'tree', scale:0.62, tx:0, ty:0, modal:null, expOwner:null,
+            events:{}, calY:null, calM:null, calSel:null, newEvent:'', calMode:'year',
             toolsOpen:false, searchOpen:false, query:'', hit:null,
             customTypes:[], vw:1024, vh:768, strengthOpen:true, copied:false, expEval:null, expEdit:null,
             draft:{rank:'',name:'',section:'HQ',rosterName:'',picked:{},locs:{},locList:'Camp Rell, Home Station',grpList:'',grps:{}},
@@ -1037,7 +1155,7 @@ class Component extends DCLogic {
     if(saved && saved.people && saved.people.length){
       this.setState({ ready:true, sections:(saved.sections && saved.sections.length) ? saved.sections : d.sections, people:saved.people, dueouts:this.withEvals(saved.dueouts || d.dueouts),
                       rosters:saved.rosters, active:saved.active || 'company', cardColor:saved.cardColor || {}, order:saved.order || {},
-                      customTypes:saved.customTypes || [] }, ()=>this.initCam());
+                      customTypes:saved.customTypes || [], events:saved.events || {} }, ()=>this.initCam());
       return;
     }
     const statuses = {};
@@ -1048,7 +1166,7 @@ class Component extends DCLogic {
 
   save(next){
     const s = { ...this.state, ...next };
-    try { localStorage.setItem(this.KEY, JSON.stringify({ people:s.people, dueouts:s.dueouts, rosters:s.rosters, active:s.active, sections:s.sections, cardColor:s.cardColor, order:s.order, customTypes:s.customTypes || [] })); } catch(e) {}
+    try { localStorage.setItem(this.KEY, JSON.stringify({ people:s.people, dueouts:s.dueouts, rosters:s.rosters, active:s.active, sections:s.sections, cardColor:s.cardColor, order:s.order, customTypes:s.customTypes || [], events:s.events || {} })); } catch(e) {}
   }
   set(next){ this.setState(next, ()=>this.save({})); }
 
@@ -1387,7 +1505,7 @@ class Component extends DCLogic {
     const s = this.state;
     const payload = { app:'hhc-xo-tracker', v:1, exported:new Date().toISOString(),
       people:s.people, sections:s.sections, rosters:s.rosters, dueouts:s.dueouts,
-      active:s.active, cardColor:s.cardColor, order:s.order, customTypes:s.customTypes || [] };
+      active:s.active, cardColor:s.cardColor, order:s.order, customTypes:s.customTypes || [], events:s.events || {} };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -1410,6 +1528,7 @@ class Component extends DCLogic {
         sections:(j.sections && j.sections.length) ? j.sections : this.state.sections,
         dueouts:this.withEvals(j.dueouts || []), cardColor:j.cardColor || {}, order:j.order || {},
         customTypes:j.customTypes || this.state.customTypes || [],
+        events:j.events || this.state.events || {},
         active, sel:null, modal:null, collapsed:{} });
       this.queueCam();
     };
@@ -1850,6 +1969,175 @@ class Component extends DCLogic {
       .map(x => x.p);
   }
 
+  EVCOLORS = [
+    { id:'steel', label:'Steel',  bg:'var(--color-accent-700)' },
+    { id:'navy',  label:'Navy',   bg:'#2f4a66' },
+    { id:'red',   label:'Red',    bg:'#8f2626' },
+    { id:'olive', label:'Olive',  bg:'#55632f' },
+    { id:'ochre', label:'Ochre',  bg:'#9a6c22' },
+    { id:'slate', label:'Slate',  bg:'#4a4f55' }
+  ];
+  evColor(id){ return (this.EVCOLORS.find(c => c.id === id) || this.EVCOLORS[0]); }
+  nextColor(id){
+    const i = this.EVCOLORS.findIndex(c => c.id === id);
+    return this.EVCOLORS[(i + 1 + this.EVCOLORS.length) % this.EVCOLORS.length].id;
+  }
+  MONTHS = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+  FY_ORDER = [9,10,11,0,1,2,3,4,5,6,7,8];
+  dayKey(y, m, d){ return y + '-' + String(m + 1).padStart(2,'0') + '-' + String(d).padStart(2,'0'); }
+  calCursor(){
+    const t = new Date();
+    return { y: this.state.calY == null ? t.getFullYear() : this.state.calY,
+             m: this.state.calM == null ? t.getMonth() : this.state.calM };
+  }
+  shiftMonth(n){
+    const c = this.calCursor();
+    if(this.state.calMode !== 'month'){
+      const fyStart = (c.m >= 9 ? c.y : c.y - 1) + n;
+      this.setState({ calY:fyStart, calM:9, calSel:null });
+      return;
+    }
+    const d = new Date(c.y, c.m + n, 1);
+    this.setState({ calY:d.getFullYear(), calM:d.getMonth() });
+  }
+  monthEvents(y, m){
+    const pre = y + '-' + String(m + 1).padStart(2,'0') + '-';
+    const ev = this.state.events || {};
+    return Object.keys(ev).filter(k => k.indexOf(pre) === 0).sort()
+      .reduce((acc, k) => acc.concat(ev[k].map(e => ({ day:Number(k.slice(8)), title:e.title, color:e.color }))), []);
+  }
+  eventsOn(key){ return (this.state.events || {})[key] || []; }
+  writeEvents(key, list){
+    const ev = { ...(this.state.events || {}) };
+    if(list.length) ev[key] = list; else delete ev[key];
+    this.set({ events:ev });
+  }
+  addEvent(){
+    const key = this.state.calSel, title = (this.state.newEvent || '').trim();
+    if(!key || !title) return;
+    this.writeEvents(key, this.eventsOn(key).concat([{ id:'e' + Date.now(), title, color:this.state.newColor || 'steel' }]));
+    this.setState({ newEvent:'' });
+  }
+  buildCal(wide){
+    const c = this.calCursor();
+    const today = new Date();
+    const todayKey = this.dayKey(today.getFullYear(), today.getMonth(), today.getDate());
+    const fy = c.m >= 9 ? c.y + 1 : c.y;
+    const fyStart = c.m >= 9 ? c.y : c.y - 1;
+    const dim = new Date(c.y, c.m + 1, 0).getDate();
+    const lead = new Date(c.y, c.m, 1).getDay();
+    const cellH = wide ? '96px' : '74px';
+    const cells = [];
+    for(let i = 0; i < lead; i++){
+      cells.push({ num:'', chips:[], numStyle:'', style:'min-height:' + cellH + ';padding:5px 6px;background:var(--color-neutral-100)' });
+    }
+    for(let d = 1; d <= dim; d++){
+      const key = this.dayKey(c.y, c.m, d);
+      const evs = this.eventsOn(key);
+      const isToday = key === todayKey;
+      const isSel = key === this.state.calSel;
+      cells.push({
+        num:String(d), key,
+        style: 'min-height:' + cellH + ';padding:5px 6px;cursor:pointer;overflow:hidden;background:'
+          + (isSel ? 'var(--color-accent-100)' : 'var(--color-bg)')
+          + (isSel ? ';box-shadow:inset 0 0 0 2px var(--color-accent)' : ''),
+        numStyle: 'font-family:var(--font-heading);font-size:12px;letter-spacing:.04em;'
+          + (isToday
+            ? 'display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;background:var(--color-accent);color:#fff'
+            : 'color:color-mix(in srgb,#1d1f20 60%,transparent)'),
+        chips: evs.slice(0, wide ? 3 : 2).map(e => ({
+          label:e.title,
+          style:'padding:2px 4px;font-size:10px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'
+            + 'background:' + this.evColor(e.color).bg + ';color:#f2f2f3'
+        })).concat(evs.length > (wide ? 3 : 2)
+          ? [{ label:'+' + (evs.length - (wide ? 3 : 2)) + ' more',
+               style:'font-size:9px;letter-spacing:.06em;color:color-mix(in srgb,#1d1f20 55%,transparent)' }]
+          : []),
+        onTap: () => this.setState({ calSel:key, newEvent:'' })
+      });
+    }
+    while(cells.length % 7) cells.push({ num:'', chips:[], numStyle:'', style:'min-height:' + cellH + ';padding:5px 6px;background:var(--color-neutral-100)' });
+    const selKey = this.state.calSel;
+    const selDate = selKey ? selKey.split('-').map(Number) : null;
+    return {
+      isYear: this.state.calMode !== 'month',
+      isMonth: this.state.calMode === 'month',
+      yearLabel: 'FY' + String(fy).slice(2),
+      yearSub: 'OCT ' + fyStart + ' \u2013 SEP ' + (fyStart + 1),
+      onOpenYear: () => this.setState({ calMode:'year', calSel:null }),
+      gridStyle: 'display:grid;gap:' + (wide ? '10px' : '6px') + ';grid-template-columns:'
+        + (wide ? 'repeat(auto-fill,minmax(230px,1fr))' : 'repeat(3,minmax(0,1fr))'),
+      months: this.FY_ORDER.map(m => {
+        const y = m >= 9 ? fyStart : fyStart + 1;
+        const evs = this.monthEvents(y, m);
+        const isNow = m === today.getMonth() && y === today.getFullYear();
+        const cap = wide ? 6 : 3;
+        return {
+          label: wide ? this.MONTHS[m] : this.MONTHS[m].slice(0, 3),
+          year: wide ? String(y) : String(y).slice(2),
+          count: evs.length ? String(evs.length) : '',
+          empty: evs.length === 0,
+          labelStyle: 'flex:1;min-width:0;font-family:var(--font-heading);font-weight:600;letter-spacing:.03em;font-size:'
+            + (wide ? '17px' : '13px'),
+          items: evs.slice(0, cap).map(e => ({
+            day: String(e.day).padStart(2,'0'), title:e.title,
+            dot:'width:6px;height:6px;flex:none;background:' + this.evColor(e.color).bg,
+            dayStyle:'font-family:var(--font-heading);letter-spacing:.06em;color:color-mix(in srgb,#1d1f20 65%,transparent);font-size:'
+              + (wide ? '11px' : '10px'),
+            titleStyle:'flex:1;min-width:0;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:'
+              + (wide ? '12px' : '10px'),
+            style:'display:flex;gap:' + (wide ? '8px' : '4px') + ';align-items:center;padding:3px 0;border-top:1px solid var(--color-divider)'
+          })),
+          more: evs.length > cap ? '+' + (evs.length - cap) : '',
+          hasMore: evs.length > cap,
+          style:'padding:' + (wide ? '11px 12px 12px' : '8px 8px 9px')
+            + ';min-height:' + (wide ? '132px' : '104px')
+            + ';display:flex;flex-direction:column;background:var(--color-bg);cursor:pointer;'
+            + (isNow ? 'box-shadow:inset 0 0 0 2px var(--color-accent)' : 'box-shadow:var(--shadow-sm)'),
+          onTap: () => this.setState({ calMode:'month', calY:y, calM:m, calSel:null })
+        };
+      }),
+      monthLabel: this.MONTHS[c.m] + ' ' + c.y,
+      fyLabel: 'FY' + String(fy).slice(2) + ' · OCT ' + fyStart + ' – SEP ' + (fyStart + 1),
+      dows: ['SUN','MON','TUE','WED','THU','FRI','SAT'].map(d => ({ label:d })),
+      strip: this.FY_ORDER.map(m => {
+        const y = m >= 9 ? fyStart : fyStart + 1;
+        const on = m === c.m && y === c.y;
+        return { label:this.MONTHS[m].slice(0,3),
+          style:'flex:none;padding:5px 10px;font-family:var(--font-heading);font-size:11px;letter-spacing:.08em;cursor:pointer;border:1px solid '
+            + (on ? 'var(--color-accent-600)' : 'var(--color-divider)') + ';background:'
+            + (on ? 'var(--color-accent)' : 'var(--color-bg)') + ';color:' + (on ? '#fff' : '#1d1f20'),
+          onTap: () => this.setState({ calY:y, calM:m }) };
+      }),
+      cells,
+      hasSel: !!selKey,
+      selLabel: selDate ? this.MONTHS[selDate[1] - 1] + ' ' + selDate[2] + ', ' + selDate[0] : '',
+      selEvents: (selKey ? this.eventsOn(selKey) : []).map(e => ({
+        title:e.title,
+        swatch:'width:34px;height:34px;flex:none;padding:0;cursor:pointer;border:1px solid var(--color-divider);background:' + this.evColor(e.color).bg,
+        colorLabel:this.evColor(e.color).label,
+        onCycle: () => this.writeEvents(selKey, this.eventsOn(selKey).map(x => x.id === e.id ? { ...x, color:this.nextColor(x.color) } : x)),
+        onEdit: (ev) => this.writeEvents(selKey, this.eventsOn(selKey).map(x => x.id === e.id ? { ...x, title:ev.target.value } : x)),
+        onRemove: () => this.writeEvents(selKey, this.eventsOn(selKey).filter(x => x.id !== e.id))
+      })),
+      swatches: this.EVCOLORS.map(c => ({
+        title:c.label,
+        style:'width:26px;height:26px;flex:none;padding:0;cursor:pointer;background:' + c.bg + ';border:'
+          + ((this.state.newColor || 'steel') === c.id ? '2px solid #1d1f20' : '1px solid var(--color-divider)'),
+        onPick: () => this.setState({ newColor:c.id })
+      })),
+      newEvent: this.state.newEvent || '',
+      onNewInput: (e) => this.setState({ newEvent:e.target.value }),
+      onNewKey: (e) => { if(e.key === 'Enter'){ e.preventDefault(); this.addEvent(); } },
+      onAdd: () => this.addEvent(),
+      onCloseDay: () => this.setState({ calSel:null, newEvent:'' }),
+      onPrev: () => this.shiftMonth(-1),
+      onNext: () => this.shiftMonth(1),
+      onToday: () => this.setState({ calMode:'month', calY:today.getFullYear(), calM:today.getMonth(),
+        calSel:todayKey, newEvent:'' })
+    };
+  }
+
   renderVals(){
     const mem = this.members();
     const pres = mem.filter(p => this.statusOf(p.id) === 'PRES').length;
@@ -1875,8 +2163,8 @@ class Component extends DCLogic {
     const pickedIds = Object.keys(d.picked).filter(k => d.picked[k]);
 
     const navDefs = wide
-      ? [['TASK ORG','tree'], ['LOCATION','loc']]
-      : [[convoyTab ? 'CONVOY' : 'TASK ORG','tree'], ['LOCATION','loc']];
+      ? [['TASK ORG','tree'], ['LOCATION','loc'], ['CALENDAR','cal']]
+      : [[convoyTab ? 'CONVOY' : 'TASK ORG','tree'], ['LOCATION','loc'], ['CALENDAR','cal']];
     const groups = this.groupsOf();
     const openDue = this.state.dueouts.filter(x => x.status !== 'Closed').length;
 
@@ -1937,6 +2225,8 @@ class Component extends DCLogic {
           treeTitle: convoyTab ? 'Convoy' : 'Task org',
           onTree: () => this.setState({ view:'tree', dueOpen:false }),
           onLoc: () => this.setState({ view:'loc', dueOpen:false }),
+          onCal: () => this.setState({ view:'cal', dueOpen:false }),
+          calBtn: base + (view === 'cal' ? on : off),
           treeBtn: base + (view === 'tree' ? on : off),
           locBtn: base + (view === 'loc' ? on : off),
           dueBtn: base + (this.state.dueOpen
@@ -1949,9 +2239,9 @@ class Component extends DCLogic {
             + 'border:1px solid var(--color-bg)'
         };
       })(),
-      treeCornerL: 'position:absolute;left:12px;bottom:' + (wide ? '14px' : 'calc(90px + env(safe-area-inset-bottom))')
+      treeCornerL: 'position:absolute;z-index:5;left:12px;bottom:' + (wide ? '14px' : 'calc(90px + env(safe-area-inset-bottom))')
         + ';display:flex;flex-direction:column;gap:6px;align-items:flex-start',
-      treeCornerR: 'position:absolute;right:12px;bottom:' + (wide ? '14px' : 'calc(90px + env(safe-area-inset-bottom))')
+      treeCornerR: 'position:absolute;z-index:5;right:12px;bottom:' + (wide ? '14px' : 'calc(90px + env(safe-area-inset-bottom))')
         + ';display:flex;flex-direction:column;gap:6px',
       sheetStyle: wide
         ? { position:'absolute', top:0, right:0, bottom:0, width:'440px', overflowY:'auto',
@@ -1976,9 +2266,11 @@ class Component extends DCLogic {
       strengthChev: this.state.strengthOpen ? '▾' : '▸',
       onToggleStrength: () => this.setState({ strengthOpen: !this.state.strengthOpen }),
 
-      showTree: !convoyTab && view !== 'loc' && (wide || view === 'tree'),
-      showConvoy: convoyTab && view !== 'loc' && (wide || view === 'tree'),
+      showTree: !convoyTab && view !== 'loc' && view !== 'cal' && (wide || view === 'tree'),
+      showConvoy: convoyTab && view !== 'loc' && view !== 'cal' && (wide || view === 'tree'),
       showLoc: view === 'loc',
+      showCal: view === 'cal',
+      cal: this.buildCal(wide),
       showDue: this.state.dueOpen,
       showNav: !wide, showToggle: wide,
       navItems: navDefs.map(n => ({ label:n[0],
