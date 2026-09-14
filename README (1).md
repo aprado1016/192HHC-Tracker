@@ -22,6 +22,7 @@ Opening the file directly from disk also works in most browsers.
 | `roster-data.js` | Seed data (`window.HHC_DATA`): 85 personnel across 9 sections, 38 due-outs |
 | `support.js` | Component runtime |
 | `_ds/industry-…/` | Industry design system — tokens (`styles.css`) and component bundle |
+| `index.html` | Single-file standalone build (works offline, no server needed) |
 | `uploads/` | The source spreadsheet the seed data was extracted from |
 
 ## Features
@@ -34,6 +35,9 @@ Opening the file directly from disk also works in most browsers.
 - **Mission rosters** — create separate tabs (e.g. Annual Training) from a subset of the company,
   each with its own independent statuses.
 - **Due-out tracking** — filter by Late / Open / Closed, adjust percent complete, assign an owner.
+- **Training calendar** — fiscal-year and month views; tap a date for a popup to add or edit an
+  event with all-day/timed hours, start and end dates, location, notes and color. Multi-day events
+  draw as one continuous bar across the month.
 
 State persists to `localStorage` under the key `hhc-xo-v1`.
 

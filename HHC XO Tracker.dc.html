@@ -547,7 +547,6 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
             <div style="margin-top:6px">
               <sc-for list="{{ mo.items }}" as="it" hint-placeholder-count="2">
                 <div style="{{ it.style }}">
-                  <i style="{{ it.dot }}"></i>
                   <span style="{{ it.dayStyle }}">{{ it.day }}</span>
                   <span style="{{ it.titleStyle }}">{{ it.title }}</span>
                 </div>
@@ -582,7 +581,7 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
         <sc-for list="{{ cal.cells }}" as="c" hint-placeholder-count="35">
           <div onClick="{{ c.onTap }}" style="{{ c.style }}">
             <div style="{{ c.numStyle }}">{{ c.num }}</div>
-            <div style="display:flex;flex-direction:column;gap:2px;margin-top:3px">
+            <div style="display:flex;flex-direction:column;gap:2px;margin:3px -6px 0">
               <sc-for list="{{ c.chips }}" as="ch" hint-placeholder-count="0">
                 <div style="{{ ch.style }}">{{ ch.label }}</div>
               </sc-for>
@@ -593,31 +592,74 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
     </div>
     </sc-if>
 
-    <sc-if value="{{ cal.hasSel }}" hint-placeholder-val="{{ false }}">
-      <div class="blueprint" style="background:var(--color-bg);padding:11px 12px 12px;margin-top:12px">
+    <sc-if value="{{ cal.dlgOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ cal.onCloseDay }}" style="position:absolute;inset:0;z-index:70;background:color-mix(in srgb,#2b2b2d 45%,transparent);animation:fadeIn .14s ease-out"></div>
+      <div class="blueprint hhc-scroll" style="{{ cal.dlgStyle }}">
         <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px">
-          <div style="font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:.03em;text-transform:uppercase">{{ cal.selLabel }}</div>
-          <button class="btn btn-ghost" onClick="{{ cal.onCloseDay }}" style="font-size:11px;padding:4px 8px">CLOSE</button>
+        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:11px">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-700)">{{ cal.selDow }}</div>
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:21px;letter-spacing:.03em;text-transform:uppercase;line-height:1.1">{{ cal.selLabel }}</div>
+          </div>
+          <button class="btn btn-secondary" onClick="{{ cal.onCloseDay }}" style="width:32px;height:32px;padding:0;flex:none">✕</button>
         </div>
-        <div style="display:flex;flex-direction:column;gap:7px">
-          <sc-for list="{{ cal.selEvents }}" as="e" hint-placeholder-count="0">
-            <div style="display:flex;align-items:center;gap:7px">
-              <button onClick="{{ e.onCycle }}" title="{{ e.colorLabel }}" style="{{ e.swatch }}"></button>
-              <input class="input" value="{{ e.title }}" onInput="{{ e.onEdit }}" style="flex:1;min-width:0;font-size:13px;padding:7px 8px">
-              <button class="btn btn-secondary" onClick="{{ e.onRemove }}" title="Delete event" style="width:34px;height:34px;padding:0;background:var(--color-bg)">✕</button>
-            </div>
-          </sc-for>
-          <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
-            <sc-for list="{{ cal.swatches }}" as="sw" hint-placeholder-count="6">
-              <button onClick="{{ sw.onPick }}" title="{{ sw.title }}" style="{{ sw.style }}"></button>
+        <sc-if value="{{ cal.dlgList }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ cal.selEvents }}" as="e" hint-placeholder-count="0">
+              <button onClick="{{ e.onOpen }}" style="{{ e.rowStyle }}">
+                <span style="{{ e.barStyle }}"></span>
+                <span style="display:block;min-width:0;padding:8px 10px">
+                  <span style="display:block;font-family:var(--font-heading);font-weight:600;font-size:15px;line-height:1.2">{{ e.title }}</span>
+                  <span style="display:block;margin-top:2px;font-size:11px;color:color-mix(in srgb,#1d1f20 60%,transparent)">{{ e.meta }}</span>
+                </span>
+              </button>
             </sc-for>
+            <sc-if value="{{ cal.noEvents }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:8px 0 4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 45%,transparent)">Nothing scheduled</div>
+            </sc-if>
+            <button class="btn btn-primary btn-block" onClick="{{ cal.onNew }}" style="margin-top:4px;font-size:11px;letter-spacing:.1em">+ ADD EVENT</button>
           </div>
-          <div style="display:flex;align-items:center;gap:7px">
-            <input class="input" value="{{ cal.newEvent }}" onInput="{{ cal.onNewInput }}" onKeyDown="{{ cal.onNewKey }}" placeholder="Add training event" style="flex:1;min-width:0;font-size:13px;padding:7px 8px">
-            <button class="btn btn-primary" onClick="{{ cal.onAdd }}" style="font-size:11px;letter-spacing:.08em;padding:8px 12px">ADD</button>
+        </sc-if>
+        <sc-if value="{{ cal.dlgEdit }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 60%,transparent)">{{ cal.ed.heading }}</div>
+            <input class="input" value="{{ cal.ed.title }}" onInput="{{ cal.ed.onTitle }}" placeholder="Add title" style="font-family:var(--font-heading);font-size:18px;padding:9px 10px">
+            <div style="display:flex;gap:6px">
+              <button onClick="{{ cal.ed.onAllDay }}" style="{{ cal.ed.allDayStyle }}">ALL DAY</button>
+              <button onClick="{{ cal.ed.onTimed }}" style="{{ cal.ed.timedStyle }}">TIMED</button>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px">
+              <div class="field"><label>Starts</label><input class="input" type="date" value="{{ cal.ed.start }}" onChange="{{ cal.ed.onStart }}"></div>
+              <div class="field"><label>Ends</label><input class="input" type="date" value="{{ cal.ed.end }}" onChange="{{ cal.ed.onEnd }}"></div>
+            </div>
+            <sc-if value="{{ cal.ed.timed }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px">
+                <div class="field"><label>From</label><input class="input" type="time" value="{{ cal.ed.startTime }}" onChange="{{ cal.ed.onStartTime }}"></div>
+                <div class="field"><label>To</label><input class="input" type="time" value="{{ cal.ed.endTime }}" onChange="{{ cal.ed.onEndTime }}"></div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ cal.ed.hasSpan }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:11px;color:var(--color-accent-700)">{{ cal.ed.spanLabel }}</div>
+            </sc-if>
+            <div class="field"><label>Location</label><input class="input" value="{{ cal.ed.location }}" onInput="{{ cal.ed.onLocation }}" placeholder="Motor pool, Range 12, ..."></div>
+            <div class="field"><label>Notes</label><textarea class="input" value="{{ cal.ed.notes }}" onInput="{{ cal.ed.onNotes }}" rows="3" placeholder="Uniform, timeline, POC" style="resize:vertical"></textarea></div>
+            <div>
+              <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,#1d1f20 60%,transparent);margin-bottom:6px">Color</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <sc-for list="{{ cal.ed.swatches }}" as="sw" hint-placeholder-count="6">
+                  <button onClick="{{ sw.onPick }}" title="{{ sw.title }}" style="{{ sw.style }}"></button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:2px">
+              <button class="btn btn-primary" onClick="{{ cal.ed.onSave }}" style="flex:1;font-size:11px;letter-spacing:.1em">SAVE</button>
+              <button class="btn btn-secondary" onClick="{{ cal.ed.onCancel }}" style="font-size:11px;letter-spacing:.08em">CANCEL</button>
+              <sc-if value="{{ cal.ed.canDelete }}" hint-placeholder-val="{{ false }}">
+                <button class="btn btn-secondary" onClick="{{ cal.ed.onDelete }}" style="font-size:11px;letter-spacing:.08em;color:#b53333;border-color:#b53333">DELETE</button>
+              </sc-if>
+            </div>
           </div>
-        </div>
+        </sc-if>
       </div>
     </sc-if>
   </div>
@@ -1970,12 +2012,12 @@ class Component extends DCLogic {
   }
 
   EVCOLORS = [
-    { id:'steel', label:'Steel',  bg:'var(--color-accent-700)' },
-    { id:'navy',  label:'Navy',   bg:'#2f4a66' },
-    { id:'red',   label:'Red',    bg:'#8f2626' },
-    { id:'olive', label:'Olive',  bg:'#55632f' },
-    { id:'ochre', label:'Ochre',  bg:'#9a6c22' },
-    { id:'slate', label:'Slate',  bg:'#4a4f55' }
+    { id:'steel', label:'Peacock',   bg:'#039be5' },
+    { id:'navy',  label:'Blueberry', bg:'#3f51b5' },
+    { id:'red',   label:'Tomato',    bg:'#d50000' },
+    { id:'olive', label:'Basil',     bg:'#0b8043' },
+    { id:'ochre', label:'Tangerine', bg:'#f4511e' },
+    { id:'slate', label:'Grape',     bg:'#8e24aa' }
   ];
   evColor(id){ return (this.EVCOLORS.find(c => c.id === id) || this.EVCOLORS[0]); }
   nextColor(id){
@@ -2000,23 +2042,75 @@ class Component extends DCLogic {
     const d = new Date(c.y, c.m + n, 1);
     this.setState({ calY:d.getFullYear(), calM:d.getMonth() });
   }
-  monthEvents(y, m){
-    const pre = y + '-' + String(m + 1).padStart(2,'0') + '-';
+  normEv(key, e){
+    return { id:e.id, title:e.title, color:e.color, start:e.start || key, end:e.end || e.start || key,
+      allDay: e.allDay !== false, startTime:e.startTime || '', endTime:e.endTime || '',
+      location:e.location || '', notes:e.notes || '' };
+  }
+  allEvents(){
     const ev = this.state.events || {};
-    return Object.keys(ev).filter(k => k.indexOf(pre) === 0).sort()
-      .reduce((acc, k) => acc.concat(ev[k].map(e => ({ day:Number(k.slice(8)), title:e.title, color:e.color }))), []);
+    return Object.keys(ev).reduce((a, k) => a.concat(ev[k].map(e => this.normEv(k, e))), []);
   }
   eventsOn(key){ return (this.state.events || {})[key] || []; }
+  spanDays(e){
+    const a = new Date(e.start + 'T00:00'), b = new Date(e.end + 'T00:00');
+    return Math.round((b - a) / 86400000) + 1;
+  }
+  eventsSpanning(key){
+    return this.allEvents().filter(e => e.start <= key && key <= e.end).sort((a, b) =>
+      (this.spanDays(b) - this.spanDays(a)) || a.start.localeCompare(b.start)
+      || (a.startTime || '').localeCompare(b.startTime || ''));
+  }
+  monthEvents(y, m){
+    const pre = y + '-' + String(m + 1).padStart(2,'0') + '-';
+    const first = pre + '01';
+    return this.allEvents()
+      .filter(e => e.start.indexOf(pre) === 0 || (e.start < first && e.end >= first))
+      .sort((a, b) => a.start.localeCompare(b.start))
+      .map(e => {
+        const s = e.start < first ? first : e.start;
+        const endSame = e.end.slice(0, 8) === pre;
+        return { ...e,
+          dayLabel: e.start === e.end ? s.slice(8) : s.slice(8) + '\u2013' + (endSame ? e.end.slice(8) : '\u00b7\u00b7') };
+      });
+  }
+  hhmm(t){
+    if(!t) return '';
+    const p = t.split(':').map(Number);
+    return (((p[0] + 11) % 12) + 1) + ':' + String(p[1]).padStart(2,'0') + (p[0] >= 12 ? ' PM' : ' AM');
+  }
+  mdLabel(k){ const p = k.split('-'); return this.MONTHS[Number(p[1]) - 1].slice(0,3) + ' ' + Number(p[2]); }
+  timeLabel(e){
+    const span = e.start !== e.end ? this.mdLabel(e.start) + ' \u2013 ' + this.mdLabel(e.end) : '';
+    if(e.allDay) return span ? 'All day \u00b7 ' + span : 'All day';
+    const t = this.hhmm(e.startTime) + (e.endTime ? ' \u2013 ' + this.hhmm(e.endTime) : '');
+    return span ? t + ' \u00b7 ' + span : t;
+  }
   writeEvents(key, list){
     const ev = { ...(this.state.events || {}) };
     if(list.length) ev[key] = list; else delete ev[key];
     this.set({ events:ev });
   }
-  addEvent(){
-    const key = this.state.calSel, title = (this.state.newEvent || '').trim();
-    if(!key || !title) return;
-    this.writeEvents(key, this.eventsOn(key).concat([{ id:'e' + Date.now(), title, color:this.state.newColor || 'steel' }]));
-    this.setState({ newEvent:'' });
+  setDraft(patch){ this.setState({ evDraft:{ ...(this.state.evDraft || {}), ...patch } }); }
+  stripEvent(id){
+    const src = this.state.events || {}, ev = {};
+    Object.keys(src).forEach(k => { const l = src[k].filter(x => x.id !== id); if(l.length) ev[k] = l; });
+    return ev;
+  }
+  saveDraft(){
+    const d = this.state.evDraft; if(!d) return;
+    const title = (d.title || '').trim();
+    if(!title){ this.setState({ evDraft:null }); return; }
+    const start = d.start, end = (d.end && d.end >= start) ? d.end : start;
+    const ev = this.stripEvent(d.id);
+    ev[start] = (ev[start] || []).concat([{ id:d.id, title, color:d.color || 'steel', allDay:!!d.allDay,
+      start, end, startTime:d.allDay ? '' : (d.startTime || ''), endTime:d.allDay ? '' : (d.endTime || ''),
+      location:(d.location || '').trim(), notes:(d.notes || '').trim() }]);
+    this.set({ events:ev, evDraft:null, newColor:d.color || 'steel' });
+  }
+  deleteDraft(){
+    const d = this.state.evDraft; if(!d) return;
+    this.set({ events:this.stripEvent(d.id), evDraft:null });
   }
   buildCal(wide){
     const c = this.calCursor();
@@ -2033,7 +2127,9 @@ class Component extends DCLogic {
     }
     for(let d = 1; d <= dim; d++){
       const key = this.dayKey(c.y, c.m, d);
-      const evs = this.eventsOn(key);
+      const evs = this.eventsSpanning(key);
+      const dow = (lead + d - 1) % 7;
+      const cap = wide ? 3 : 2;
       const isToday = key === todayKey;
       const isSel = key === this.state.calSel;
       cells.push({
@@ -2045,15 +2141,25 @@ class Component extends DCLogic {
           + (isToday
             ? 'display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;background:var(--color-accent);color:#fff'
             : 'color:color-mix(in srgb,#1d1f20 60%,transparent)'),
-        chips: evs.slice(0, wide ? 3 : 2).map(e => ({
-          label:e.title,
-          style:'padding:2px 4px;font-size:10px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'
-            + 'background:' + this.evColor(e.color).bg + ';color:#f2f2f3'
-        })).concat(evs.length > (wide ? 3 : 2)
-          ? [{ label:'+' + (evs.length - (wide ? 3 : 2)) + ' more',
-               style:'font-size:9px;letter-spacing:.06em;color:color-mix(in srgb,#1d1f20 55%,transparent)' }]
+        chips: evs.slice(0, cap).map(e => {
+          const isStart = e.start === key, isEnd = e.end === key;
+          const head = isStart || dow === 0;
+          const time = (!e.allDay && e.startTime) ? this.hhmm(e.startTime).replace(':00','') + ' ' : '';
+          return {
+            label: head ? time + e.title : '\u00a0',
+            style:'font-size:10px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff'
+              + ';background:' + this.evColor(e.color).bg
+              + ';padding:2px ' + (isEnd ? '4px' : '2px') + ' 2px ' + (head ? '4px' : '2px')
+              + ';margin-left:' + (isStart || dow === 0 ? '6px' : '0')
+              + ';margin-right:' + (isEnd || dow === 6 ? '6px' : '0')
+              + (isStart || head === false ? '' : '')
+              + (!isStart && dow === 0 ? ';border-left:2px solid color-mix(in srgb,#ffffff 60%,transparent)' : '')
+          };
+        }).concat(evs.length > cap
+          ? [{ label:'+' + (evs.length - cap) + ' more',
+               style:'margin-left:6px;font-size:9px;letter-spacing:.06em;color:color-mix(in srgb,#1d1f20 55%,transparent)' }]
           : []),
-        onTap: () => this.setState({ calSel:key, newEvent:'' })
+        onTap: () => this.setState({ calSel:key, evDraft:null })
       });
     }
     while(cells.length % 7) cells.push({ num:'', chips:[], numStyle:'', style:'min-height:' + cellH + ';padding:5px 6px;background:var(--color-neutral-100)' });
@@ -2080,13 +2186,13 @@ class Component extends DCLogic {
           labelStyle: 'flex:1;min-width:0;font-family:var(--font-heading);font-weight:600;letter-spacing:.03em;font-size:'
             + (wide ? '17px' : '13px'),
           items: evs.slice(0, cap).map(e => ({
-            day: String(e.day).padStart(2,'0'), title:e.title,
-            dot:'width:6px;height:6px;flex:none;background:' + this.evColor(e.color).bg,
-            dayStyle:'font-family:var(--font-heading);letter-spacing:.06em;color:color-mix(in srgb,#1d1f20 65%,transparent);font-size:'
-              + (wide ? '11px' : '10px'),
+            day: e.dayLabel, title:e.title,
+            dayStyle:'font-family:var(--font-heading);letter-spacing:.06em;flex:none;opacity:.85;font-size:'
+              + (wide ? '11px' : '9px'),
             titleStyle:'flex:1;min-width:0;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:'
               + (wide ? '12px' : '10px'),
-            style:'display:flex;gap:' + (wide ? '8px' : '4px') + ';align-items:center;padding:3px 0;border-top:1px solid var(--color-divider)'
+            style:'display:flex;gap:' + (wide ? '7px' : '4px') + ';align-items:center;margin-top:2px;color:#fff;padding:'
+              + (wide ? '2px 5px' : '2px 3px') + ';background:' + this.evColor(e.color).bg
           })),
           more: evs.length > cap ? '+' + (evs.length - cap) : '',
           hasMore: evs.length > cap,
@@ -2110,27 +2216,65 @@ class Component extends DCLogic {
           onTap: () => this.setState({ calY:y, calM:m }) };
       }),
       cells,
-      hasSel: !!selKey,
+      dlgOpen: !!selKey,
+      dlgList: !!selKey && !this.state.evDraft,
+      dlgEdit: !!this.state.evDraft,
+      dlgStyle: 'position:absolute;z-index:71;overflow-y:auto;background:var(--color-bg);box-shadow:var(--shadow-lg)'
+        + ';border:1px solid var(--color-text);border-top:3px solid var(--color-accent);padding:14px 14px 20px'
+        + (wide
+          ? ';left:50%;transform:translateX(-50%);bottom:4%;width:560px;max-height:88%;animation:fadeIn .16s ease-out'
+          : ';left:0;right:0;bottom:0;max-height:92%;animation:sheetUp .2s cubic-bezier(.22,.8,.28,1)'),
       selLabel: selDate ? this.MONTHS[selDate[1] - 1] + ' ' + selDate[2] + ', ' + selDate[0] : '',
-      selEvents: (selKey ? this.eventsOn(selKey) : []).map(e => ({
+      selDow: selDate ? ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'][new Date(selDate[0], selDate[1] - 1, selDate[2]).getDay()] : '',
+      noEvents: !!selKey && this.eventsSpanning(selKey).length === 0,
+      selEvents: (selKey ? this.eventsSpanning(selKey) : []).map(e => ({
         title:e.title,
-        swatch:'width:34px;height:34px;flex:none;padding:0;cursor:pointer;border:1px solid var(--color-divider);background:' + this.evColor(e.color).bg,
-        colorLabel:this.evColor(e.color).label,
-        onCycle: () => this.writeEvents(selKey, this.eventsOn(selKey).map(x => x.id === e.id ? { ...x, color:this.nextColor(x.color) } : x)),
-        onEdit: (ev) => this.writeEvents(selKey, this.eventsOn(selKey).map(x => x.id === e.id ? { ...x, title:ev.target.value } : x)),
-        onRemove: () => this.writeEvents(selKey, this.eventsOn(selKey).filter(x => x.id !== e.id))
+        meta:this.timeLabel(e) + (e.location ? ' \u00b7 ' + e.location : ''),
+        rowStyle:'display:flex;align-items:stretch;gap:0;width:100%;text-align:left;cursor:pointer;padding:0'
+          + ';background:var(--color-bg);border:1px solid var(--color-divider)',
+        barStyle:'width:6px;flex:none;background:' + this.evColor(e.color).bg,
+        onOpen: () => this.setState({ evDraft:{ ...e } })
       })),
-      swatches: this.EVCOLORS.map(c => ({
-        title:c.label,
-        style:'width:26px;height:26px;flex:none;padding:0;cursor:pointer;background:' + c.bg + ';border:'
-          + ((this.state.newColor || 'steel') === c.id ? '2px solid #1d1f20' : '1px solid var(--color-divider)'),
-        onPick: () => this.setState({ newColor:c.id })
-      })),
-      newEvent: this.state.newEvent || '',
-      onNewInput: (e) => this.setState({ newEvent:e.target.value }),
-      onNewKey: (e) => { if(e.key === 'Enter'){ e.preventDefault(); this.addEvent(); } },
-      onAdd: () => this.addEvent(),
-      onCloseDay: () => this.setState({ calSel:null, newEvent:'' }),
+      onNew: () => this.setState({ evDraft:{ id:'e' + Date.now(), title:'', color:this.state.newColor || 'steel',
+        allDay:true, start:selKey, end:selKey, startTime:'09:00', endTime:'10:00', location:'', notes:'' } }),
+      ed: (() => {
+        const dr = this.state.evDraft;
+        if(!dr) return { title:'', timed:false, swatches:[] };
+        const existing = this.allEvents().some(x => x.id === dr.id);
+        const seg = (on) => 'flex:1;cursor:pointer;padding:7px 10px;font-family:var(--font-heading);font-size:11px'
+          + ';letter-spacing:.1em;border:1px solid ' + (on ? 'var(--color-accent-600)' : 'var(--color-divider)')
+          + ';background:' + (on ? 'var(--color-accent)' : 'var(--color-bg)') + ';color:' + (on ? '#fff' : '#1d1f20');
+        return {
+          heading: existing ? 'Edit event' : 'New event',
+          title:dr.title || '', onTitle:(e) => this.setDraft({ title:e.target.value }),
+          timed: !dr.allDay,
+          allDayStyle:seg(!!dr.allDay), timedStyle:seg(!dr.allDay),
+          onAllDay: () => this.setDraft({ allDay:true }),
+          onTimed: () => this.setDraft({ allDay:false }),
+          start:dr.start, end:dr.end || dr.start,
+          startTime:dr.startTime || '09:00', endTime:dr.endTime || '10:00',
+          onStart:(e) => { const v = e.target.value;
+            this.setDraft({ start:v, end:(dr.end && dr.end >= v) ? dr.end : v }); },
+          onEnd:(e) => this.setDraft({ end:e.target.value }),
+          onStartTime:(e) => this.setDraft({ startTime:e.target.value }),
+          onEndTime:(e) => this.setDraft({ endTime:e.target.value }),
+          spanLabel: (dr.end && dr.end > dr.start)
+            ? this.spanDays({ start:dr.start, end:dr.end }) + ' days \u00b7 shown as one bar across the month'
+            : '',
+          hasSpan: !!(dr.end && dr.end > dr.start),
+          location:dr.location || '', onLocation:(e) => this.setDraft({ location:e.target.value }),
+          notes:dr.notes || '', onNotes:(e) => this.setDraft({ notes:e.target.value }),
+          swatches: this.EVCOLORS.map(c => ({ title:c.label,
+            style:'width:30px;height:30px;flex:none;padding:0;cursor:pointer;background:' + c.bg + ';border:'
+              + ((dr.color || 'steel') === c.id ? '3px solid #1d1f20' : '1px solid var(--color-divider)'),
+            onPick: () => this.setDraft({ color:c.id }) })),
+          canDelete: existing,
+          onSave: () => this.saveDraft(),
+          onDelete: () => this.deleteDraft(),
+          onCancel: () => this.setState({ evDraft:null })
+        };
+      })(),
+      onCloseDay: () => this.setState({ calSel:null, evDraft:null }),
       onPrev: () => this.shiftMonth(-1),
       onNext: () => this.shiftMonth(1),
       onToday: () => this.setState({ calMode:'month', calY:today.getFullYear(), calM:today.getMonth(),
