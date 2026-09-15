@@ -11,7 +11,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <link rel="stylesheet" href="_ds/industry-0fb1b72e-5618-4890-8662-1ed74144782f/styles.css">
 <script src="_ds/industry-0fb1b72e-5618-4890-8662-1ed74144782f/_ds_bundle.js"></script>
-<script src="roster-data.js"></script>
 <style>
 html,body{margin:0;height:100%;background:#f2f2f3;overscroll-behavior:none;-webkit-text-size-adjust:100%}
 @keyframes orbUp{from{opacity:0;transform:translate(-50%,14px)}to{opacity:1;transform:translate(-50%,0)}}
@@ -273,6 +272,21 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
       </div>
       <button class="btn btn-secondary" onClick="{{ onAddTaskSection }}" title="Add a section to the task org" style="flex:none;white-space:nowrap;font-size:10px;letter-spacing:.08em;padding:8px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm)">+ SECTION</button>
     </div>
+
+    <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;pointer-events:none">
+        <div class="blueprint" style="pointer-events:auto;max-width:360px;width:100%;padding:20px 18px;background:var(--color-bg);box-shadow:var(--shadow-md)">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-700)">Empty tracker</div>
+          <div style="font-family:var(--font-heading);font-weight:600;font-size:22px;line-height:1.1;margin-top:3px">No roster on this device</div>
+          <div style="font-size:12px;line-height:1.5;margin-top:8px;color:color-mix(in srgb,#1d1f20 65%,transparent)">Build one from scratch by adding sections and soldiers, or import a tracker file you exported earlier.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+            <button class="btn btn-primary btn-block" onClick="{{ onAddTaskSection }}" style="letter-spacing:.08em;font-size:11px">+ CREATE FIRST SECTION</button>
+            <button class="btn btn-secondary btn-block" onClick="{{ onOpenTransfer }}" style="letter-spacing:.08em;font-size:11px">IMPORT A TRACKER FILE</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
 
     <div style="{{ treeCornerR }}">
       <div style="display:flex;flex-direction:row-reverse;align-items:flex-start;gap:6px">
@@ -929,6 +943,9 @@ a{color:var(--color-accent)}a:hover{color:var(--color-accent-700)}
           <div style="height:1px;background:var(--color-divider);margin:4px 0"></div>
           <button class="btn btn-secondary btn-block" onClick="{{ onImport }}" style="letter-spacing:.08em">IMPORT FROM FILE</button>
           <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 55%,transparent)">Replaces everything on this device. You will be asked to confirm first.</div>
+          <div style="height:1px;background:var(--color-divider);margin:4px 0"></div>
+          <button class="btn btn-ghost btn-block" onClick="{{ onWipe }}" style="letter-spacing:.08em;border:1px solid var(--color-divider)">START BLANK ON THIS DEVICE</button>
+          <div style="font-size:11px;color:color-mix(in srgb,#1d1f20 55%,transparent)">Erases everything here so you can build a new company from nothing. Export first if you want it back.</div>
         </div>
         <div class="dialog-actions">
           <button class="btn btn-secondary" onClick="{{ onCancelModal }}">Close</button>
@@ -1189,21 +1206,21 @@ class Component extends DCLogic {
       && src.some(x => x.kind === 'eval' && x.evalType === d.evalType && x.id !== d.id)));
     return extra.concat(pruned);
   }
+  blankRoster(){ return { id:'company', name:'COMPANY', all:true, statuses:{}, locs:{} }; }
   boot(){
-    const d = window.HHC_DATA;
-    if(!d){ setTimeout(()=>this.boot(), 60); return; }
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem(this.KEY) || 'null'); } catch(e) {}
-    if(saved && saved.people && saved.people.length){
-      this.setState({ ready:true, sections:(saved.sections && saved.sections.length) ? saved.sections : d.sections, people:saved.people, dueouts:this.withEvals(saved.dueouts || d.dueouts),
-                      rosters:saved.rosters, active:saved.active || 'company', cardColor:saved.cardColor || {}, order:saved.order || {},
+    if(saved && (saved.people || saved.rosters)){
+      const rosters = (saved.rosters && saved.rosters.length) ? saved.rosters : [this.blankRoster()];
+      this.setState({ ready:true, sections:saved.sections || [], people:saved.people || [],
+                      dueouts:this.withEvals(saved.dueouts || []),
+                      rosters, active:saved.active || rosters[0].id, cardColor:saved.cardColor || {}, order:saved.order || {},
                       customTypes:saved.customTypes || [], events:saved.events || {} }, ()=>this.initCam());
       return;
     }
-    const statuses = {};
-    d.people.forEach(p => { statuses[p.id] = p.status; });
-    this.setState({ ready:true, sections:d.sections, people:d.people, dueouts:this.withEvals(d.dueouts),
-                    rosters:[{ id:'company', name:'COMPANY', all:true, statuses, locs:{} }] }, ()=>this.initCam());
+    this.setState({ ready:true, sections:[], people:[], dueouts:[], cardColor:{}, order:{},
+                    customTypes:[], events:{}, active:'company',
+                    rosters:[this.blankRoster()] }, ()=>this.initCam());
   }
 
   save(next){
@@ -1561,13 +1578,21 @@ class Component extends DCLogic {
     fr.onload = () => {
       let j = null;
       try { j = JSON.parse(String(fr.result)); } catch(err) { window.alert('That file is not valid tracker data.'); return; }
-      if(!j || !Array.isArray(j.people) || !Array.isArray(j.rosters)){
-        window.alert('That file is missing people or rosters.'); return;
+      if(!j || (!Array.isArray(j.people) && !Array.isArray(j.rosters))){
+        window.alert('That file is not tracker data — it has no people or rosters.'); return;
       }
-      if(!window.confirm('Replace everything on this device with the file\'s data? ' + j.people.length + ' soldiers, ' + j.rosters.length + ' rosters.')) return;
-      const active = j.rosters.some(r => r.id === j.active) ? j.active : j.rosters[0].id;
-      this.set({ people:j.people, rosters:j.rosters,
-        sections:(j.sections && j.sections.length) ? j.sections : this.state.sections,
+      const people = Array.isArray(j.people) ? j.people : [];
+      let rosters = (Array.isArray(j.rosters) && j.rosters.length) ? j.rosters : null;
+      if(!rosters){
+        const statuses = {};
+        people.forEach(p => { statuses[p.id] = p.status; });
+        rosters = [{ ...this.blankRoster(), statuses }];
+      }
+      if(!rosters.some(r => r.all)) rosters = [{ ...this.blankRoster(), statuses:{} }].concat(rosters);
+      if(!window.confirm('Replace everything on this device with the file\'s data? ' + people.length + ' soldiers, ' + rosters.length + ' rosters.')) return;
+      const active = rosters.some(r => r.id === j.active) ? j.active : rosters[0].id;
+      this.set({ people, rosters,
+        sections:Array.isArray(j.sections) ? j.sections : (this.state.sections || []),
         dueouts:this.withEvals(j.dueouts || []), cardColor:j.cardColor || {}, order:j.order || {},
         customTypes:j.customTypes || this.state.customTypes || [],
         events:j.events || this.state.events || {},
@@ -2337,6 +2362,13 @@ class Component extends DCLogic {
       fileRef: (el) => { this.fileEl = el; },
       showTransfer: this.state.modal === 'transfer',
       onOpenTransfer: () => this.setState({ modal:'transfer' }),
+      onWipe: () => {
+        if(!window.confirm('Erase all data on this device? People, rosters, convoys, due outs and the calendar will be cleared. This cannot be undone — export first if you need it.')) return;
+        try { localStorage.removeItem(this.KEY); } catch(e) {}
+        this.setState({ sections:[], people:[], dueouts:[], rosters:[this.blankRoster()], active:'company',
+          cardColor:{}, order:{}, customTypes:[], events:{}, sel:null, modal:null, collapsed:{}, view:'tree' },
+          () => { this.save({}); this.initCam(); });
+      },
       transferSummary: 'On this device: ' + this.state.people.length + ' soldiers · '
         + this.state.sections.length + ' sections · ' + this.state.rosters.length + ' rosters · '
         + this.state.dueouts.length + ' due outs.',
@@ -2410,6 +2442,7 @@ class Component extends DCLogic {
       strengthChev: this.state.strengthOpen ? '▾' : '▸',
       onToggleStrength: () => this.setState({ strengthOpen: !this.state.strengthOpen }),
 
+      isEmpty: this.state.ready && !this.state.people.length && !this.state.sections.length,
       showTree: !convoyTab && view !== 'loc' && view !== 'cal' && (wide || view === 'tree'),
       showConvoy: convoyTab && view !== 'loc' && view !== 'cal' && (wide || view === 'tree'),
       showLoc: view === 'loc',
